@@ -3,7 +3,7 @@ import './App.css'
 function App() {
     const userLogin = () => {
         const clientId = "56f9ce77e267463a93248740284844e9"; // Get your own client id from spotify dev
-        const redirectUri = "https://spoti-list-backend-cfceabbtceheddf0.australiasoutheast-01.azurewebsites.net"; // Use 'ngrok http 8888' to use https locally. Replace this link
+        const redirectUri = "https://victorious-field-0525a4700.2.azurestaticapps.net"; // Use 'ngrok http 8888' to use https locally. Replace this link
             // with the link given by ngrok and also add it to your spotify dev app
         const scopes = "user-read-email";
 
