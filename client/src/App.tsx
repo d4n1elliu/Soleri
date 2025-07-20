@@ -2,8 +2,8 @@ import './App.css'
 
 function App() {
     const userLogin = () => {
-        const clientId = "acbf3717252e40cea2d732410395b652"; // Get your own client id from spotify dev
-        const redirectUri = "https://29d61a7c5371.ngrok-free.app"; // Use 'ngrok http 8888' to use https locally. Replace this link
+        const clientId = "56f9ce77e267463a93248740284844e9"; // Get your own client id from spotify dev
+        const redirectUri = "https://witty-plant-067c6f61e.6.azurestaticapps.net"; // Use 'ngrok http 8888' to use https locally. Replace this link
             // with the link given by ngrok and also add it to your spotify dev app
         const scopes = "user-read-email";
 
