@@ -15,6 +15,11 @@ app.get('/env-check', (req, res) => {
   });
 });
 
+// Root route for Azure
+app.get('/', (req, res) => {
+  res.send('Spoti-List backend is running on Azure!');
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
