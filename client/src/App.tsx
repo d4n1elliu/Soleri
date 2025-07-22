@@ -32,7 +32,7 @@ function App() {
                     setIsLoggedIn(true);
                     fetch('/api/top-songs', {
                         headers: {
-                            Authorisation: `Bearer ${token}`,
+                            Authorization: `Bearer ${token}`,
                         },
                     })
                         .then(res => res.json())
