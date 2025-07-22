@@ -1,5 +1,3 @@
-import React from 'react';
-
 const TopTrackCard = ({ track }: any) => {
   return (
     <div className="bg-red-700 p-4 rounded-xl shadow">

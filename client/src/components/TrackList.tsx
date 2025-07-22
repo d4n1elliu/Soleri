@@ -1,5 +1,3 @@
-import React from 'react';
-
 const TrackList = ({ tracks }: any) => {
   return (
     <div className="space-y-4">
