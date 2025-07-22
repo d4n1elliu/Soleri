@@ -14,7 +14,7 @@ const PopularityBarChart = ({ data }: any) => {
           <XAxis dataKey="name" hide />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="popularity" fill="#34d399" />
+          <Bar dataKey="popularity" fill="#464747ff" />
         </BarChart>
       </ResponsiveContainer>
     </div>
