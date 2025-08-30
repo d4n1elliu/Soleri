@@ -49,7 +49,6 @@ function App() {
         <div className="min-h-screen bg-zinc-900 text-black p-6">
             <h1 className ="text-3xl font-bold text-center mb-4">🎧 Spoti-List 🎵</h1>
             <p className = "text-center mb-6">Personal Spotify playlist data tracker.</p>
-
             {!isLoggedIn ? (
                 <div className="flex justify-center">
                     <button
