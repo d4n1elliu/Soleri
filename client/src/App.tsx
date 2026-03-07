@@ -12,6 +12,7 @@ function App() {
     const redirectUri = "https://victorious-field-0525a4700.2.azurestaticapps.net"; //Frontend azure deployment link
     const scopes = "user-read-email user-top-read";
 
+    // User login details 
     const userLogin = () => {
         const spotifyLoginUrl = `https://accounts.spotify.com/authorize?` +
             new URLSearchParams({
