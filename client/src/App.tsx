@@ -24,6 +24,7 @@ function App() {
         window.location.href = spotifyLoginUrl;
     };
 
+    // Processing Spotify login redirect and initialises user data.
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get("code");
