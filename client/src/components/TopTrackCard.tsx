@@ -1,11 +1,26 @@
-const TopTrackCard = ({ track }: any) => {
-  return (
-    <div className="bg-red-700 p-4 rounded-xl shadow">
-      <img src={track.album.images[0].url} alt={track.name} className="rounded mb-2" />
-      <h2 className="text-xl font-bold">{track.name}</h2>
-      <p className="text-sm">{track.artists.map((a: any) => a.name).join(', ')}</p>
-    </div>
-  );
-};
+import type { SpotifyTrack } from '../types/spotify';
 
-export default TopTrackCard;
+export function TopTrackCard({ track }: { track: SpotifyTrack }) {
+  return (
+    <a
+      href={track.external_urls.spotify}
+      target="_blank"
+      rel="noreferrer"
+      className="block rounded-xl bg-zinc-800 p-4 shadow transition-colors hover:bg-zinc-700"
+    >
+      <img
+        src={track.album.images[0]?.url}
+        alt={track.album.name}
+        className="mb-3 w-full rounded-lg object-cover"
+      />
+      <p className="text-xs font-medium uppercase tracking-widest text-green-400">
+        #1 Top Track
+      </p>
+      <h2 className="mt-1 text-lg font-semibold text-white">{track.name}</h2>
+      <p className="mt-0.5 text-sm text-zinc-400">
+        {track.artists.map((a) => a.name).join(', ')}
+      </p>
+      <p className="mt-2 text-xs text-zinc-500">Popularity: {track.popularity}/100</p>
+    </a>
+  );
+}

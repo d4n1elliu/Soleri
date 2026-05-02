@@ -1,74 +1,47 @@
-import './App.css'
-import {useState, useEffect } from 'react';
-import TopTrackCard from './components/TopTrackCard';
-import TrackList from './components/TrackList';
-import PopularityBarChart from './components/PopularityBarChart';
+import { useSpotifyAuth } from './hooks/useSpotifyAuth';
+import { buildSpotifyAuthUrl } from './api/spotify';
+import { TopTrackCard } from './components/TopTrackCard';
+import { TrackList } from './components/TrackList';
+import { PopularityBarChart } from './components/PopularityBarChart';
 
+export default function App() {
+  const { isLoggedIn, topTracks, isLoading } = useSpotifyAuth();
 
-function App() {
-    const [topSongs, setTopSongs] = useState<any[]>([]);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const clientId = "56f9ce77e267463a93248740284844e9"; // Get your own client id from spotify dev
-    const redirectUri = "https://victorious-field-0525a4700.2.azurestaticapps.net"; //Frontend azure deployment link
-    const scopes = "user-read-email user-top-read";
-
-    // User login details 
-    const userLogin = () => {
-        const spotifyLoginUrl = `https://accounts.spotify.com/authorize?` +
-            new URLSearchParams({
-                response_type: "code",
-                client_id: clientId,
-                redirect_uri: redirectUri,
-                scope: scopes,
-            });
-        window.location.href = spotifyLoginUrl;
-    };
-
-    // Processing Spotify login redirect and initialises user data.
-    useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get("code");
-        if (code) {
-            fetch(`/api/authenticate?code=${code}`)
-            .then(res => res.json())
-            .then(data => {
-                const token = data.access_token;
-                if (token) {
-                    setIsLoggedIn(true);
-                    fetch('/api/top-songs', {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    })
-                        .then(res => res.json())
-                        .then(data => setTopSongs(data.items || []));
-                }
-            });
-        }
-    }, []);
-
-    // Temporary Home Screen
-    return (  
-        <div className="min-h-screen bg-zinc-900 text-black p-6">
-            <h1 className ="text-3xl font-bold text-center mb-4">🎧 Spoti-List 🎵</h1>
-            <p className = "text-center mb-6">Personal Spotify playlist data tracker.</p>
-            {!isLoggedIn ? (
-                <div className="flex justify-center">
-                    <button
-                        onClick={userLogin}
-                        className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">
-                        Login Through Spotify
-                    </button>
-                </div>
-            ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {topSongs[0] && <TopTrackCard track={topSongs[0]} />}
-                <TrackList tracks={topSongs.slice(1)} />
-                <PopularityBarChart data={topSongs} />
-            </div>
-            )}
-        </div>
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-zinc-900">
+        <p className="text-zinc-400">Loading your tracks…</p>
+      </div>
     );
-}
+  }
 
-export default App
+  return (
+    <div className="min-h-screen bg-zinc-900 p-6 text-white">
+      <header className="mb-8 text-center">
+        <h1 className="text-3xl font-bold tracking-tight">Spoti-List</h1>
+        <p className="mt-1 text-sm text-zinc-400">Your personal Spotify analytics dashboard</p>
+      </header>
+
+      {!isLoggedIn ? (
+        <div className="flex justify-center">
+          <a
+            href={buildSpotifyAuthUrl()}
+            className="rounded-full bg-green-500 px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-green-400"
+          >
+            Connect with Spotify
+          </a>
+        </div>
+      ) : (
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-6 md:grid-cols-3">
+            {topTracks[0] && <TopTrackCard track={topTracks[0]} />}
+            <div className="md:col-span-1">
+              <TrackList tracks={topTracks.slice(1, 11)} />
+            </div>
+            <PopularityBarChart tracks={topTracks} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
