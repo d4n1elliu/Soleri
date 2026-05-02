@@ -35,12 +35,15 @@ export default function App() {
         </div>
       ) : (
         <div className="mx-auto max-w-6xl space-y-8">
-          <div className="grid items-stretch gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-3">
             {topTracks[0] && <TopTrackCard track={topTracks[0]} />}
             <div className="md:col-span-1">
               <TrackList tracks={topTracks.slice(1, 11)} />
             </div>
-            <PopularityBarChart tracks={topTracks} />
+            <div className="space-y-6">
+              <PopularityBarChart tracks={topTracks} />
+              <GenrePieChart genres={genreCounts} />
+            </div>
           </div>
 
           <div>
@@ -48,13 +51,6 @@ export default function App() {
               Recent Play Count
             </h2>
             <RecentPlayCount tracks={topTracks} playCounts={playCounts} />
-          </div>
-
-          <div>
-            <h2 className="mb-4 text-sm font-medium uppercase tracking-widest text-zinc-400">
-              Genre Breakdown
-            </h2>
-            <GenrePieChart genres={genreCounts} />
           </div>
         </div>
       )}
