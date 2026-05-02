@@ -1,5 +1,5 @@
 
-# Spoti-list
+# Spoti List
 
 A web application that connects to the Spotify Web API to display and track data from the user playlists and liked songs.
 
