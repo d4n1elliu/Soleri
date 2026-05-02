@@ -24,7 +24,7 @@ export function GenrePieChart({ genres }: { genres: { genre: string; count: numb
             cy="45%"
             outerRadius={100}
             dataKey="value"
-            label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
+            label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
             labelLine={false}
           >
             {data.map((_, i) => (
