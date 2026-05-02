@@ -1,5 +1,11 @@
 import type { SpotifyTrack } from '../types/spotify';
 
+function formatDuration(ms: number): string {
+  const minutes = Math.floor(ms / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000);
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
 export function TopTrackCard({ track }: { track: SpotifyTrack }) {
   return (
     <a
@@ -20,7 +26,7 @@ export function TopTrackCard({ track }: { track: SpotifyTrack }) {
       <p className="mt-0.5 text-sm text-zinc-400">
         {track.artists.map((a) => a.name).join(', ')}
       </p>
-      <p className="mt-2 text-xs text-zinc-500">Popularity: {track.popularity}/100</p>
+      <p className="mt-2 text-xs text-zinc-500">Duration: {formatDuration(track.duration_ms)}</p>
     </a>
   );
 }

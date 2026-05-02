@@ -1,5 +1,11 @@
 import type { SpotifyTrack } from '../types/spotify';
 
+function formatDuration(ms: number): string {
+  const minutes = Math.floor(ms / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000);
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
 export function TrackList({ tracks }: { tracks: SpotifyTrack[] }) {
   return (
     <div className="space-y-2">
@@ -23,7 +29,7 @@ export function TrackList({ tracks }: { tracks: SpotifyTrack[] }) {
               {track.artists.map((a) => a.name).join(', ')}
             </p>
           </div>
-          <span className="shrink-0 text-xs text-zinc-500">{track.popularity}</span>
+          <span className="shrink-0 text-xs text-zinc-500">{formatDuration(track.duration_ms)}</span>
         </a>
       ))}
     </div>
