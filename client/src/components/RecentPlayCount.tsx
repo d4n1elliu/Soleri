@@ -7,7 +7,10 @@ export function RecentPlayCount({
   tracks: SpotifyTrack[];
   playCounts: Record<string, number>;
 }) {
-  const tracksWithPlays = tracks.filter((t) => (playCounts[t.id] ?? 0) > 0);
+  const tracksWithPlays = tracks
+    .filter((t) => (playCounts[t.id] ?? 0) > 0)
+    .sort((a, b) => (playCounts[b.id] ?? 0) - (playCounts[a.id] ?? 0))
+    .slice(0, 20);
 
   if (tracksWithPlays.length === 0) {
     return (
