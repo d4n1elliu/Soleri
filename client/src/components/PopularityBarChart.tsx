@@ -8,11 +8,12 @@ export function PopularityBarChart({ tracks }: { tracks: SpotifyTrack[] }) {
   }));
 
   return (
-    <div className="rounded-xl bg-zinc-800 p-4">
+    <div className="flex flex-col rounded-xl bg-zinc-800 p-4">
       <h3 className="mb-4 text-sm font-medium uppercase tracking-widest text-zinc-400">
         Popularity
       </h3>
-      <ResponsiveContainer width="100%" height={300}>
+      <div className="flex-1 min-h-0">
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
           <XAxis dataKey="name" hide />
           <YAxis domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 11 }} />
@@ -29,6 +30,7 @@ export function PopularityBarChart({ tracks }: { tracks: SpotifyTrack[] }) {
           </Bar>
         </BarChart>
       </ResponsiveContainer>
+      </div>
     </div>
   );
 }
