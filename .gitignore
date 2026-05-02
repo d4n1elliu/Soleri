@@ -11,8 +11,10 @@ server/dist/
 # env files
 .env
 .env.*
+!.env.production
 client/.env
 client/.env.*
+!client/.env.production
 server/.env
 server/.env.*
 
