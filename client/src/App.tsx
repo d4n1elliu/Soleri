@@ -3,9 +3,10 @@ import { buildSpotifyAuthUrl } from './api/spotify';
 import { TopTrackCard } from './components/TopTrackCard';
 import { TrackList } from './components/TrackList';
 import { PopularityBarChart } from './components/PopularityBarChart';
+import { RecentPlayCount } from './components/RecentPlayCount';
 
 export default function App() {
-  const { isLoggedIn, topTracks, isLoading } = useSpotifyAuth();
+  const { isLoggedIn, topTracks, playCounts, isLoading } = useSpotifyAuth();
 
   if (isLoading) {
     return (
@@ -32,13 +33,20 @@ export default function App() {
           </a>
         </div>
       ) : (
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-6xl space-y-8">
           <div className="grid gap-6 md:grid-cols-3">
             {topTracks[0] && <TopTrackCard track={topTracks[0]} />}
             <div className="md:col-span-1">
               <TrackList tracks={topTracks.slice(1, 11)} />
             </div>
             <PopularityBarChart tracks={topTracks} />
+          </div>
+
+          <div>
+            <h2 className="mb-4 text-sm font-medium uppercase tracking-widest text-zinc-400">
+              Recent Play Count
+            </h2>
+            <RecentPlayCount tracks={topTracks} playCounts={playCounts} />
           </div>
         </div>
       )}
