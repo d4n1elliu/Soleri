@@ -19,7 +19,7 @@ export default function App() {
     <div className="min-h-screen bg-zinc-900 p-6 text-white">
       <header className="mb-8 text-center">
         <h1 className="text-3xl font-bold tracking-tight">Spoti-List</h1>
-        <p className="mt-1 text-sm text-zinc-400">Your personal Spotify analytics dashboard</p>
+        <p className="mt-1 text-sm text-zinc-400">Your Personal Spotify Analytics Dashboard</p>
       </header>
 
       {!isLoggedIn ? (
