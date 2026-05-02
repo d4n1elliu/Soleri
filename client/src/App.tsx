@@ -37,8 +37,10 @@ export default function App() {
         <div className="mx-auto max-w-6xl space-y-8">
           <div className="grid gap-6 md:grid-cols-3">
             {topTracks[0] && <TopTrackCard track={topTracks[0]} />}
-            <div className="md:col-span-1">
-              <TrackList tracks={topTracks.slice(1, 13)} />
+            <div className="relative md:col-span-1">
+              <div className="absolute inset-0 overflow-y-auto">
+                <TrackList tracks={topTracks.slice(1, 20)} />
+              </div>
             </div>
             <div className="space-y-6">
               <PopularityBarChart tracks={topTracks} />
