@@ -5,3 +5,11 @@ html, body, #root {
   padding: 0;
   min-height: 100%;
 }
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

@@ -38,7 +38,7 @@ export default function App() {
           <div className="grid gap-6 md:grid-cols-3">
             {topTracks[0] && <TopTrackCard track={topTracks[0]} />}
             <div className="relative md:col-span-1">
-              <div className="absolute inset-0 overflow-y-auto">
+              <div className="hide-scrollbar absolute inset-0 overflow-y-auto">
                 <TrackList tracks={topTracks.slice(1, 20)} />
               </div>
             </div>
