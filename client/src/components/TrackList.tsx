@@ -8,14 +8,14 @@ function formatDuration(ms: number): string {
 
 export function TrackList({ tracks }: { tracks: SpotifyTrack[] }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       {tracks.map((track, index) => (
         <a
           key={track.id}
           href={track.external_urls.spotify}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-4 rounded-lg bg-zinc-800 p-3 transition-colors hover:bg-zinc-700"
+          className="flex items-center gap-3 rounded-lg bg-zinc-800 px-3 py-2.5 transition-colors hover:bg-zinc-700"
         >
           <span className="w-5 text-center text-sm text-zinc-500">{index + 2}</span>
           <img
