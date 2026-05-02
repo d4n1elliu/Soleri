@@ -4,9 +4,10 @@ import { TopTrackCard } from './components/TopTrackCard';
 import { TrackList } from './components/TrackList';
 import { PopularityBarChart } from './components/PopularityBarChart';
 import { RecentPlayCount } from './components/RecentPlayCount';
+import { GenrePieChart } from './components/GenrePieChart';
 
 export default function App() {
-  const { isLoggedIn, topTracks, playCounts, isLoading } = useSpotifyAuth();
+  const { isLoggedIn, topTracks, playCounts, genreCounts, isLoading } = useSpotifyAuth();
 
   if (isLoading) {
     return (
@@ -47,6 +48,13 @@ export default function App() {
               Recent Play Count
             </h2>
             <RecentPlayCount tracks={topTracks} playCounts={playCounts} />
+          </div>
+
+          <div>
+            <h2 className="mb-4 text-sm font-medium uppercase tracking-widest text-zinc-400">
+              Genre Breakdown
+            </h2>
+            <GenrePieChart genres={genreCounts} />
           </div>
         </div>
       )}

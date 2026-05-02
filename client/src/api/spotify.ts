@@ -30,6 +30,24 @@ export async function fetchRecentlyPlayed(token: string): Promise<Record<string,
   return counts;
 }
 
+export async function fetchGenreCounts(token: string): Promise<{ genre: string; count: number }[]> {
+  const res = await fetch('/api/top-artists', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return [];
+  const data = await res.json();
+  const counts: Record<string, number> = {};
+  for (const artist of data.items ?? []) {
+    for (const genre of artist.genres ?? []) {
+      counts[genre] = (counts[genre] ?? 0) + 1;
+    }
+  }
+  return Object.entries(counts)
+    .map(([genre, count]) => ({ genre, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8);
+}
+
 export function buildSpotifyAuthUrl(): string {
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID as string;
   const redirectUri = import.meta.env.VITE_REDIRECT_URI as string;
