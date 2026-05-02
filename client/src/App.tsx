@@ -38,7 +38,7 @@ export default function App() {
           <div className="grid gap-6 md:grid-cols-3">
             {topTracks[0] && <TopTrackCard track={topTracks[0]} />}
             <div className="md:col-span-1">
-              <TrackList tracks={topTracks.slice(1, 15)} />
+              <TrackList tracks={topTracks.slice(1, 13)} />
             </div>
             <div className="space-y-6">
               <PopularityBarChart tracks={topTracks} />
