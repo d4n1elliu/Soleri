@@ -2,8 +2,6 @@
   
 A web application that connects to the Spotify Web API to display and track data from the user playlists and liked songs.
 
----
-
 ## Features
 
 - **Genre Breakdown** — Pie chart visualising the top genres based on user's listening history
@@ -12,8 +10,6 @@ A web application that connects to the Spotify Web API to display and track data
 - **Longest Listening Marathons** — Tracking longest uninterrupted listening sessions ranked by duration
 - **Artist Obsession Phases** — Detects periods where users listens to an artist heavily before stopping completely
 - **Billboard 100 Comparison** — Comparing personal listening metrics against Billboard Top 100 artists
-
----
 
 ## Tech Stack
 
@@ -26,8 +22,6 @@ A web application that connects to the Spotify Web API to display and track data
 - Node.js
 - Spotify Web API
 - Vercel Serverless Functions
-
----
 
 ## Getting Started
 
@@ -68,8 +62,6 @@ npm run dev
 
 Then open [http://localhost:5173](http://localhost:5173) in your browser.
 
----
-
 ## Project Structure
 
 ```
@@ -81,13 +73,9 @@ Spoti-list/
 └── package.json
 ```
 
----
-
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
----
 
 ## License
 
