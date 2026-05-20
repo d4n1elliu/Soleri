@@ -9,6 +9,7 @@ import { GenrePieChart } from './components/GenrePieChart';
 import { ListeningHeatmap } from './components/ListeningHeatmap';
 import { ListeningMarathons } from './components/ListeningMarathons';
 import { ArtistObsessionPhases } from './components/ArtistObsessionPhases';
+import { DiscoveryRateChart } from './components/DiscoveryRateChart';
 
 export default function App() {
   const {
@@ -65,6 +66,8 @@ export default function App() {
           <ListeningMarathons plays={recentPlays} />
 
           <ArtistObsessionPhases plays={recentPlays} topArtists={topArtists} />
+
+          <DiscoveryRateChart plays={recentPlays} />
         </div>
       )}
     </div>
