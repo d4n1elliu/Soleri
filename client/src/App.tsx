@@ -1,5 +1,6 @@
 import { useSpotifyAuth } from './hooks/useSpotifyAuth';
 import { buildSpotifyAuthUrl } from './api/spotify';
+import { LandingPage } from './components/LandingPage';
 import { TopTrackCard } from './components/TopTrackCard';
 import { TrackList } from './components/TrackList';
 import { PopularityBarChart } from './components/PopularityBarChart';
@@ -25,14 +26,7 @@ export default function App() {
       </header>
 
       {!isLoggedIn ? (
-        <div className="flex justify-center">
-          <a
-            href={buildSpotifyAuthUrl()}
-            className="rounded-full bg-green-500 px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-green-400"
-          >
-            Connect with Spotify
-          </a>
-        </div>
+        <LandingPage loginUrl={buildSpotifyAuthUrl()} />
       ) : (
         <div className="mx-auto max-w-6xl space-y-8">
           <div className="grid gap-6 md:grid-cols-3">
@@ -43,7 +37,7 @@ export default function App() {
               </div>
             </div>
             <div className="space-y-6">
-              <PopularityBarChart tracks={topTracks} />
+              <PopularityBarChart tracks={topTracks.slice(0, 20)} />
               <GenrePieChart genres={genreCounts} />
             </div>
           </div>
