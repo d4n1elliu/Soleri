@@ -14,6 +14,14 @@ html, body, #root {
   }
 }
 
+/* Remove focus outline on recharts SVG elements (pie slices, etc.) */
+.recharts-wrapper svg,
+.recharts-wrapper path,
+.recharts-wrapper g,
+.recharts-sector {
+  outline: none;
+}
+
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;

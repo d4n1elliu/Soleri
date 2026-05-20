@@ -19,7 +19,7 @@ export function GenrePieChart({ genres }: { genres: { genre: string; count: numb
         Top Genres
       </h3>
       <ResponsiveContainer width="100%" height={320}>
-        <PieChart>
+        <PieChart style={{ outline: 'none' }}>
           <Pie
             data={data}
             cx="50%"
