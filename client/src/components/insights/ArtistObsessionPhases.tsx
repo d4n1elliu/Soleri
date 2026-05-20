@@ -1,93 +1,6 @@
-import type { RecentPlay, SpotifyTopArtist } from '../types/spotify';
-
-// An artist needs at least this many plays in recent history to count as a phase.
-const MIN_PLAYS = 3;
-// If an artist's last play sits this far back in the overall window, the
-// obsession is treated as having faded out.
-const FADE_THRESHOLD = 0.4;
-
-interface ObsessionPhase {
-  artistId: string;
-  name: string;
-  count: number;
-  first: number;
-  last: number;
-  peak: number;
-  faded: boolean;
-}
-
-function formatDate(ts: number): string {
-  return new Date(ts).toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-  });
-}
-
-/** Detects artists played heavily over a window, ranked by play count. */
-function buildPhases(plays: RecentPlay[]): {
-  phases: ObsessionPhase[];
-  start: number;
-  span: number;
-} {
-  const times: number[] = [];
-  const byArtist = new Map<string, { name: string; times: number[] }>();
-
-  for (const play of plays) {
-    const ts = new Date(play.played_at).getTime();
-    if (Number.isNaN(ts)) continue;
-    times.push(ts);
-    for (const artist of play.track?.artists ?? []) {
-      if (!artist.id) continue;
-      const entry = byArtist.get(artist.id) ?? { name: artist.name, times: [] };
-      entry.times.push(ts);
-      byArtist.set(artist.id, entry);
-    }
-  }
-
-  if (times.length === 0) return { phases: [], start: 0, span: 1 };
-
-  const start = Math.min(...times);
-  const end = Math.max(...times);
-  const span = Math.max(1, end - start);
-
-  const phases: ObsessionPhase[] = [];
-  for (const [artistId, entry] of byArtist) {
-    if (entry.times.length < MIN_PLAYS) continue;
-    const sorted = [...entry.times].sort((a, b) => a - b);
-    const first = sorted[0];
-    const last = sorted[sorted.length - 1];
-
-    // Peak day: the calendar day this artist was played most.
-    const dayCounts = new Map<string, { count: number; ts: number }>();
-    for (const ts of sorted) {
-      const key = new Date(ts).toDateString();
-      const day = dayCounts.get(key) ?? { count: 0, ts };
-      day.count += 1;
-      dayCounts.set(key, day);
-    }
-    let peak = first;
-    let peakCount = 0;
-    for (const day of dayCounts.values()) {
-      if (day.count > peakCount) {
-        peakCount = day.count;
-        peak = day.ts;
-      }
-    }
-
-    phases.push({
-      artistId,
-      name: entry.name,
-      count: sorted.length,
-      first,
-      last,
-      peak,
-      faded: end - last > FADE_THRESHOLD * span,
-    });
-  }
-
-  phases.sort((a, b) => b.count - a.count);
-  return { phases: phases.slice(0, 6), start, span };
-}
+import type { RecentPlay, SpotifyTopArtist } from '../../types/spotify';
+import { buildObsessionPhases } from '../../lib/obsession';
+import { formatShortDate } from '../../lib/format';
 
 export function ArtistObsessionPhases({
   plays,
@@ -96,7 +9,7 @@ export function ArtistObsessionPhases({
   plays: RecentPlay[];
   topArtists: SpotifyTopArtist[];
 }) {
-  const { phases, start, span } = buildPhases(plays);
+  const { phases, start, span } = buildObsessionPhases(plays);
   const artistById = new Map(topArtists.map((artist) => [artist.id, artist]));
 
   if (phases.length === 0) {
@@ -170,11 +83,11 @@ export function ArtistObsessionPhases({
                 />
               </div>
               <div className="mt-2 flex justify-between text-[11px] text-zinc-500">
-                <span>{formatDate(phase.first)}</span>
+                <span>{formatShortDate(phase.first)}</span>
                 <span className="text-zinc-400">
-                  Peak {formatDate(phase.peak)}
+                  Peak {formatShortDate(phase.peak)}
                 </span>
-                <span>{formatDate(phase.last)}</span>
+                <span>{formatShortDate(phase.last)}</span>
               </div>
             </div>
           );

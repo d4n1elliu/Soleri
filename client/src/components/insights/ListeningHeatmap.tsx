@@ -1,47 +1,15 @@
-import type { RecentPlay } from '../types/spotify';
+import type { RecentPlay } from '../../types/spotify';
+import { buildHeatmap } from '../../lib/heatmap';
+import { formatHour } from '../../lib/format';
+import { greenWithAlpha } from '../../lib/theme';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const HOUR_LABELS = [0, 3, 6, 9, 12, 15, 18, 21];
-
-function formatHour(hour: number): string {
-  if (hour === 0) return '12am';
-  if (hour === 12) return '12pm';
-  return hour < 12 ? `${hour}am` : `${hour - 12}pm`;
-}
+const EMPTY_CELL = '#27272a';
 
 export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
-  // grid[day][hour] = number of plays that started in that slot.
-  const grid: number[][] = Array.from({ length: 7 }, () => Array(24).fill(0));
-  for (const play of plays) {
-    const date = new Date(play.played_at);
-    if (Number.isNaN(date.getTime())) continue;
-    grid[date.getDay()][date.getHours()] += 1;
-  }
-
-  const flat = grid.flat();
-  const max = Math.max(1, ...flat);
-  const total = flat.reduce((sum, n) => sum + n, 0);
-
-  // Split the day into mood windows to surface focus vs. wind-down patterns.
-  let focus = 0; // 09:00–17:59
-  let windDown = 0; // 18:00–23:59
-  let lateNight = 0; // 00:00–08:59
-  let peakHour = 0;
-  let peakDay = 0;
-  let peakCount = 0;
-  for (let day = 0; day < 7; day++) {
-    for (let hour = 0; hour < 24; hour++) {
-      const count = grid[day][hour];
-      if (hour >= 9 && hour < 18) focus += count;
-      else if (hour >= 18) windDown += count;
-      else lateNight += count;
-      if (count > peakCount) {
-        peakCount = count;
-        peakHour = hour;
-        peakDay = day;
-      }
-    }
-  }
+  const { grid, max, total, focus, windDown, lateNight, peakDay, peakHour } =
+    buildHeatmap(plays);
 
   if (total === 0) {
     return (
@@ -101,9 +69,7 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
                     className="m-px aspect-square rounded-[3px]"
                     style={{
                       backgroundColor:
-                        count === 0
-                          ? '#27272a'
-                          : `rgba(29, 185, 84, ${intensity})`,
+                        count === 0 ? EMPTY_CELL : greenWithAlpha(intensity),
                     }}
                   />
                 );
@@ -122,9 +88,7 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
             className="h-3 w-3 rounded-[3px]"
             style={{
               backgroundColor:
-                step === 0
-                  ? '#27272a'
-                  : `rgba(29, 185, 84, ${0.15 + 0.85 * step})`,
+                step === 0 ? EMPTY_CELL : greenWithAlpha(0.15 + 0.85 * step),
             }}
           />
         ))}
