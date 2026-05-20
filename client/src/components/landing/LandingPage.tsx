@@ -1,3 +1,8 @@
+import justinBieber from '../../assets/JustinBieberCoachella2026.png';
+import rose from '../../assets/rose.jpg';
+import sabrinaCarpenter from '../../assets/sabrina_carpenter.jpg';
+import theWeeknd from '../../assets/the_weekend.jpg';
+
 const FEATURES = [
   {
     icon: '🎧',
@@ -115,44 +120,42 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
             </p>
           </div>
 
-          {/* Right column — overlapping card collage */}
+          {/* Right column — overlapping photo collage */}
           <div className="relative hidden h-[460px] lg:block">
-            <div className="absolute left-[26%] top-[8%] z-20 flex h-56 w-44 rotate-3 flex-col justify-between rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 p-4 shadow-2xl ring-1 ring-white/10">
-              <span className="text-4xl">🎧</span>
-              <span className="text-sm font-semibold text-white">
-                Listening Stats
-              </span>
+            <div className="absolute left-[22%] top-[4%] z-20 h-64 w-48 rotate-3 overflow-hidden rounded-2xl shadow-2xl ring-2 ring-white/20">
+              <img
+                src={justinBieber}
+                alt="Justin Bieber at Coachella"
+                className="h-full w-full object-cover"
+              />
             </div>
-            <div className="absolute right-0 top-0 z-10 flex h-40 w-32 -rotate-6 flex-col justify-between rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 p-4 shadow-2xl ring-1 ring-white/10">
-              <span className="text-4xl">🕒</span>
-              <span className="text-sm font-semibold text-white">
-                Listening Clock
-              </span>
+            <div className="absolute right-0 top-0 z-10 h-44 w-36 -rotate-6 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10">
+              <img
+                src={rose}
+                alt="Rosé"
+                className="h-full w-full object-cover"
+              />
             </div>
-            <div className="absolute left-0 top-[30%] z-10 flex h-36 w-28 -rotate-3 flex-col justify-between rounded-2xl bg-gradient-to-br from-violet-400 to-purple-700 p-4 shadow-2xl ring-1 ring-white/10">
-              <span className="text-3xl">📈</span>
-              <span className="text-xs font-semibold text-white">
-                Discovery Rate
-              </span>
+            <div className="absolute bottom-0 left-[8%] z-10 h-52 w-40 rotate-6 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10">
+              <img
+                src={theWeeknd}
+                alt="The Weeknd performing"
+                className="h-full w-full object-cover"
+              />
             </div>
-            <div className="absolute bottom-0 left-[18%] z-10 flex h-44 w-32 rotate-6 flex-col justify-between rounded-2xl bg-gradient-to-br from-amber-300 to-orange-600 p-4 shadow-2xl ring-1 ring-white/10">
-              <span className="text-4xl">🔥</span>
-              <span className="text-sm font-semibold text-white">
-                Marathons
-              </span>
-            </div>
-            <div className="absolute bottom-[6%] right-[8%] z-30 flex h-40 w-32 rotate-3 flex-col justify-between rounded-2xl bg-gradient-to-br from-pink-400 to-rose-600 p-4 shadow-2xl ring-1 ring-white/10">
-              <span className="text-4xl">🏆</span>
-              <span className="text-sm font-semibold text-white">
-                Billboard
-              </span>
+            <div className="absolute bottom-[8%] right-[4%] z-30 h-48 w-40 rotate-3 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10">
+              <img
+                src={sabrinaCarpenter}
+                alt="Sabrina Carpenter"
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
         </div>
       </section>
 
       {/* Feature band */}
-      <section id="features" className="bg-zinc-950 py-20">
+      <section id="features" className="scroll-mt-20 bg-zinc-950 py-20">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
             Everything your music says about you
@@ -179,7 +182,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="py-20">
+      <section id="how-it-works" className="scroll-mt-20 py-20">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
             How it works

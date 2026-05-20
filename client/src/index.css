@@ -6,6 +6,11 @@ html, body, #root {
   min-height: 100%;
 }
 
+/* Glide to in-page anchors instead of teleporting. */
+html {
+  scroll-behavior: smooth;
+}
+
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
