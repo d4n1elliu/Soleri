@@ -53,14 +53,14 @@ const STEPS = [
 
 export function LandingPage({ loginUrl }: { loginUrl: string }) {
   return (
-    <div className="min-h-screen bg-zinc-900 text-white">
+    <div id="top" className="min-h-screen bg-zinc-900 text-white">
       {/* Navigation bar */}
       <nav className="sticky top-0 z-30 border-b border-zinc-800/80 bg-zinc-900/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2">
+          <a href="#top" className="flex items-center gap-2">
             <span className="text-lg">🎵</span>
             <span className="text-lg font-bold tracking-tight">Spoti-List</span>
-          </div>
+          </a>
           <div className="flex items-center gap-4 sm:gap-6">
             <a
               href="#features"
