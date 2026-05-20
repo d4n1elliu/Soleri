@@ -137,7 +137,7 @@ export function DiscoveryRateChart({ plays }: { plays: RecentPlay[] }) {
         Discovery Rate
       </h3>
       <p className="mb-5 text-xs text-zinc-500">
-        New finds vs. replayed favourites, {weekly ? 'per week' : 'per day'} ·
+        New finds vs replayed favourites {weekly ? 'per week' : 'per day'} ·
         last {totalPlays} plays
       </p>
 
