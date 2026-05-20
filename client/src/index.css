@@ -6,6 +6,14 @@ html, body, #root {
   min-height: 100%;
 }
 
+/* Glide to in-page anchors instead of teleporting, unless the user has
+   asked for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;

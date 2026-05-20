@@ -1,3 +1,8 @@
+import justinBieber from '../../assets/JustinBieberCoachella2026.png';
+import rose from '../../assets/rose.jpg';
+import sabrinaCarpenter from '../../assets/sabrina_carpenter.jpg';
+import theWeeknd from '../../assets/the_weekend.jpg';
+
 const FEATURES = [
   {
     icon: '🎧',
@@ -48,88 +53,186 @@ const STEPS = [
 
 export function LandingPage({ loginUrl }: { loginUrl: string }) {
   return (
-    <div className="mx-auto max-w-5xl">
-      {/* Hero */}
-      <section className="flex flex-col items-center text-center">
-        <span className="mb-6 rounded-full border border-zinc-700 px-4 py-1 text-xs uppercase tracking-widest text-zinc-400">
-          Your Personal Spotify Analytics
-        </span>
-        <h2 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-          Understand your music taste like never before
-        </h2>
-        <p className="mt-4 max-w-xl text-base text-zinc-400">
-          Spoti-List turns your Spotify listening history into a personal
-          dashboard — discover your patterns, obsessions and how your taste
-          stacks up against the charts.
-        </p>
-        <a
-          href={loginUrl}
-          className="mt-8 rounded-full bg-green-500 px-8 py-3 text-sm font-semibold text-black transition-colors hover:bg-green-400"
-        >
-          Connect with Spotify
-        </a>
-        <p className="mt-3 text-xs text-zinc-500">
-          Free · No data stored · Read-only access
-        </p>
-      </section>
-
-      {/* Feature overview */}
-      <section className="mt-20">
-        <h3 className="mb-6 text-center text-sm font-medium uppercase tracking-widest text-zinc-400">
-          What you'll discover
-        </h3>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((feature) => (
-            <div
-              key={feature.title}
-              className="rounded-xl bg-zinc-800 p-5 transition-colors hover:bg-zinc-700/70"
+    <div id="top" className="min-h-screen bg-zinc-900 text-white">
+      {/* Navigation bar */}
+      <nav className="sticky top-0 z-30 border-b border-zinc-800/80 bg-zinc-900/80 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <a href="#top" className="flex items-center gap-2">
+            <span className="text-lg">🎵</span>
+            <span className="text-lg font-bold tracking-tight">Spoti-List</span>
+          </a>
+          <div className="flex items-center gap-4 sm:gap-6">
+            <a
+              href="#features"
+              className="hidden text-sm text-zinc-400 transition-colors hover:text-white sm:block"
             >
-              <span className="text-2xl">{feature.icon}</span>
-              <h4 className="mt-3 text-base font-semibold text-white">
-                {feature.title}
-              </h4>
-              <p className="mt-1 text-sm text-zinc-400">{feature.desc}</p>
+              Features
+            </a>
+            <a
+              href="#how-it-works"
+              className="hidden text-sm text-zinc-400 transition-colors hover:text-white sm:block"
+            >
+              How it works
+            </a>
+            <a
+              href={loginUrl}
+              className="text-sm font-medium text-zinc-300 transition-colors hover:text-white"
+            >
+              Log in
+            </a>
+            <a
+              href={loginUrl}
+              className="rounded-full bg-green-500 px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-green-400"
+            >
+              Get started
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero — text left, collage right */}
+      <section className="relative overflow-hidden">
+        <div className="pointer-events-none absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-green-500/20 blur-3xl" />
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 lg:grid-cols-2 lg:py-24">
+          {/* Left column */}
+          <div className="text-center lg:text-left">
+            <span className="inline-block rounded-full border border-zinc-700 px-4 py-1 text-xs uppercase tracking-widest text-zinc-400">
+              Your Personal Spotify Analytics
+            </span>
+            <h1 className="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+              Understand your music taste like never before
+            </h1>
+            <p className="mx-auto mt-5 max-w-md text-base text-zinc-400 lg:mx-0">
+              Spoti-List turns your Spotify listening history into a personal
+              dashboard — discover your patterns, obsessions and how your taste
+              stacks up against the charts.
+            </p>
+            <div className="mt-8 flex justify-center lg:justify-start">
+              <a
+                href={loginUrl}
+                className="rounded-full bg-green-500 px-7 py-3 text-sm font-semibold text-black transition-colors hover:bg-green-400"
+              >
+                Connect with Spotify
+              </a>
             </div>
-          ))}
+            <p className="mt-4 text-xs text-zinc-500">
+              Free · No data stored · Read-only access
+            </p>
+          </div>
+
+          {/* Right column — overlapping photo collage */}
+          <div className="relative hidden h-[460px] lg:block">
+            <div className="absolute left-[22%] top-[4%] z-20 h-64 w-48 rotate-3 overflow-hidden rounded-2xl shadow-2xl ring-2 ring-white/20">
+              <img
+                src={justinBieber}
+                alt="Justin Bieber at Coachella"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="absolute right-0 top-0 z-10 h-44 w-36 -rotate-6 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10">
+              <img
+                src={rose}
+                alt="Rosé"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="absolute bottom-0 left-[8%] z-10 h-52 w-40 rotate-6 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10">
+              <img
+                src={theWeeknd}
+                alt="The Weeknd performing"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="absolute bottom-[8%] right-[4%] z-30 h-48 w-40 rotate-3 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10">
+              <img
+                src={sabrinaCarpenter}
+                alt="Sabrina Carpenter"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Onboarding steps */}
-      <section className="mt-20">
-        <h3 className="mb-6 text-center text-sm font-medium uppercase tracking-widest text-zinc-400">
-          How it works
-        </h3>
-        <div className="grid gap-4 md:grid-cols-3">
-          {STEPS.map((step, index) => (
-            <div key={step.title} className="rounded-xl bg-zinc-800 p-6">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-green-500 text-sm font-bold text-black">
-                {index + 1}
-              </span>
-              <h4 className="mt-4 text-base font-semibold text-white">
-                {step.title}
-              </h4>
-              <p className="mt-1 text-sm text-zinc-400">{step.desc}</p>
-            </div>
-          ))}
+      {/* Feature band */}
+      <section id="features" className="scroll-mt-20 bg-zinc-950 py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
+            Everything your music says about you
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-center text-zinc-400">
+            Six ways Spoti-List turns raw listening data into something you can
+            actually read.
+          </p>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map((feature) => (
+              <div
+                key={feature.title}
+                className="rounded-2xl bg-zinc-900 p-5 ring-1 ring-zinc-800 transition-colors hover:ring-zinc-700"
+              >
+                <span className="text-2xl">{feature.icon}</span>
+                <h3 className="mt-3 text-base font-semibold text-white">
+                  {feature.title}
+                </h3>
+                <p className="mt-1 text-sm text-zinc-400">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section id="how-it-works" className="scroll-mt-20 py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
+            How it works
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-center text-zinc-400">
+            From connecting your account to exploring your dashboard in three
+            simple steps.
+          </p>
+          <div className="mt-12 grid gap-4 md:grid-cols-3">
+            {STEPS.map((step, index) => (
+              <div
+                key={step.title}
+                className="rounded-2xl bg-zinc-800/60 p-6 ring-1 ring-zinc-800"
+              >
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-green-500 text-sm font-bold text-black">
+                  {index + 1}
+                </span>
+                <h3 className="mt-4 text-base font-semibold text-white">
+                  {step.title}
+                </h3>
+                <p className="mt-1 text-sm text-zinc-400">{step.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Closing call to action */}
-      <section className="mt-20 flex flex-col items-center rounded-2xl bg-zinc-800 px-6 py-12 text-center">
-        <h3 className="text-2xl font-bold tracking-tight">
-          Ready to see your sound?
-        </h3>
-        <p className="mt-2 max-w-md text-sm text-zinc-400">
-          Connect your account and your personalised dashboard will be ready in
-          seconds.
-        </p>
-        <a
-          href={loginUrl}
-          className="mt-6 rounded-full bg-green-500 px-8 py-3 text-sm font-semibold text-black transition-colors hover:bg-green-400"
-        >
-          Connect with Spotify
-        </a>
+      <section className="px-6 pb-24">
+        <div className="mx-auto flex max-w-4xl flex-col items-center rounded-3xl bg-gradient-to-br from-green-500/15 to-zinc-800 px-6 py-14 text-center ring-1 ring-white/5">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            Ready to see your sound?
+          </h2>
+          <p className="mt-2 max-w-md text-sm text-zinc-400">
+            Connect your account and your personalised dashboard will be ready
+            in seconds.
+          </p>
+          <a
+            href={loginUrl}
+            className="mt-6 rounded-full bg-green-500 px-8 py-3 text-sm font-semibold text-black transition-colors hover:bg-green-400"
+          >
+            Connect with Spotify
+          </a>
+        </div>
       </section>
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-800 py-8 text-center text-xs text-zinc-600">
+        Spoti-List · Built with the Spotify Web API
+      </footer>
     </div>
   );
 }
