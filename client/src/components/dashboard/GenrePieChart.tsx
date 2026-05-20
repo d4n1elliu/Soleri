@@ -1,12 +1,14 @@
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
-const COLORS = ['#1db954', '#1ed760', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4', '#ec4899'];
+import {
+  CHART_COLORS,
+  SPOTIFY_GREEN,
+  TOOLTIP_CONTENT_STYLE,
+  TOOLTIP_LABEL_STYLE,
+} from '../../lib/theme';
 
 export function GenrePieChart({ genres }: { genres: { genre: string; count: number }[] }) {
   if (genres.length === 0) {
-    return (
-      <p className="text-center text-sm text-zinc-500">No genre data available.</p>
-    );
+    return <p className="text-center text-sm text-zinc-500">No genre data available.</p>;
   }
 
   const data = genres.map((g) => ({ name: g.genre, value: g.count }));
@@ -24,17 +26,17 @@ export function GenrePieChart({ genres }: { genres: { genre: string; count: numb
             cy="45%"
             outerRadius={100}
             dataKey="value"
-            label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+            label={({ percent }) => `${((percent ?? 0) * 100).toFixed(0)}%`}
             labelLine={false}
           >
             {data.map((_, i) => (
-              <Cell key={i} fill={COLORS[i % COLORS.length]} />
+              <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
             ))}
           </Pie>
           <Tooltip
-            contentStyle={{ background: '#18181b', border: 'none', borderRadius: 8 }}
-            labelStyle={{ color: '#fff', fontSize: 12 }}
-            itemStyle={{ color: '#1db954' }}
+            contentStyle={TOOLTIP_CONTENT_STYLE}
+            labelStyle={TOOLTIP_LABEL_STYLE}
+            itemStyle={{ color: SPOTIFY_GREEN }}
             formatter={(value: number, name: string) => [value, name]}
           />
           <Legend

@@ -1,81 +1,17 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import type { RecentPlay } from '../types/spotify';
-
-// Plays within this gap of the previous track ending still count as the same
-// uninterrupted session.
-const GAP_TOLERANCE_MS = 5 * 60 * 1000;
-
-interface Marathon {
-  plays: RecentPlay[];
-  start: number;
-  end: number;
-  totalMs: number;
-}
-
-function formatDuration(ms: number): string {
-  const totalMinutes = Math.round(ms / 60000);
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  return hours === 0 ? `${minutes}m` : `${hours}h ${minutes}m`;
-}
-
-function formatDate(ts: number): string {
-  return new Date(ts).toLocaleDateString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-  });
-}
-
-function formatTime(ts: number): string {
-  return new Date(ts).toLocaleTimeString(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
-  });
-}
-
-/** Groups recent plays into continuous sessions and returns the longest five. */
-function buildMarathons(plays: RecentPlay[]): Marathon[] {
-  const sorted = plays
-    .filter((p) => !Number.isNaN(new Date(p.played_at).getTime()))
-    .sort(
-      (a, b) =>
-        new Date(a.played_at).getTime() - new Date(b.played_at).getTime(),
-    );
-
-  const sessions: Marathon[] = [];
-  let current: Marathon | null = null;
-  let prevStart = 0;
-  let prevDuration = 0;
-
-  for (const play of sorted) {
-    const start = new Date(play.played_at).getTime();
-    const duration = play.track?.duration_ms ?? 0;
-    const continues =
-      current !== null && start - prevStart <= prevDuration + GAP_TOLERANCE_MS;
-
-    if (continues && current) {
-      current.plays.push(play);
-      current.totalMs += duration;
-      current.end = start + duration;
-    } else {
-      current = {
-        plays: [play],
-        start,
-        end: start + duration,
-        totalMs: duration,
-      };
-      sessions.push(current);
-    }
-    prevStart = start;
-    prevDuration = duration;
-  }
-
-  return sessions
-    .filter((session) => session.plays.length >= 2)
-    .sort((a, b) => b.totalMs - a.totalMs)
-    .slice(0, 5);
-}
+import type { RecentPlay } from '../../types/spotify';
+import { buildMarathons } from '../../lib/marathons';
+import {
+  formatDuration,
+  formatWeekdayDate,
+  formatClockTime,
+} from '../../lib/format';
+import {
+  SPOTIFY_GREEN,
+  NEUTRAL_FILL,
+  TOOLTIP_CONTENT_STYLE,
+  TOOLTIP_LABEL_STYLE,
+} from '../../lib/theme';
 
 export function ListeningMarathons({ plays }: { plays: RecentPlay[] }) {
   const marathons = buildMarathons(plays);
@@ -94,7 +30,7 @@ export function ListeningMarathons({ plays }: { plays: RecentPlay[] }) {
   }
 
   const chartData = marathons.map((session, index) => ({
-    name: `#${index + 1} · ${formatDate(session.start)}`,
+    name: `#${index + 1} · ${formatWeekdayDate(session.start)}`,
     minutes: Math.round(session.totalMs / 60000),
   }));
 
@@ -125,15 +61,15 @@ export function ListeningMarathons({ plays }: { plays: RecentPlay[] }) {
             tick={{ fill: '#a1a1aa', fontSize: 11 }}
           />
           <Tooltip
-            contentStyle={{ background: '#18181b', border: 'none', borderRadius: 8 }}
-            labelStyle={{ color: '#fff', fontSize: 12 }}
-            itemStyle={{ color: '#1db954' }}
+            contentStyle={TOOLTIP_CONTENT_STYLE}
+            labelStyle={TOOLTIP_LABEL_STYLE}
+            itemStyle={{ color: SPOTIFY_GREEN }}
             cursor={{ fill: 'rgba(255,255,255,0.04)' }}
             formatter={(value: number) => [formatDuration(value * 60000), 'Listening time']}
           />
           <Bar dataKey="minutes" radius={[0, 4, 4, 0]}>
             {chartData.map((_, index) => (
-              <Cell key={index} fill={index === 0 ? '#1db954' : '#3f3f46'} />
+              <Cell key={index} fill={index === 0 ? SPOTIFY_GREEN : NEUTRAL_FILL} />
             ))}
           </Bar>
         </BarChart>
@@ -154,10 +90,10 @@ export function ListeningMarathons({ plays }: { plays: RecentPlay[] }) {
               </span>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-white">
-                  {formatDate(session.start)}
+                  {formatWeekdayDate(session.start)}
                 </p>
                 <p className="text-xs text-zinc-500">
-                  {formatTime(session.start)} – {formatTime(session.end)}
+                  {formatClockTime(session.start)} – {formatClockTime(session.end)}
                 </p>
                 <p className="mt-1 truncate text-xs text-zinc-400">
                   {preview}

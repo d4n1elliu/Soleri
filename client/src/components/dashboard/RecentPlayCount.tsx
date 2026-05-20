@@ -1,4 +1,4 @@
-import type { SpotifyTrack } from '../types/spotify';
+import type { SpotifyTrack } from '../../types/spotify';
 
 export function RecentPlayCount({
   tracks,
