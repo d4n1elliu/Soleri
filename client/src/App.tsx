@@ -8,10 +8,18 @@ import { RecentPlayCount } from './components/RecentPlayCount';
 import { GenrePieChart } from './components/GenrePieChart';
 import { ListeningHeatmap } from './components/ListeningHeatmap';
 import { ListeningMarathons } from './components/ListeningMarathons';
+import { ArtistObsessionPhases } from './components/ArtistObsessionPhases';
 
 export default function App() {
-  const { isLoggedIn, topTracks, recentPlays, playCounts, genreCounts, isLoading } =
-    useSpotifyAuth();
+  const {
+    isLoggedIn,
+    topTracks,
+    topArtists,
+    recentPlays,
+    playCounts,
+    genreCounts,
+    isLoading,
+  } = useSpotifyAuth();
 
   if (isLoading) {
     return (
@@ -55,6 +63,8 @@ export default function App() {
           <ListeningHeatmap plays={recentPlays} />
 
           <ListeningMarathons plays={recentPlays} />
+
+          <ArtistObsessionPhases plays={recentPlays} topArtists={topArtists} />
         </div>
       )}
     </div>
