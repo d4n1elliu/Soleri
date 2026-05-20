@@ -1,4 +1,9 @@
-import type { SpotifyTrack } from '../types/spotify';
+import type {
+  SpotifyTrack,
+  SpotifyTopArtist,
+  RecentPlay,
+  BillboardData,
+} from '../types/spotify';
 
 export async function exchangeCodeForToken(code: string): Promise<string | null> {
   const res = await fetch(`/api/authenticate?code=${code}`);
@@ -16,28 +21,51 @@ export async function fetchTopTracks(token: string): Promise<SpotifyTrack[]> {
   return data.items ?? [];
 }
 
-export async function fetchRecentlyPlayed(token: string): Promise<Record<string, number>> {
-  const res = await fetch('/api/recently_played_song', {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) return {};
-  const data = await res.json();
-  const counts: Record<string, number> = {};
-  for (const item of data.items ?? []) {
-    const id = item.track.id;
-    counts[id] = (counts[id] ?? 0) + 1;
-  }
-  return counts;
-}
-
-export async function fetchGenreCounts(token: string): Promise<{ genre: string; count: number }[]> {
+export async function fetchTopArtists(token: string): Promise<SpotifyTopArtist[]> {
   const res = await fetch('/api/top-artists', {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) return [];
   const data = await res.json();
+  return data.items ?? [];
+}
+
+/** Raw recently-played history, including the `played_at` timestamp per play. */
+export async function fetchRecentPlays(token: string): Promise<RecentPlay[]> {
+  const res = await fetch('/api/recently_played_song', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return [];
+  const data = await res.json();
+  return data.items ?? [];
+}
+
+/** Billboard chart benchmark data, resolved server-side against Spotify. */
+export async function fetchBillboard(token: string): Promise<BillboardData | null> {
+  const res = await fetch('/api/billboard', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+/** Counts how many times each track id appears in the recent-play history. */
+export function computePlayCounts(plays: RecentPlay[]): Record<string, number> {
   const counts: Record<string, number> = {};
-  for (const artist of data.items ?? []) {
+  for (const play of plays) {
+    const id = play.track?.id;
+    if (!id) continue;
+    counts[id] = (counts[id] ?? 0) + 1;
+  }
+  return counts;
+}
+
+/** Tallies genres across the user's top artists, returning the eight largest. */
+export function computeGenreCounts(
+  artists: SpotifyTopArtist[],
+): { genre: string; count: number }[] {
+  const counts: Record<string, number> = {};
+  for (const artist of artists) {
     for (const genre of artist.genres ?? []) {
       counts[genre] = (counts[genre] ?? 0) + 1;
     }

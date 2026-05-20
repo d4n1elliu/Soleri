@@ -3,7 +3,7 @@ export default async function handler(req, res) {
   if (!token) return res.status(401).json({ error: 'Missing access token' });
 
   try {
-    const response = await fetch('https://api.spotify.com/v1/me/top/tracks?limit=20', {
+    const response = await fetch('https://api.spotify.com/v1/me/top/tracks?limit=50', {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
