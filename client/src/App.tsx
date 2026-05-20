@@ -7,6 +7,7 @@ import { PopularityBarChart } from './components/PopularityBarChart';
 import { RecentPlayCount } from './components/RecentPlayCount';
 import { GenrePieChart } from './components/GenrePieChart';
 import { ListeningHeatmap } from './components/ListeningHeatmap';
+import { ListeningMarathons } from './components/ListeningMarathons';
 
 export default function App() {
   const { isLoggedIn, topTracks, recentPlays, playCounts, genreCounts, isLoading } =
@@ -52,6 +53,8 @@ export default function App() {
           </div>
 
           <ListeningHeatmap plays={recentPlays} />
+
+          <ListeningMarathons plays={recentPlays} />
         </div>
       )}
     </div>
