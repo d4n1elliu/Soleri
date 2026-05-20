@@ -53,14 +53,14 @@ const STEPS = [
 
 export function LandingPage({ loginUrl }: { loginUrl: string }) {
   return (
-    <div id="top" className="min-h-screen bg-zinc-900 text-white">
+    <div className="min-h-screen bg-zinc-900 text-white">
       {/* Navigation bar */}
       <nav className="sticky top-0 z-30 border-b border-zinc-800/80 bg-zinc-900/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <a href="#top" className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <span className="text-lg">🎵</span>
             <span className="text-lg font-bold tracking-tight">Spoti-List</span>
-          </a>
+          </div>
           <div className="flex items-center gap-4 sm:gap-6">
             <a
               href="#features"
@@ -104,7 +104,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
             </h1>
             <p className="mx-auto mt-5 max-w-md text-base text-zinc-400 lg:mx-0">
               Spoti-List turns your Spotify listening history into a personal
-              dashboard — discover your patterns, obsessions and how your taste
+              dashboard discover your patterns, obsessions and how your taste
               stacks up against the charts.
             </p>
             <div className="mt-8 flex justify-center lg:justify-start">
@@ -155,7 +155,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       </section>
 
       {/* Feature band */}
-      <section id="features" className="scroll-mt-20 bg-zinc-950 py-20">
+      <section id="features" className="bg-zinc-950 py-20">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
             Everything your music says about you
@@ -182,7 +182,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="scroll-mt-20 py-20">
+      <section id="how-it-works" className="py-20">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
             How it works
@@ -231,7 +231,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
 
       {/* Footer */}
       <footer className="border-t border-zinc-800 py-8 text-center text-xs text-zinc-600">
-        Spoti-List · Built with the Spotify Web API
+        Spoti-List · Built with the Spotify Web API · 2026
       </footer>
     </div>
   );
