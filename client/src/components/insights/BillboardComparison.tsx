@@ -214,7 +214,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
           <li className="flex items-start gap-2.5">
             <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500" />
             <span>
-              <span className="font-medium text-zinc-200">Pop</span> is Spotify's 0–100 popularity score, weighted by stream count and recency.
+              <span className="font-medium text-zinc-200">Popularity</span> is Spotify's 0–100 score (based on streams and recency), shown for both your artists and Billboard's.
             </span>
           </li>
           <li className="flex items-start gap-2.5">
@@ -227,9 +227,9 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
             <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500" />
             <span>
               {popularityDiff > 0
-                ? `Your average track popularity (${userAvgPopularity}) is ${popularityDiff} points above Billboard's (${billboard.averagePopularity}) — your taste skews mainstream.`
+                ? `Your average track popularity (${userAvgPopularity}) is ${popularityDiff} points above Billboard's (${billboard.averagePopularity}), your taste skews mainstream.`
                 : popularityDiff < 0
-                ? `Your average track popularity (${userAvgPopularity}) is ${Math.abs(popularityDiff)} points below Billboard's (${billboard.averagePopularity}) — you're into the deeper cuts.`
+                ? `Your average track popularity (${userAvgPopularity}) is ${Math.abs(popularityDiff)} points below Billboard's (${billboard.averagePopularity}), you're into the deeper cuts.`
                 : `Your average track popularity (${userAvgPopularity}) matches Billboard's exactly.`}
             </span>
           </li>
