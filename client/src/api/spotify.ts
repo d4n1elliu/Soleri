@@ -3,7 +3,7 @@ import type {
   SpotifyTopArtist,
   RecentPlay,
   BillboardData,
-} from '../types/spotify';
+} from '../types';
 
 export async function exchangeCodeForToken(code: string): Promise<string | null> {
   const res = await fetch(`/api/authenticate?code=${code}`);

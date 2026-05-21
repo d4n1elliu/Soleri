@@ -1,4 +1,4 @@
-import type { RecentPlay } from '../types/spotify';
+import type { RecentPlay } from '../types';
 
 // An artist needs at least this many plays in recent history to count as a phase.
 const MIN_PLAYS = 3;

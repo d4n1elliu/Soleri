@@ -1,5 +1,5 @@
-import type { SpotifyTrack } from '../../types/spotify';
-import { formatTrackLength } from '../../lib/format';
+import type { SpotifyTrack } from '../../types';
+import { formatTrackLength } from '../../lib';
 
 export function TopTrackCard({ track }: { track: SpotifyTrack }) {
   return (

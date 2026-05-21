@@ -1,17 +1,15 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import type { RecentPlay } from '../../types/spotify';
-import { buildMarathons } from '../../lib/marathons';
+import type { RecentPlay } from '../../types';
 import {
+  buildMarathons,
   formatDuration,
   formatWeekdayDate,
   formatClockTime,
-} from '../../lib/format';
-import {
   SPOTIFY_GREEN,
   NEUTRAL_FILL,
   TOOLTIP_CONTENT_STYLE,
   TOOLTIP_LABEL_STYLE,
-} from '../../lib/theme';
+} from '../../lib';
 
 export function ListeningMarathons({ plays }: { plays: RecentPlay[] }) {
   const marathons = buildMarathons(plays);

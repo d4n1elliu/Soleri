@@ -1,6 +1,5 @@
-import type { RecentPlay, SpotifyTopArtist } from '../../types/spotify';
-import { buildObsessionPhases } from '../../lib/obsession';
-import { formatShortDate } from '../../lib/format';
+import type { RecentPlay, SpotifyTopArtist } from '../../types';
+import { buildObsessionPhases, formatShortDate } from '../../lib';
 
 export function ArtistObsessionPhases({
   plays,

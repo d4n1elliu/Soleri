@@ -4,7 +4,7 @@ import {
   SPOTIFY_GREEN,
   TOOLTIP_CONTENT_STYLE,
   TOOLTIP_LABEL_STYLE,
-} from '../../lib/theme';
+} from '../../lib';
 
 export function GenrePieChart({ genres }: { genres: { genre: string; count: number }[] }) {
   if (genres.length === 0) {
