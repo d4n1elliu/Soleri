@@ -31,7 +31,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-zinc-900 px-6 pb-16 pt-12 text-white">
       <header className="mb-12 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">Spoti-List</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Soleri</h1>
         <p className="mt-2 text-sm text-zinc-400">Your Personal Spotify Analytics Dashboard</p>
       </header>
       <Dashboard
