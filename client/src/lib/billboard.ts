@@ -11,7 +11,7 @@ export interface ComparisonRow {
 export function buildComparisonRows(
   topArtists: SpotifyTopArtist[],
   billboardArtists: BillboardArtist[],
-  limit = 15,
+  limit = 50,
 ): ComparisonRow[] {
   const billboardNameSet = new Set(billboardArtists.map((a) => a.name.toLowerCase()));
   const userNameSet = new Set(topArtists.map((a) => a.name.toLowerCase()));

@@ -1,15 +1,23 @@
 const express = require('express');
 const router = express.Router();
+const { getChart } = require('billboard-top-100');
 
-// Representative slice of the Billboard Hot 100 / Artist 100, resolved against
-// the live Spotify catalogue. Kept in sync with /api/billboard.js.
-const BILLBOARD_ARTISTS = [
-  'Taylor Swift', 'Drake', 'The Weeknd', 'Bad Bunny', 'Billie Eilish',
-  'Sabrina Carpenter', 'SZA', 'Morgan Wallen', 'Kendrick Lamar', 'Post Malone',
-  'Ariana Grande', 'Olivia Rodrigo', 'Travis Scott', 'Doja Cat', 'Ed Sheeran',
-  'Beyoncé', 'Dua Lipa', 'Chappell Roan', 'Zach Bryan', 'Future',
-  'Lana Del Rey', 'Bruno Mars', 'Tyla', 'Benson Boone',
-];
+/** Promisified wrapper around billboard-top-100's callback API. */
+function fetchHot100() {
+  return new Promise((resolve, reject) => {
+    getChart('hot-100', (err, chart) => {
+      if (err) reject(err);
+      else resolve(chart);
+    });
+  });
+}
+
+/** Extracts the primary artist name, stripping featured artists. */
+function primaryArtist(rawArtist) {
+  return rawArtist
+    .split(/\s+(?:featuring|feat\.?|ft\.?|&|\+|x|with)\s+/i)[0]
+    .trim();
+}
 
 function getToken(req) {
   return req.headers.authorization?.split(' ')[1];
@@ -82,8 +90,22 @@ router.get('/billboard', async (req, res) => {
   if (!token) return res.status(401).json({ error: 'Missing access token' });
 
   try {
+    const chart = await fetchHot100();
+
+    // Deduplicate primary artist names from the live chart
+    const nameSeen = new Set();
+    const artistNames = [];
+    for (const song of chart.songs) {
+      const name = primaryArtist(song.artist);
+      const key = name.toLowerCase();
+      if (!nameSeen.has(key)) {
+        nameSeen.add(key);
+        artistNames.push(name);
+      }
+    }
+
     const resolved = await Promise.all(
-      BILLBOARD_ARTISTS.map(async (name) => {
+      artistNames.map(async (name) => {
         const url =
           'https://api.spotify.com/v1/search?' +
           new URLSearchParams({ q: name, type: 'artist', limit: '1' });
@@ -103,7 +125,16 @@ router.get('/billboard', async (req, res) => {
         };
       }),
     );
-    const artists = resolved.filter(Boolean);
+
+    const resolvedSeen = new Set();
+    const artists = resolved.filter((a) => {
+      if (!a) return false;
+      const key = a.name.toLowerCase();
+      if (resolvedSeen.has(key)) return false;
+      resolvedSeen.add(key);
+      return true;
+    });
+
     if (artists.length === 0) {
       return res.status(502).json({ error: 'Could not resolve Billboard data' });
     }
