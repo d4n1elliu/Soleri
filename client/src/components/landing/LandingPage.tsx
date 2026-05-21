@@ -161,8 +161,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
             Everything your music says about you
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-center text-zinc-400">
-            Six ways Spoti-List turns raw listening data into something you can
-            actually read.
+            Six ways to show your recent listening data. 
           </p>
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((feature) => (
@@ -230,8 +229,36 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-800 py-8 text-center text-xs text-zinc-600">
-        Spoti-List · Built with the Spotify Web API · 2026
+      <footer className="border-t border-zinc-800 px-8 py-5">
+        <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <div className="flex items-center gap-4 text-xs text-zinc-500">
+            <a
+              href="https://developer.spotify.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-zinc-300"
+            >
+              Spotify Web API
+            </a>
+            <span className="text-zinc-700">|</span>
+            <a
+              href="https://github.com/d4n1elliu/Spoti-list"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-zinc-300"
+            >
+              GitHub
+            </a>
+            <span className="text-zinc-700">|</span>
+            <span>© 2025-2026 Spoti-List. All rights reserved.</span>
+          </div>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-1.5 text-xs text-zinc-500 transition-colors hover:text-zinc-300"
+          >
+            Back to top <span className="text-[10px]">▲</span>
+          </button>
+        </div>
       </footer>
     </div>
   );
