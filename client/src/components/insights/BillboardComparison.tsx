@@ -86,7 +86,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
           </p>
           <div />
           <p className="text-right text-xs font-medium uppercase tracking-widest text-zinc-400">
-            Billboard Hot 100
+            US Billboard Hot 100
           </p>
         </div>
 
