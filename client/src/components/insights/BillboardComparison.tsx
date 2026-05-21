@@ -1,11 +1,24 @@
 import type { BillboardData, SpotifyTopArtist, SpotifyTrack } from '../../types';
-import { SPOTIFY_GREEN } from '../../lib';
+import {
+  SPOTIFY_GREEN,
+  buildComparisonRows,
+  computeUserAvgPopularity,
+  countArtistOverlap,
+} from '../../lib';
 
 interface Props {
   billboard: BillboardData | null;
   billboardLoading: boolean;
   topArtists: SpotifyTopArtist[];
   topTracks: SpotifyTrack[];
+}
+
+function ArtistAvatar({ src, alt }: { src: string | null | undefined; alt: string }) {
+  return src ? (
+    <img src={src} alt={alt} className="h-8 w-8 shrink-0 rounded-full object-cover" />
+  ) : (
+    <div className="h-8 w-8 shrink-0 rounded-full bg-zinc-700" />
+  );
 }
 
 export function BillboardComparison({ billboard, billboardLoading, topArtists, topTracks }: Props) {
@@ -31,23 +44,10 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
     );
   }
 
-  const userAvgPopularity =
-    topTracks.length > 0
-      ? Math.round(topTracks.reduce((s, t) => s + t.popularity, 0) / topTracks.length)
-      : 0;
-
-  const billboardNames = new Set(billboard.artists.map((a) => a.name.toLowerCase()));
-  const matchedArtists = topArtists.filter((a) => billboardNames.has(a.name.toLowerCase()));
-  const overlapCount = matchedArtists.length;
-
-  const userGenreSet = new Set(topArtists.flatMap((a) => a.genres));
-  const sharedGenres = billboard.genres
-    .map((g) => g.genre)
-    .filter((g) => userGenreSet.has(g))
-    .slice(0, 8);
-
+  const userAvgPopularity = computeUserAvgPopularity(topTracks);
+  const overlapCount = countArtistOverlap(topArtists, billboard.artists);
+  const rows = buildComparisonRows(topArtists, billboard.artists, 15);
   const popularityDiff = userAvgPopularity - billboard.averagePopularity;
-  const maxBar = Math.max(userAvgPopularity, billboard.averagePopularity, 1);
 
   return (
     <section className="rounded-xl bg-zinc-800 p-6">
@@ -58,7 +58,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
         How your taste stacks up against the Billboard Hot 100
       </p>
 
-      {/* Stat cards */}
+      {/* Summary stat cards */}
       <div className="mb-6 grid grid-cols-3 gap-4">
         <div className="rounded-lg bg-zinc-900 p-4 text-center">
           <p className="text-2xl font-bold text-white">{userAvgPopularity}</p>
@@ -77,90 +77,98 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
         </div>
       </div>
 
-      {/* Popularity bars */}
-      <div className="mb-6 space-y-3">
-        <p className="text-xs font-medium uppercase tracking-widest text-zinc-400">
-          Popularity score
-        </p>
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <span className="w-20 shrink-0 text-right text-xs text-zinc-400">You</span>
-            <div className="flex-1 rounded-full bg-zinc-700 h-2.5">
-              <div
-                className="h-2.5 rounded-full transition-all duration-700"
-                style={{ width: `${(userAvgPopularity / maxBar) * 100}%`, backgroundColor: SPOTIFY_GREEN }}
-              />
-            </div>
-            <span className="w-8 text-xs font-medium text-white">{userAvgPopularity}</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="w-20 shrink-0 text-right text-xs text-zinc-400">Billboard</span>
-            <div className="flex-1 rounded-full bg-zinc-700 h-2.5">
-              <div
-                className="h-2.5 rounded-full transition-all duration-700 bg-zinc-400"
-                style={{ width: `${(billboard.averagePopularity / maxBar) * 100}%` }}
-              />
-            </div>
-            <span className="w-8 text-xs font-medium text-white">{billboard.averagePopularity}</span>
-          </div>
+      {/* Side-by-side table */}
+      <div className="overflow-x-auto">
+        {/* Column headers */}
+        <div className="mb-2 grid grid-cols-[1fr_1px_1fr] gap-0">
+          <p className="text-xs font-medium uppercase tracking-widest text-zinc-400">
+            Your Top Artists
+          </p>
+          <div />
+          <p className="text-right text-xs font-medium uppercase tracking-widest text-zinc-400">
+            Billboard Hot 100
+          </p>
         </div>
-        <p className="text-xs text-zinc-500">
-          {popularityDiff > 0
-            ? `Your tracks run ${popularityDiff} points above the Billboard average.`
-            : popularityDiff < 0
-              ? `Your tracks run ${Math.abs(popularityDiff)} points below the Billboard average — you're into deeper cuts.`
-              : 'Your popularity score matches the Billboard average exactly.'}
-        </p>
+
+        {/* Divider */}
+        <div className="mb-1 h-px bg-zinc-700" />
+
+        {/* Rows */}
+        <div className="divide-y divide-zinc-700/50">
+          {rows.map((row) => {
+            const highlighted = row.userIsOnBillboard || row.billboardIsInUserTop;
+            return (
+              <div
+                key={row.rank}
+                className={`grid grid-cols-[1fr_1px_1fr] items-center gap-0 py-2 ${
+                  highlighted ? 'bg-green-950/20' : ''
+                }`}
+              >
+                {/* User side */}
+                <div className="flex items-center gap-2 pr-4">
+                  <span className="w-5 shrink-0 text-xs text-zinc-600">{row.rank}</span>
+                  <ArtistAvatar
+                    src={row.userArtist?.images?.[row.userArtist.images.length - 1]?.url}
+                    alt={row.userArtist?.name ?? ''}
+                  />
+                  <span className="min-w-0 flex-1 truncate text-sm text-white">
+                    {row.userArtist?.name ?? <span className="text-zinc-600">—</span>}
+                  </span>
+                  <span className="shrink-0 text-xs text-zinc-400">
+                    {row.userArtist?.popularity ?? ''}
+                  </span>
+                  {row.userIsOnBillboard && (
+                    <span
+                      className="ml-1 shrink-0 text-[10px] font-bold"
+                      style={{ color: SPOTIFY_GREEN }}
+                      title="This artist is on Billboard"
+                    >
+                      ✓
+                    </span>
+                  )}
+                </div>
+
+                {/* Centre divider */}
+                <div className="self-stretch bg-zinc-700" />
+
+                {/* Billboard side */}
+                <div className="flex items-center gap-2 pl-4">
+                  {row.billboardIsInUserTop && (
+                    <span
+                      className="mr-1 shrink-0 text-[10px] font-bold"
+                      style={{ color: SPOTIFY_GREEN }}
+                      title="You listen to this artist"
+                    >
+                      ✓
+                    </span>
+                  )}
+                  <span className="shrink-0 text-xs text-zinc-400">
+                    {row.billboardArtist?.popularity ?? ''}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-right text-sm text-white">
+                    {row.billboardArtist?.name ?? <span className="text-zinc-600">—</span>}
+                  </span>
+                  <ArtistAvatar
+                    src={row.billboardArtist?.image}
+                    alt={row.billboardArtist?.name ?? ''}
+                  />
+                  <span className="w-5 shrink-0 text-right text-xs text-zinc-600">{row.rank}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Matched artists */}
-      {matchedArtists.length > 0 && (
-        <div className="mb-6">
-          <p className="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-400">
-            Billboard artists you listen to
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {matchedArtists.map((artist) => (
-              <a
-                key={artist.id}
-                href={artist.external_urls.spotify}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-full bg-zinc-700 py-1.5 pl-1.5 pr-3 transition-colors hover:bg-zinc-600"
-              >
-                {artist.images[0] && (
-                  <img
-                    src={artist.images[artist.images.length - 1].url}
-                    alt={artist.name}
-                    className="h-6 w-6 rounded-full object-cover"
-                  />
-                )}
-                <span className="text-xs font-medium text-white">{artist.name}</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Shared genres */}
-      {sharedGenres.length > 0 && (
-        <div>
-          <p className="mb-3 text-xs font-medium uppercase tracking-widest text-zinc-400">
-            Genres you share with Billboard
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {sharedGenres.map((genre) => (
-              <span
-                key={genre}
-                className="rounded-full px-3 py-1 text-xs font-medium"
-                style={{ backgroundColor: 'rgba(29,185,84,0.15)', color: SPOTIFY_GREEN }}
-              >
-                {genre}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Footer note */}
+      <p className="mt-4 text-xs text-zinc-500">
+        {popularityDiff > 0
+          ? `Your taste runs ${popularityDiff} pts above the Billboard average.`
+          : popularityDiff < 0
+            ? `Your taste runs ${Math.abs(popularityDiff)} pts below the Billboard average — you're into deeper cuts.`
+            : 'Your popularity score matches the Billboard average exactly.'}
+        {overlapCount > 0 && ` ✓ marks artists you share with Billboard.`}
+      </p>
     </section>
   );
 }
