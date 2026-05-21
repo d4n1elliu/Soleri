@@ -220,7 +220,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
           <li className="flex items-start gap-2.5">
             <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500" />
             <span>
-              <span className="font-bold" style={{ color: SPOTIFY_GREEN }}>✓</span> green check means the artist appears on both lists.
+              <span className="font-bold" style={{ color: SPOTIFY_GREEN }}>✓</span> green tick means the artist appears on both lists.
             </span>
           </li>
           <li className="flex items-start gap-2.5">
