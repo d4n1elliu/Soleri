@@ -203,12 +203,12 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
 
       {/* Legend and explanation */}
       <div className="mt-5 rounded-lg bg-zinc-900 p-5">
-        <p className="mb-3 text-sm font-semibold text-zinc-200">How to read this table</p>
+        <p className="mb-3 text-sm font-semibold text-zinc-200">Billboard Top 100 Information</p>
         <ul className="space-y-2.5 text-sm text-zinc-400">
           <li className="flex items-start gap-2.5">
             <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500" />
             <span>
-              <span className="font-medium text-zinc-200">Rows are independent.</span> Your #1 sits next to Billboard's #1, your #2 next to Billboard's #2, and so on — same rank, different artists.
+              <span className="font-medium text-zinc-200">Rows are independent.</span> Your #1 sits next to Billboard's #1, then #2 next to Billboard's #2 and so on. Same rank but different artists.
             </span>
           </li>
           <li className="flex items-start gap-2.5">
@@ -220,7 +220,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
           <li className="flex items-start gap-2.5">
             <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500" />
             <span>
-              A <span className="font-bold" style={{ color: SPOTIFY_GREEN }}>✓</span> green check means the artist appears on both lists. Those rows are highlighted green.
+              <span className="font-bold" style={{ color: SPOTIFY_GREEN }}>✓</span> green check means the artist appears on both lists.
             </span>
           </li>
           <li className="flex items-start gap-2.5">
