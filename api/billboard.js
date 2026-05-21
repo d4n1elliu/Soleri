@@ -1,32 +1,24 @@
-// A representative slice of the Billboard Hot 100 / Artist 100. These names are
-// resolved against the Spotify catalogue at request time so the comparison
-// always uses live popularity, follower and genre data.
-const BILLBOARD_ARTISTS = [
-  'Taylor Swift',
-  'Drake',
-  'The Weeknd',
-  'Bad Bunny',
-  'Billie Eilish',
-  'Sabrina Carpenter',
-  'SZA',
-  'Morgan Wallen',
-  'Kendrick Lamar',
-  'Post Malone',
-  'Ariana Grande',
-  'Olivia Rodrigo',
-  'Travis Scott',
-  'Doja Cat',
-  'Ed Sheeran',
-  'Beyoncé',
-  'Dua Lipa',
-  'Chappell Roan',
-  'Zach Bryan',
-  'Future',
-  'Lana Del Rey',
-  'Bruno Mars',
-  'Tyla',
-  'Benson Boone',
-];
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const { getChart } = require('billboard-top-100');
+
+/** Promisified wrapper around billboard-top-100's callback API. */
+function fetchHot100() {
+  return new Promise((resolve, reject) => {
+    getChart('hot-100', (err, chart) => {
+      if (err) reject(err);
+      else resolve(chart);
+    });
+  });
+}
+
+/** Extracts the primary artist name, stripping featured artists. */
+function primaryArtist(rawArtist) {
+  return rawArtist
+    .split(/\s+(?:featuring|feat\.?|ft\.?|&|\+|x|with)\s+/i)[0]
+    .trim();
+}
 
 async function lookupArtist(name, token) {
   const url =
@@ -56,10 +48,33 @@ export default async function handler(req, res) {
   if (!token) return res.status(401).json({ error: 'Missing access token' });
 
   try {
+    const chart = await fetchHot100();
+
+    // Deduplicate primary artist names from the chart
+    const seen = new Set();
+    const artistNames = [];
+    for (const song of chart.songs) {
+      const name = primaryArtist(song.artist);
+      const key = name.toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        artistNames.push(name);
+      }
+    }
+
     const resolved = await Promise.all(
-      BILLBOARD_ARTISTS.map((name) => lookupArtist(name, token)),
+      artistNames.map((name) => lookupArtist(name, token)),
     );
-    const artists = resolved.filter(Boolean);
+
+    // Deduplicate by resolved Spotify name
+    const resolvedSeen = new Set();
+    const artists = resolved.filter((a) => {
+      if (!a) return false;
+      const key = a.name.toLowerCase();
+      if (resolvedSeen.has(key)) return false;
+      resolvedSeen.add(key);
+      return true;
+    });
 
     if (artists.length === 0) {
       return res.status(502).json({ error: 'Could not resolve Billboard data' });
