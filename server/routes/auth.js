@@ -8,44 +8,56 @@ function primaryArtist(rawArtist) {
     .trim();
 }
 
+function htmlDecode(str) {
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&apos;/g, "'");
+}
+
 async function fetchHot100Artists() {
-  const res = await fetch('https://www.billboard.com/charts/hot-100/', {
-    headers: {
-      'User-Agent':
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Accept-Language': 'en-US,en;q=0.9',
-    },
-  });
-  if (!res.ok) throw new Error(`Billboard responded ${res.status}`);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
 
-  const html = await res.text();
-  const m = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
-  if (!m) throw new Error('__NEXT_DATA__ not found on Billboard page');
+  try {
+    const res = await fetch('https://www.billboard.com/charts/hot-100/', {
+      signal: controller.signal,
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9',
+        Accept: 'text/html',
+      },
+    });
+    if (!res.ok) throw new Error(`Billboard responded ${res.status}`);
 
-  const { props } = JSON.parse(m[1]);
-  const entries =
-    props?.pageProps?.data?.chartData?.entries ??
-    props?.pageProps?.chartData?.entries ??
-    [];
-  if (!entries.length) throw new Error('No chart entries found in __NEXT_DATA__');
+    const html = await res.text();
 
-  const seen = new Set();
-  const names = [];
-  for (const e of entries) {
-    const raw =
-      e?.chartItem?.artistName ??
-      e?.artist ??
-      e?.artists?.[0]?.name ??
-      '';
-    if (!raw) continue;
-    const primary = primaryArtist(raw);
-    const key = primary.toLowerCase();
-    if (primary && !seen.has(key)) {
-      seen.add(key);
-      names.push(primary);
+    // Split page into per-row blocks then extract the artist link from each
+    const rows = html.split('o-chart-results-list-row-container');
+    const seen = new Set();
+    const names = [];
+
+    for (const row of rows) {
+      const m = row.match(/<span[^>]*c-label[^>]*>[\s\S]*?<a[^>]*>([^<]+)<\/a>/);
+      if (!m) continue;
+      const raw = htmlDecode(m[1].trim());
+      const primary = primaryArtist(raw);
+      const key = primary.toLowerCase();
+      if (primary && !seen.has(key)) {
+        seen.add(key);
+        names.push(primary);
+      }
     }
+
+    if (!names.length) throw new Error('No artists parsed from Billboard page');
+    return names;
+  } finally {
+    clearTimeout(timeout);
   }
-  return names;
 }
 
 function getToken(req) {
