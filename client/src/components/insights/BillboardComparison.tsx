@@ -122,13 +122,26 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
                 {/* User side */}
                 <div className="flex items-center gap-2 pr-4">
                   <span className="w-5 shrink-0 text-xs text-zinc-600">{row.rank}</span>
-                  <ArtistAvatar
-                    src={row.userArtist?.images?.[row.userArtist.images.length - 1]?.url}
-                    alt={row.userArtist?.name ?? ''}
-                  />
-                  <span className="min-w-0 flex-1 truncate text-sm text-white">
+                  <a
+                    href={row.userArtist?.external_urls?.spotify}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0"
+                    tabIndex={row.userArtist ? 0 : -1}
+                  >
+                    <ArtistAvatar
+                      src={row.userArtist?.images?.[row.userArtist.images.length - 1]?.url}
+                      alt={row.userArtist?.name ?? ''}
+                    />
+                  </a>
+                  <a
+                    href={row.userArtist?.external_urls?.spotify}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="min-w-0 flex-1 truncate text-sm text-white hover:underline"
+                  >
                     {row.userArtist?.name ?? <span className="text-zinc-600">—</span>}
-                  </span>
+                  </a>
                   <span className="shrink-0 text-xs text-zinc-400">
                     {row.userArtist?.popularity ?? ''}
                   </span>
@@ -160,13 +173,26 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
                   <span className="shrink-0 text-xs text-zinc-400">
                     {row.billboardArtist?.popularity ?? ''}
                   </span>
-                  <span className="min-w-0 flex-1 truncate text-right text-sm text-white">
+                  <a
+                    href={row.billboardArtist?.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="min-w-0 flex-1 truncate text-right text-sm text-white hover:underline"
+                  >
                     {row.billboardArtist?.name ?? <span className="text-zinc-600">—</span>}
-                  </span>
-                  <ArtistAvatar
-                    src={row.billboardArtist?.image}
-                    alt={row.billboardArtist?.name ?? ''}
-                  />
+                  </a>
+                  <a
+                    href={row.billboardArtist?.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0"
+                    tabIndex={row.billboardArtist ? 0 : -1}
+                  >
+                    <ArtistAvatar
+                      src={row.billboardArtist?.image}
+                      alt={row.billboardArtist?.name ?? ''}
+                    />
+                  </a>
                   <span className="w-5 shrink-0 text-right text-xs text-zinc-600">{row.rank}</span>
                 </div>
               </div>

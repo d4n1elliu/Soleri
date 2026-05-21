@@ -80,6 +80,7 @@ async function lookupArtist(name, token) {
     followers: artist.followers?.total ?? 0,
     genres: artist.genres ?? [],
     image: artist.images[artist.images.length - 1].url,
+    url: artist.external_urls?.spotify ?? `https://open.spotify.com/artist/${artist.id}`,
   };
 }
 

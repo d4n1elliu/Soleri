@@ -40,6 +40,7 @@ export interface BillboardArtist {
   followers: number;
   genres: string[];
   image: string | null;
+  url: string;
 }
 
 /** Aggregated Billboard benchmark data returned by /api/billboard. */
