@@ -115,8 +115,8 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
             return (
               <div
                 key={row.rank}
-                className={`grid grid-cols-[1fr_1px_1fr] items-center gap-0 py-2 ${
-                  highlighted ? 'bg-green-950/20' : ''
+                className={`group grid grid-cols-[1fr_1px_1fr] items-center gap-0 py-2 transition-colors ${
+                  highlighted ? 'bg-green-950/20 hover:bg-green-950/40' : 'hover:bg-zinc-700/30'
                 }`}
               >
                 {/* User side */}
@@ -138,7 +138,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
                     href={row.userArtist?.external_urls?.spotify}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="min-w-0 flex-1 truncate text-sm text-white hover:underline"
+                    className="min-w-0 flex-1 truncate text-sm text-white"
                   >
                     {row.userArtist?.name ?? <span className="text-zinc-600">—</span>}
                   </a>
@@ -177,7 +177,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
                     href={row.billboardArtist?.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="min-w-0 flex-1 truncate text-right text-sm text-white hover:underline"
+                    className="min-w-0 flex-1 truncate text-right text-sm text-white"
                   >
                     {row.billboardArtist?.name ?? <span className="text-zinc-600">—</span>}
                   </a>
@@ -202,27 +202,36 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
       </div>
 
       {/* Legend and explanation */}
-      <div className="mt-5 space-y-3 rounded-lg bg-zinc-900 p-4 text-xs text-zinc-400">
-        <p className="font-medium text-zinc-300">How to read this table</p>
-        <ul className="space-y-1.5">
-          <li>
-            <span className="text-zinc-300">Rows are independent.</span> Your #1 sits next to Billboard's #1, your #2 next to Billboard's #2 and so on. Same rank but different artists.
-          </li>
-          <li>
-            <span className="text-zinc-300">Pop</span> is Spotify's 0–100 popularity score, weighted by stream count and recency.
-          </li>
-          <li className="flex items-start gap-1.5">
-            <span className="font-bold leading-5" style={{ color: SPOTIFY_GREEN }}>✓</span>
+      <div className="mt-5 rounded-lg bg-zinc-900 p-5">
+        <p className="mb-3 text-sm font-semibold text-zinc-200">How to read this table</p>
+        <ul className="space-y-2.5 text-sm text-zinc-400">
+          <li className="flex items-start gap-2.5">
+            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500" />
             <span>
-              A green check means the artist's on both lists. Highlighted rows share at least one artist with the Billboard chart.
+              <span className="font-medium text-zinc-200">Rows are independent.</span> Your #1 sits next to Billboard's #1, your #2 next to Billboard's #2, and so on — same rank, different artists.
             </span>
           </li>
-          <li>
-            {popularityDiff > 0
-              ? `Your average track popularity (${userAvgPopularity}) is ${popularityDiff} points above Billboard's (${billboard.averagePopularity}), so your taste skews mainstream.`
-              : popularityDiff < 0
-              ? `Your average track popularity (${userAvgPopularity}) is ${Math.abs(popularityDiff)} points below Billboard's (${billboard.averagePopularity}), so you're into the deeper cuts.`
-              : `Your average track popularity (${userAvgPopularity}) matches Billboard's exactly.`}
+          <li className="flex items-start gap-2.5">
+            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500" />
+            <span>
+              <span className="font-medium text-zinc-200">Pop</span> is Spotify's 0–100 popularity score, weighted by stream count and recency.
+            </span>
+          </li>
+          <li className="flex items-start gap-2.5">
+            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500" />
+            <span>
+              A <span className="font-bold" style={{ color: SPOTIFY_GREEN }}>✓</span> green check means the artist appears on both lists. Those rows are highlighted green.
+            </span>
+          </li>
+          <li className="flex items-start gap-2.5">
+            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500" />
+            <span>
+              {popularityDiff > 0
+                ? `Your average track popularity (${userAvgPopularity}) is ${popularityDiff} points above Billboard's (${billboard.averagePopularity}) — your taste skews mainstream.`
+                : popularityDiff < 0
+                ? `Your average track popularity (${userAvgPopularity}) is ${Math.abs(popularityDiff)} points below Billboard's (${billboard.averagePopularity}) — you're into the deeper cuts.`
+                : `Your average track popularity (${userAvgPopularity}) matches Billboard's exactly.`}
+            </span>
           </li>
         </ul>
       </div>
