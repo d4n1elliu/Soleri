@@ -4,12 +4,12 @@ A web application that connects to the Spotify Web API to display and track data
 
 ## Features
 
-- **Genre Breakdown** — Pie chart visualising the top genres based on user's listening history
-- **Listening Clock / Heatmap** — See which hours and days the user listens to the most, revealing the user's "work focus" vs. "wind down" patterns
-- **Discovery Rate Graph** — Weekly breakdown of new artists and tracks that users explored versus replayed favourites
-- **Longest Listening Marathons** — Tracking longest uninterrupted listening sessions ranked by duration
-- **Artist Obsession Phases** — Detects periods where users listens to an artist heavily before stopping completely
-- **Billboard 100 Comparison** — Comparing personal listening metrics against Billboard Top 100 artists
+- **Genre Breakdown**: Pie chart visualising the top genres based on user's listening history
+- **Listening Clock / Heatmap**: See which hours and days the user listens to the most, revealing the user's "work focus" vs. "wind down" patterns
+- **Discovery Rate Graph**: Weekly breakdown of new artists and tracks that users explored versus replayed favourites
+- **Longest Listening Marathons**: Tracking longest uninterrupted listening sessions ranked by duration
+- **Artist Obsession Phases**: Detects periods where users listens to an artist heavily before stopping completely
+- **Billboard 100 Comparison**: Comparing personal listening metrics against Billboard Top 100 artists
 
 ## Tech Stack
 
@@ -27,7 +27,7 @@ A web application that connects to the Spotify Web API to display and track data
 
 ### Prerequisites
 - Node.js v18+
-- A [Spotify Developer](https://developer.spotify.com/dashboard) account with an app registered
+- A [Spotify Developer](https://developer.spotify.com/dashboard) account is required for checking your personal statistics. 
 
 ### Installation
 
