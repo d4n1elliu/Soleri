@@ -175,32 +175,28 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
         </div>
       </div>
 
-      {/* Legend + explainer */}
+      {/* Legend and explanation */}
       <div className="mt-5 space-y-3 rounded-lg bg-zinc-900 p-4 text-xs text-zinc-400">
         <p className="font-medium text-zinc-300">How to read this table</p>
         <ul className="space-y-1.5">
           <li>
-            <span className="text-zinc-300">Rows are independent.</span> Each row shows your
-            #1 artist next to Billboard's #1, your #2 next to Billboard's #2, and so on — they
-            are ranked separately, not matched by name.
+            <span className="text-zinc-300">Rows are independent.</span> Your #1 sits next to Billboard's #1, your #2 next to Billboard's #2 and so on. Same rank but different artists.
           </li>
           <li>
-            <span className="text-zinc-300">Pop</span> is Spotify's popularity score (0–100),
-            based on total streams and how recent they are.
+            <span className="text-zinc-300">Pop</span> is Spotify's 0–100 popularity score, weighted by stream count and recency.
           </li>
-          <li className="flex items-center gap-1.5">
-            <span className="font-bold" style={{ color: SPOTIFY_GREEN }}>✓</span>
+          <li className="flex items-start gap-1.5">
+            <span className="font-bold leading-5" style={{ color: SPOTIFY_GREEN }}>✓</span>
             <span>
-              A green check means that artist appears on <em>both</em> sides — you listen to
-              them and they're on Billboard. Highlighted rows share at least one matched artist.
+              A green check means the artist's on both lists. Highlighted rows share at least one artist with the Billboard chart.
             </span>
           </li>
           <li>
             {popularityDiff > 0
-              ? `Your avg track popularity (${userAvgPopularity}) is ${popularityDiff} pts above the Billboard average (${billboard.averagePopularity}) — your taste skews mainstream.`
+              ? `Your average track popularity (${userAvgPopularity}) is ${popularityDiff} points above Billboard's (${billboard.averagePopularity}), so your taste skews mainstream.`
               : popularityDiff < 0
-                ? `Your avg track popularity (${userAvgPopularity}) is ${Math.abs(popularityDiff)} pts below the Billboard average (${billboard.averagePopularity}) — you're into deeper cuts.`
-                : `Your avg track popularity (${userAvgPopularity}) matches the Billboard average exactly.`}
+              ? `Your average track popularity (${userAvgPopularity}) is ${Math.abs(popularityDiff)} points below Billboard's (${billboard.averagePopularity}), so you're into the deeper cuts.`
+              : `Your average track popularity (${userAvgPopularity}) matches Billboard's exactly.`}
           </li>
         </ul>
       </div>
