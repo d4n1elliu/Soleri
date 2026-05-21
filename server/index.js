@@ -9,7 +9,7 @@ app.use(express.json());
 app.use('/api', apiRoutes);
 
 app.get('/', (_req, res) => {
-  res.send('Spoti-List server is running.');
+  res.send('Soleri server is running.');
 });
 
 app.listen(PORT, () => {
