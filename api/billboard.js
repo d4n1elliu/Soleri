@@ -1,23 +1,48 @@
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-const { getChart } = require('billboard-top-100');
-
-/** Promisified wrapper around billboard-top-100's callback API. */
-function fetchHot100() {
-  return new Promise((resolve, reject) => {
-    getChart('hot-100', (err, chart) => {
-      if (err) reject(err);
-      else resolve(chart);
-    });
-  });
-}
-
 /** Extracts the primary artist name, stripping featured artists. */
 function primaryArtist(rawArtist) {
   return rawArtist
     .split(/\s+(?:featuring|feat\.?|ft\.?|&|\+|x|with)\s+/i)[0]
     .trim();
+}
+
+async function fetchHot100Artists() {
+  const res = await fetch('https://www.billboard.com/charts/hot-100/', {
+    headers: {
+      'User-Agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept-Language': 'en-US,en;q=0.9',
+    },
+  });
+  if (!res.ok) throw new Error(`Billboard responded ${res.status}`);
+
+  const html = await res.text();
+  const m = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+  if (!m) throw new Error('__NEXT_DATA__ not found on Billboard page');
+
+  const { props } = JSON.parse(m[1]);
+  const entries =
+    props?.pageProps?.data?.chartData?.entries ??
+    props?.pageProps?.chartData?.entries ??
+    [];
+  if (!entries.length) throw new Error('No chart entries found in __NEXT_DATA__');
+
+  const seen = new Set();
+  const names = [];
+  for (const e of entries) {
+    const raw =
+      e?.chartItem?.artistName ??
+      e?.artist ??
+      e?.artists?.[0]?.name ??
+      '';
+    if (!raw) continue;
+    const primary = primaryArtist(raw);
+    const key = primary.toLowerCase();
+    if (primary && !seen.has(key)) {
+      seen.add(key);
+      names.push(primary);
+    }
+  }
+  return names;
 }
 
 async function lookupArtist(name, token) {
@@ -48,19 +73,7 @@ export default async function handler(req, res) {
   if (!token) return res.status(401).json({ error: 'Missing access token' });
 
   try {
-    const chart = await fetchHot100();
-
-    // Deduplicate primary artist names from the chart
-    const seen = new Set();
-    const artistNames = [];
-    for (const song of chart.songs) {
-      const name = primaryArtist(song.artist);
-      const key = name.toLowerCase();
-      if (!seen.has(key)) {
-        seen.add(key);
-        artistNames.push(name);
-      }
-    }
+    const artistNames = await fetchHot100Artists();
 
     const resolved = await Promise.all(
       artistNames.map((name) => lookupArtist(name, token)),
