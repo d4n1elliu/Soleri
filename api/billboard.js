@@ -71,12 +71,16 @@ async function lookupArtist(name, token) {
   const artist = data.artists?.items?.[0];
   if (!artist) return null;
 
+  // Discard results with no image — they're almost always wrong Spotify matches
+  if (!artist.images?.length) return null;
+
   return {
     name: artist.name,
     popularity: artist.popularity ?? 0,
     followers: artist.followers?.total ?? 0,
     genres: artist.genres ?? [],
-    image: artist.images?.[artist.images.length - 1]?.url ?? null,
+    image: artist.images[artist.images.length - 1].url,
+    url: artist.external_urls?.spotify ?? `https://open.spotify.com/artist/${artist.id}`,
   };
 }
 
