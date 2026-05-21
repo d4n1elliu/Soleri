@@ -77,6 +77,12 @@ Spoti-list/
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
+## Credits
+
+This project uses the open-source [`billboard-top-100`](https://github.com/darthbatman/billboard-top-100) Node.js API by GitHub user [darthbatman](https://github.com/darthbatman), licensed under the MIT License.
+
+See [NOTICE](./NOTICE) for full third-party license information.
+
 ## License
 
-[MIT](LICENSE)
+This project is licensed under the MIT License, see the [LICENSE](./LICENSE) file for details.
