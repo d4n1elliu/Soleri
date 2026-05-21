@@ -4,7 +4,7 @@ import type {
   SpotifyTopArtist,
   RecentPlay,
   BillboardData,
-} from '../types/spotify';
+} from '../types';
 import {
   exchangeCodeForToken,
   fetchTopTracks,
@@ -13,7 +13,7 @@ import {
   fetchBillboard,
   computePlayCounts,
   computeGenreCounts,
-} from '../api/spotify';
+} from '../api';
 
 interface GenreEntry {
   genre: string;

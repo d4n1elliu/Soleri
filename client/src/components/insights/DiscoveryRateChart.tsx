@@ -9,14 +9,14 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from 'recharts';
-import type { RecentPlay } from '../../types/spotify';
-import { analyseDiscovery } from '../../lib/discovery';
+import type { RecentPlay } from '../../types';
 import {
+  analyseDiscovery,
   SPOTIFY_GREEN,
   NEUTRAL_FILL,
   TOOLTIP_CONTENT_STYLE,
   TOOLTIP_LABEL_STYLE,
-} from '../../lib/theme';
+} from '../../lib';
 
 const DISCOVERY_LINE = '#8b5cf6';
 

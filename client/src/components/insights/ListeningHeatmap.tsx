@@ -1,7 +1,5 @@
-import type { RecentPlay } from '../../types/spotify';
-import { buildHeatmap } from '../../lib/heatmap';
-import { formatHour } from '../../lib/format';
-import { greenWithAlpha } from '../../lib/theme';
+import type { RecentPlay } from '../../types';
+import { buildHeatmap, formatHour, greenWithAlpha } from '../../lib';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const HOUR_LABELS = [0, 3, 6, 9, 12, 15, 18, 21];

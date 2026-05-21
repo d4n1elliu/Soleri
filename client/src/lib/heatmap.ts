@@ -1,4 +1,4 @@
-import type { RecentPlay } from '../types/spotify';
+import type { RecentPlay } from '../types';
 
 /** A 7x24 listening heatmap with derived pattern summaries. */
 export interface HeatmapData {

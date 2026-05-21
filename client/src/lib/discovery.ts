@@ -1,4 +1,4 @@
-import type { RecentPlay } from '../types/spotify';
+import type { RecentPlay } from '../types';
 import { formatShortDate } from './format';
 
 const DAY_MS = 24 * 60 * 60 * 1000;

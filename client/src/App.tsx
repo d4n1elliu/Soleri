@@ -1,7 +1,7 @@
-import { useSpotifyAuth } from './hooks/useSpotifyAuth';
-import { buildSpotifyAuthUrl } from './api/spotify';
-import { LandingPage } from './components/landing/LandingPage';
-import { Dashboard } from './components/dashboard/Dashboard';
+import { useSpotifyAuth } from './hooks';
+import { buildSpotifyAuthUrl } from './api';
+import { LandingPage } from './components/landing';
+import { Dashboard } from './components/dashboard';
 
 export default function App() {
   const {
@@ -12,6 +12,8 @@ export default function App() {
     playCounts,
     genreCounts,
     isLoading,
+    billboard,
+    billboardLoading,
   } = useSpotifyAuth();
 
   if (isLoading) {
@@ -38,6 +40,8 @@ export default function App() {
         recentPlays={recentPlays}
         playCounts={playCounts}
         genreCounts={genreCounts}
+        billboard={billboard}
+        billboardLoading={billboardLoading}
       />
     </div>
   );

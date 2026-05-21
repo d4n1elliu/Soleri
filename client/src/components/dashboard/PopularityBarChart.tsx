@@ -1,11 +1,11 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import type { SpotifyTrack } from '../../types/spotify';
+import type { SpotifyTrack } from '../../types';
 import {
   SPOTIFY_GREEN,
   NEUTRAL_FILL,
   TOOLTIP_CONTENT_STYLE,
   TOOLTIP_LABEL_STYLE,
-} from '../../lib/theme';
+} from '../../lib';
 
 export function PopularityBarChart({ tracks }: { tracks: SpotifyTrack[] }) {
   const data = tracks.map((track) => ({

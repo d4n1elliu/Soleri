@@ -2,16 +2,20 @@ import type {
   SpotifyTrack,
   SpotifyTopArtist,
   RecentPlay,
-} from '../../types/spotify';
+  BillboardData,
+} from '../../types';
 import { TopTrackCard } from './TopTrackCard';
 import { TrackList } from './TrackList';
 import { PopularityBarChart } from './PopularityBarChart';
 import { GenrePieChart } from './GenrePieChart';
 import { RecentPlayCount } from './RecentPlayCount';
-import { ListeningHeatmap } from '../insights/ListeningHeatmap';
-import { ListeningMarathons } from '../insights/ListeningMarathons';
-import { ArtistObsessionPhases } from '../insights/ArtistObsessionPhases';
-import { DiscoveryRateChart } from '../insights/DiscoveryRateChart';
+import {
+  ListeningHeatmap,
+  ListeningMarathons,
+  ArtistObsessionPhases,
+  DiscoveryRateChart,
+  BillboardComparison,
+} from '../insights';
 
 interface DashboardProps {
   topTracks: SpotifyTrack[];
@@ -19,6 +23,8 @@ interface DashboardProps {
   recentPlays: RecentPlay[];
   playCounts: Record<string, number>;
   genreCounts: { genre: string; count: number }[];
+  billboard: BillboardData | null;
+  billboardLoading: boolean;
 }
 
 /** The signed-in analytics dashboard: summary widgets plus listening insights. */
@@ -28,6 +34,8 @@ export function Dashboard({
   recentPlays,
   playCounts,
   genreCounts,
+  billboard,
+  billboardLoading,
 }: DashboardProps) {
   return (
     <div className="mx-auto max-w-6xl space-y-8">
@@ -58,6 +66,13 @@ export function Dashboard({
       <ArtistObsessionPhases plays={recentPlays} topArtists={topArtists} />
 
       <DiscoveryRateChart plays={recentPlays} />
+
+      <BillboardComparison
+        billboard={billboard}
+        billboardLoading={billboardLoading}
+        topArtists={topArtists}
+        topTracks={topTracks}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import type { RecentPlay } from '../types/spotify';
+import type { RecentPlay } from '../types';
 
 // Plays within this gap of the previous track ending still count as the same
 // uninterrupted session.
