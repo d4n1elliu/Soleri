@@ -1,3 +1,4 @@
+export * from './billboard';
 export * from './discovery';
 export * from './format';
 export * from './heatmap';
