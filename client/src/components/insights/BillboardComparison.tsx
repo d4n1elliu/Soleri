@@ -79,7 +79,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
 
       {/* Side-by-side table */}
       <div className="overflow-x-auto">
-        {/* Column headers */}
+        {/* Section titles */}
         <div className="mb-2 grid grid-cols-[1fr_1px_1fr] gap-0">
           <p className="text-xs font-medium uppercase tracking-widest text-zinc-400">
             Your Top Artists
@@ -90,8 +90,23 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
           </p>
         </div>
 
+        {/* Column sub-headers — label the numbers */}
+        <div className="grid grid-cols-[1fr_1px_1fr] gap-0">
+          <div className="flex items-center justify-end pr-4">
+            <span className="rounded bg-zinc-700 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-widest text-zinc-400">
+              Spotify popularity (/100)
+            </span>
+          </div>
+          <div />
+          <div className="flex items-center justify-start pl-4">
+            <span className="rounded bg-zinc-700 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-widest text-zinc-400">
+              Spotify popularity (/100)
+            </span>
+          </div>
+        </div>
+
         {/* Divider */}
-        <div className="mb-1 h-px bg-zinc-700" />
+        <div className="my-2 h-px bg-zinc-700" />
 
         {/* Rows */}
         <div className="divide-y divide-zinc-700/50">
@@ -160,15 +175,35 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
         </div>
       </div>
 
-      {/* Footer note */}
-      <p className="mt-4 text-xs text-zinc-500">
-        {popularityDiff > 0
-          ? `Your taste runs ${popularityDiff} pts above the Billboard average.`
-          : popularityDiff < 0
-            ? `Your taste runs ${Math.abs(popularityDiff)} pts below the Billboard average — you're into deeper cuts.`
-            : 'Your popularity score matches the Billboard average exactly.'}
-        {overlapCount > 0 && ` ✓ marks artists you share with Billboard.`}
-      </p>
+      {/* Legend + explainer */}
+      <div className="mt-5 space-y-3 rounded-lg bg-zinc-900 p-4 text-xs text-zinc-400">
+        <p className="font-medium text-zinc-300">How to read this table</p>
+        <ul className="space-y-1.5">
+          <li>
+            <span className="text-zinc-300">Rows are independent.</span> Each row shows your
+            #1 artist next to Billboard's #1, your #2 next to Billboard's #2, and so on — they
+            are ranked separately, not matched by name.
+          </li>
+          <li>
+            <span className="text-zinc-300">Pop</span> is Spotify's popularity score (0–100),
+            based on total streams and how recent they are.
+          </li>
+          <li className="flex items-center gap-1.5">
+            <span className="font-bold" style={{ color: SPOTIFY_GREEN }}>✓</span>
+            <span>
+              A green check means that artist appears on <em>both</em> sides — you listen to
+              them and they're on Billboard. Highlighted rows share at least one matched artist.
+            </span>
+          </li>
+          <li>
+            {popularityDiff > 0
+              ? `Your avg track popularity (${userAvgPopularity}) is ${popularityDiff} pts above the Billboard average (${billboard.averagePopularity}) — your taste skews mainstream.`
+              : popularityDiff < 0
+                ? `Your avg track popularity (${userAvgPopularity}) is ${Math.abs(popularityDiff)} pts below the Billboard average (${billboard.averagePopularity}) — you're into deeper cuts.`
+                : `Your avg track popularity (${userAvgPopularity}) matches the Billboard average exactly.`}
+          </li>
+        </ul>
+      </div>
     </section>
   );
 }
