@@ -58,7 +58,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       <nav className="sticky top-0 z-30 border-b border-zinc-800/80 bg-zinc-900/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
-            <img src="/Soleri_logo.svg" alt="Soleri logo" className="h-8 w-8 rounded-md" />
+            <img src="/Soleri.svg" alt="Soleri logo" className="h-8 w-8 rounded-md" />
             <span className="text-lg font-bold tracking-tight">Soleri</span>
           </div>
           <div className="flex items-center gap-4 sm:gap-6">
