@@ -29,8 +29,8 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900 px-6 pb-16 pt-12 text-white">
-      <header className="mb-12 text-center">
+    <div className="min-h-screen bg-zinc-900 px-3 pb-16 pt-6 text-white sm:px-6 sm:pt-12">
+      <header className="mb-8 text-center sm:mb-12">
         <h1 className="text-3xl font-bold tracking-tight">Soleri</h1>
         <p className="mt-2 text-sm text-zinc-400">Your Personal Spotify Analytics Dashboard</p>
       </header>
