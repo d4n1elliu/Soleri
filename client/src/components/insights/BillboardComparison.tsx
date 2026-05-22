@@ -117,12 +117,12 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
             return (
               <div
                 key={row.rank}
-                className={`group grid grid-cols-[1fr_1px_1fr] items-center gap-0 py-2 transition-colors ${
+                className={`group grid grid-cols-[1fr_1px_1fr] items-stretch gap-0 transition-colors ${
                   highlighted ? 'bg-green-950/20 hover:bg-green-950/40' : 'hover:bg-zinc-700/30'
                 }`}
               >
                 {/* User side */}
-                <div className="flex items-center gap-2 pr-4">
+                <div className="flex items-center gap-2 py-2 pr-4">
                   <span className="w-5 shrink-0 text-xs text-zinc-600">{row.rank}</span>
                   <a
                     href={row.userArtist?.external_urls?.spotify}
@@ -159,10 +159,10 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
                 </div>
 
                 {/* Centre divider */}
-                <div className="self-stretch bg-zinc-700" />
+                <div className="bg-zinc-700" />
 
                 {/* Billboard side */}
-                <div className="flex items-center gap-2 pl-4">
+                <div className="flex items-center gap-2 py-2 pl-4">
                   {row.billboardIsInUserTop && (
                     <span
                       className="mr-1 shrink-0 text-[10px] font-bold"
