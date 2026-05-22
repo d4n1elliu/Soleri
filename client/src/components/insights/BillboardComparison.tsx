@@ -108,7 +108,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
         </div>
 
         {/* Divider */}
-        <div className="my-2 h-px bg-zinc-700" />
+        <div className="mt-2 h-px bg-zinc-700" />
 
         {/* Rows */}
         <div className="divide-y divide-zinc-700/50">
@@ -117,7 +117,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
             return (
               <div
                 key={row.rank}
-                className={`group grid grid-cols-[1fr_1px_1fr] items-stretch gap-0 transition-colors ${
+                className={`group grid grid-cols-[1fr_1px_1fr] items-stretch gap-0 min-h-[44px] transition-colors ${
                   highlighted ? 'bg-green-950/20 hover:bg-green-950/40' : 'hover:bg-zinc-700/30'
                 }`}
               >
@@ -159,7 +159,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
                 </div>
 
                 {/* Centre divider */}
-                <div className="bg-zinc-700" />
+                <div className="h-full min-h-[44px] bg-zinc-600" />
 
                 {/* Billboard side */}
                 <div className="flex items-center gap-2 py-2 pl-4">
