@@ -50,7 +50,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
   const popularityDiff = userAvgPopularity - billboard.averagePopularity;
 
   return (
-    <section className="rounded-xl bg-zinc-800 p-6">
+    <section className="rounded-xl bg-zinc-800 p-3 sm:p-6">
       <h3 className="mb-1 text-sm font-medium uppercase tracking-widest text-zinc-400">
         Billboard Comparison
       </h3>
@@ -59,7 +59,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
       </p>
 
       {/* Summary stat cards */}
-      <div className="mb-6 grid grid-cols-3 gap-4">
+      <div className="mb-6 grid grid-cols-3 gap-2 sm:gap-4">
         <div className="rounded-lg bg-zinc-900 p-4 text-center">
           <p className="text-2xl font-bold text-white">{userAvgPopularity}</p>
           <p className="mt-1 text-xs text-zinc-500">Your avg popularity</p>

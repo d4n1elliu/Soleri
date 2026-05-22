@@ -42,7 +42,7 @@ export function Dashboard({
       <div className="grid gap-6 md:grid-cols-3">
         {topTracks[0] && <TopTrackCard track={topTracks[0]} />}
         <div className="relative md:col-span-1">
-          <div className="hide-scrollbar absolute inset-0 overflow-y-auto">
+          <div className="hide-scrollbar h-[420px] overflow-y-auto md:absolute md:inset-0 md:h-auto">
             <TrackList tracks={topTracks.slice(1, 20)} />
           </div>
         </div>

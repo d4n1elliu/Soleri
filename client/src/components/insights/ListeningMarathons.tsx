@@ -16,7 +16,7 @@ export function ListeningMarathons({ plays }: { plays: RecentPlay[] }) {
 
   if (marathons.length === 0) {
     return (
-      <section className="rounded-xl bg-zinc-800 p-6">
+      <section className="rounded-xl bg-zinc-800 p-3 sm:p-6">
         <h3 className="mb-4 text-sm font-medium uppercase tracking-widest text-zinc-400">
           Listening Marathons
         </h3>
@@ -33,7 +33,7 @@ export function ListeningMarathons({ plays }: { plays: RecentPlay[] }) {
   }));
 
   return (
-    <section className="rounded-xl bg-zinc-800 p-6">
+    <section className="rounded-xl bg-zinc-800 p-3 sm:p-6">
       <h3 className="mb-1 text-sm font-medium uppercase tracking-widest text-zinc-400">
         Listening Marathons
       </h3>

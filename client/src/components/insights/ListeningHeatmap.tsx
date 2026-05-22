@@ -25,7 +25,7 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
   const pct = (value: number) => Math.round((value / total) * 100);
 
   return (
-    <section className="rounded-xl bg-zinc-800 p-6">
+    <section className="rounded-xl bg-zinc-800 p-3 sm:p-6">
       <h3 className="mb-1 text-sm font-medium uppercase tracking-widest text-zinc-400">
         Listening Clock
       </h3>
@@ -34,7 +34,7 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
       </p>
 
       <div className="overflow-x-auto">
-        <div className="min-w-[520px]">
+        <div className="min-w-[440px]">
           {/* Hour axis */}
           <div
             className="grid text-[10px] text-zinc-500"

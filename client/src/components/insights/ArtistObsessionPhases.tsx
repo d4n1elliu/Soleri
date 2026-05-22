@@ -13,7 +13,7 @@ export function ArtistObsessionPhases({
 
   if (phases.length === 0) {
     return (
-      <section className="rounded-xl bg-zinc-800 p-6">
+      <section className="rounded-xl bg-zinc-800 p-3 sm:p-6">
         <h3 className="mb-4 text-sm font-medium uppercase tracking-widest text-zinc-400">
           Artist Obsession Phases
         </h3>
@@ -26,7 +26,7 @@ export function ArtistObsessionPhases({
   }
 
   return (
-    <section className="rounded-xl bg-zinc-800 p-6">
+    <section className="rounded-xl bg-zinc-800 p-3 sm:p-6">
       <h3 className="mb-1 text-sm font-medium uppercase tracking-widest text-zinc-400">
         Artist Obsession Phases
       </h3>
