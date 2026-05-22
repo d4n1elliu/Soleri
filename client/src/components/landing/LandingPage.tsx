@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import justinBieber from '../../assets/JustinBieberCoachella2026.png';
 import rose from '../../assets/rose.jpg';
 import sabrinaCarpenter from '../../assets/sabrina_carpenter.jpg';
@@ -52,6 +53,8 @@ const STEPS = [
 ];
 
 export function LandingPage({ loginUrl }: { loginUrl: string }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-zinc-900 text-white">
       {/* Navigation bar */}
@@ -86,8 +89,38 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
             >
               Get started
             </a>
+            {/* Hamburger — mobile only */}
+            <button
+              onClick={() => setMenuOpen((o) => !o)}
+              className="flex h-8 w-8 flex-col items-center justify-center gap-1.5 sm:hidden"
+              aria-label="Toggle menu"
+            >
+              <span className={`h-0.5 w-5 bg-zinc-300 transition-transform ${menuOpen ? 'translate-y-2 rotate-45' : ''}`} />
+              <span className={`h-0.5 w-5 bg-zinc-300 transition-opacity ${menuOpen ? 'opacity-0' : ''}`} />
+              <span className={`h-0.5 w-5 bg-zinc-300 transition-transform ${menuOpen ? '-translate-y-2 -rotate-45' : ''}`} />
+            </button>
           </div>
         </div>
+
+        {/* Mobile dropdown */}
+        {menuOpen && (
+          <div className="border-t border-zinc-800 bg-zinc-900 px-6 py-3 sm:hidden">
+            <a
+              href="#features"
+              onClick={() => setMenuOpen(false)}
+              className="block py-2.5 text-sm text-zinc-400 transition-colors hover:text-white"
+            >
+              Features
+            </a>
+            <a
+              href="#how-it-works"
+              onClick={() => setMenuOpen(false)}
+              className="block py-2.5 text-sm text-zinc-400 transition-colors hover:text-white"
+            >
+              How it works
+            </a>
+          </div>
+        )}
       </nav>
 
       {/* Hero — text left, collage right */}
