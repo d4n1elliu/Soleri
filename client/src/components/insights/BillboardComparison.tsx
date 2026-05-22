@@ -92,14 +92,14 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
 
         {/* Column sub-headers — label the numbers */}
         <div className="grid grid-cols-[minmax(0,1fr)_1px_minmax(0,1fr)] gap-0">
-          <div className="flex items-center justify-end pr-4">
+          <div className="flex items-center justify-center">
             <span className="whitespace-nowrap rounded bg-zinc-700 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-widest text-zinc-400">
               <span className="hidden sm:inline">Spotify popularity (/100)</span>
               <span className="sm:hidden">Popularity</span>
             </span>
           </div>
           <div />
-          <div className="flex items-center justify-start pl-4">
+          <div className="flex items-center justify-center">
             <span className="whitespace-nowrap rounded bg-zinc-700 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-widest text-zinc-400">
               <span className="hidden sm:inline">Spotify popularity (/100)</span>
               <span className="sm:hidden">Popularity</span>
