@@ -80,7 +80,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
       {/* Side-by-side table */}
       <div className="overflow-x-auto">
         {/* Section titles */}
-        <div className="mb-2 grid grid-cols-[1fr_1px_1fr] gap-0">
+        <div className="mb-2 grid grid-cols-[minmax(0,1fr)_1px_minmax(0,1fr)] gap-0">
           <p className="text-xs font-medium uppercase tracking-widest text-zinc-400">
             Your Top Artists
           </p>
@@ -91,7 +91,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
         </div>
 
         {/* Column sub-headers — label the numbers */}
-        <div className="grid grid-cols-[1fr_1px_1fr] gap-0">
+        <div className="grid grid-cols-[minmax(0,1fr)_1px_minmax(0,1fr)] gap-0">
           <div className="flex items-center justify-end pr-4">
             <span className="whitespace-nowrap rounded bg-zinc-700 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-widest text-zinc-400">
               <span className="hidden sm:inline">Spotify popularity (/100)</span>
@@ -117,7 +117,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
             return (
               <div
                 key={row.rank}
-                className={`group grid grid-cols-[1fr_1px_1fr] items-stretch gap-0 min-h-[44px] transition-colors ${
+                className={`group grid grid-cols-[minmax(0,1fr)_1px_minmax(0,1fr)] items-stretch gap-0 min-h-[44px] transition-colors ${
                   highlighted ? 'bg-green-950/20 hover:bg-green-950/40' : 'hover:bg-zinc-700/30'
                 }`}
               >
