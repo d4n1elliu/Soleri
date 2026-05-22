@@ -1,5 +1,9 @@
 import type { BillboardArtist, SpotifyTopArtist, SpotifyTrack } from '../types';
 
+function billboardNameSet(artists: BillboardArtist[]): Set<string> {
+  return new Set(artists.map((a) => a.name.toLowerCase()));
+}
+
 export interface ComparisonRow {
   rank: number;
   userArtist: SpotifyTopArtist | null;
@@ -13,7 +17,7 @@ export function buildComparisonRows(
   billboardArtists: BillboardArtist[],
   limit = 50,
 ): ComparisonRow[] {
-  const billboardNameSet = new Set(billboardArtists.map((a) => a.name.toLowerCase()));
+  const billboardNames = billboardNameSet(billboardArtists);
   const userNameSet = new Set(topArtists.map((a) => a.name.toLowerCase()));
   const count = Math.min(limit, Math.max(topArtists.length, billboardArtists.length));
 
@@ -24,7 +28,7 @@ export function buildComparisonRows(
       rank: i + 1,
       userArtist,
       billboardArtist,
-      userIsOnBillboard: userArtist !== null && billboardNameSet.has(userArtist.name.toLowerCase()),
+      userIsOnBillboard: userArtist !== null && billboardNames.has(userArtist.name.toLowerCase()),
       billboardIsInUserTop:
         billboardArtist !== null && userNameSet.has(billboardArtist.name.toLowerCase()),
     };
@@ -40,6 +44,6 @@ export function countArtistOverlap(
   topArtists: SpotifyTopArtist[],
   billboardArtists: BillboardArtist[],
 ): number {
-  const billboardNames = new Set(billboardArtists.map((a) => a.name.toLowerCase()));
-  return topArtists.filter((a) => billboardNames.has(a.name.toLowerCase())).length;
+  const names = billboardNameSet(billboardArtists);
+  return topArtists.filter((a) => names.has(a.name.toLowerCase())).length;
 }
