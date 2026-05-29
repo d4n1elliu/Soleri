@@ -1,7 +1,7 @@
 import type { SpotifyTrack } from '../../types';
 import { formatTrackLength } from '../../lib';
 
-// Scrollable list of tracks #2–20, each linking to user's Spotify history
+// Scrollable list of tracks #2–50, each linking to user's Spotify history
 export function TrackList({ tracks }: { tracks: SpotifyTrack[] }) {
   return (
     <div className="space-y-1.5">
