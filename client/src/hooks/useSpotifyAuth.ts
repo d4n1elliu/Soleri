@@ -11,6 +11,7 @@ import {
   fetchTopArtists,
   fetchRecentPlays,
   fetchBillboard,
+  fetchUserProfile,
   computePlayCounts,
   computeGenreCounts,
 } from '../api';
@@ -30,6 +31,7 @@ interface SpotifyAuthState {
   genreCounts: GenreEntry[];
   billboard: BillboardData | null;
   billboardLoading: boolean;
+  spotifyId: string | null;
 }
 
 export function useSpotifyAuth(): SpotifyAuthState {
@@ -40,6 +42,8 @@ export function useSpotifyAuth(): SpotifyAuthState {
   const [recentPlays, setRecentPlays] = useState<RecentPlay[]>([]);
   const [billboard, setBillboard] = useState<BillboardData | null>(null);
   const [billboardLoading, setBillboardLoading] = useState(false);
+  // Share button stays hidden until this comes back, otherwise display null on load
+  const [spotifyId, setSpotifyId] = useState<string | null>(null);
 
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get('code');
@@ -63,6 +67,11 @@ export function useSpotifyAuth(): SpotifyAuthState {
           .then(setBillboard)
           .catch(() => setBillboard(null))
           .finally(() => setBillboardLoading(false));
+
+        // This run separately so it doesn't hold up the main dashboard fetch
+        fetchUserProfile(token).then((profile) => {
+          if (profile) setSpotifyId(profile.id);
+        });
 
         return Promise.all([
           fetchTopTracks(token),
@@ -95,5 +104,6 @@ export function useSpotifyAuth(): SpotifyAuthState {
     genreCounts,
     billboard,
     billboardLoading,
+    spotifyId,
   };
 }
