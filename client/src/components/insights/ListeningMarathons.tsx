@@ -11,6 +11,8 @@ import {
   TOOLTIP_LABEL_STYLE,
 } from '../../lib';
 
+// Shows the user's longest back-to-back listening sessions as a horizontal bar chart,
+// with a detail card below each one listing the tracks played
 export function ListeningMarathons({ plays }: { plays: RecentPlay[] }) {
   const marathons = buildMarathons(plays);
 
@@ -27,6 +29,7 @@ export function ListeningMarathons({ plays }: { plays: RecentPlay[] }) {
     );
   }
 
+  // Convert each session to minutes for the bar chart
   const chartData = marathons.map((session, index) => ({
     name: `#${index + 1} · ${formatWeekdayDate(session.start)}`,
     minutes: Math.round(session.totalMs / 60000),
@@ -41,6 +44,7 @@ export function ListeningMarathons({ plays }: { plays: RecentPlay[] }) {
         Your longest uninterrupted listening sessions, ranked by total time
       </p>
 
+      {/* Chart height grows with the number of sessions so bars don't get squished */}
       <ResponsiveContainer width="100%" height={Math.max(150, chartData.length * 52)}>
         <BarChart
           data={chartData}
@@ -66,6 +70,7 @@ export function ListeningMarathons({ plays }: { plays: RecentPlay[] }) {
             formatter={(value: number) => [formatDuration(value * 60000), 'Listening time']}
           />
           <Bar dataKey="minutes" radius={[0, 4, 4, 0]}>
+            {/* Longest session is highlighted in green */}
             {chartData.map((_, index) => (
               <Cell key={index} fill={index === 0 ? SPOTIFY_GREEN : NEUTRAL_FILL} />
             ))}
@@ -73,9 +78,11 @@ export function ListeningMarathons({ plays }: { plays: RecentPlay[] }) {
         </BarChart>
       </ResponsiveContainer>
 
+      {/* Detail cards with the track list for each session */}
       <div className="mt-5 space-y-3">
         {marathons.map((session, index) => {
           const trackNames = session.plays.map((p) => p.track?.name ?? 'Unknown');
+          // Preview the first 3 track names, then show "+N more" if there are more
           const preview = trackNames.slice(0, 3).join(' · ');
           const remaining = trackNames.length - 3;
           return (

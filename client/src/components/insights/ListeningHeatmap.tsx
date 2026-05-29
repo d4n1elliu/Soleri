@@ -2,9 +2,12 @@ import type { RecentPlay } from '../../types';
 import { buildHeatmap, formatHour, greenWithAlpha } from '../../lib';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+// Only label every 3 hours on the axis to avoid crowding
 const HOUR_LABELS = [0, 3, 6, 9, 12, 15, 18, 21];
-const EMPTY_CELL = '#27272a';
+const EMPTY_CELL = '#27272a'; // dark grey for hours with zero plays
 
+// Grid showing when the user listens across hours (x) and days (y).
+// Darker green = more plays in that slot.
 export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
   const { grid, max, total, focus, windDown, lateNight, peakDay, peakHour } =
     buildHeatmap(plays);
@@ -22,6 +25,7 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
     );
   }
 
+  // Converts a raw play count to a percentage of total plays
   const pct = (value: number) => Math.round((value / total) * 100);
 
   return (
@@ -35,7 +39,7 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
 
       <div className="overflow-x-auto">
         <div className="min-w-[440px]">
-          {/* Hour axis */}
+          {/* Hour labels along the top */}
           <div
             className="grid text-[10px] text-zinc-500"
             style={{ gridTemplateColumns: '34px repeat(24, 1fr)' }}
@@ -48,7 +52,7 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
             ))}
           </div>
 
-          {/* Day rows */}
+          {/* One row per day */}
           {grid.map((row, day) => (
             <div
               key={day}
@@ -59,6 +63,7 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
                 {DAYS[day]}
               </span>
               {row.map((count, hour) => {
+                // Scale colour from a minimum of 15% opacity up to 100%
                 const intensity = count === 0 ? 0 : 0.15 + 0.85 * (count / max);
                 return (
                   <div
@@ -77,7 +82,7 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
         </div>
       </div>
 
-      {/* Legend */}
+      {/* Colour scale legend */}
       <div className="mt-4 flex items-center gap-2 text-[11px] text-zinc-500">
         <span>Less</span>
         {[0, 0.3, 0.55, 0.8, 1].map((step) => (
@@ -93,7 +98,7 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
         <span>More</span>
       </div>
 
-      {/* Pattern summary */}
+      {/* Summary stats below the grid */}
       <div className="mt-5 grid gap-3 sm:grid-cols-3">
         <div className="rounded-lg bg-zinc-900 p-3">
           <p className="text-xs text-zinc-500">Peak slot</p>

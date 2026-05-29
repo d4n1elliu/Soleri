@@ -21,6 +21,7 @@ interface GenreEntry {
   count: number;
 }
 
+// Everything the app needs after the user logs in
 interface SpotifyAuthState {
   isLoggedIn: boolean;
   isLoading: boolean;
@@ -42,10 +43,11 @@ export function useSpotifyAuth(): SpotifyAuthState {
   const [recentPlays, setRecentPlays] = useState<RecentPlay[]>([]);
   const [billboard, setBillboard] = useState<BillboardData | null>(null);
   const [billboardLoading, setBillboardLoading] = useState(false);
-  // Share button stays hidden until this comes back, otherwise display null on load
+  // Null on load; Share button stays hidden until this comes back
   const [spotifyId, setSpotifyId] = useState<string | null>(null);
 
   useEffect(() => {
+    // Spotify redirects back here with ?code=... after the user logs in
     const code = new URLSearchParams(window.location.search).get('code');
     if (!code) return;
 
@@ -61,18 +63,19 @@ export function useSpotifyAuth(): SpotifyAuthState {
         }
         setIsLoggedIn(true);
 
-        // The Billboard comparison resolves dozens of catalogue lookups, so it
-        // loads independently and never blocks the rest of the dashboard.
+        // Billboard takes longer (lots of lookups), so it loads separately
+        // and never blocks the rest of the dashboard from appearing
         fetchBillboard(token)
           .then(setBillboard)
           .catch(() => setBillboard(null))
           .finally(() => setBillboardLoading(false));
 
-        // This run separately so it doesn't hold up the main dashboard fetch
+        // Run separately so it doesn't hold up the main dashboard fetch
         fetchUserProfile(token).then((profile) => {
           if (profile) setSpotifyId(profile.id);
         });
 
+        // Fetch the main dashboard data all at once
         return Promise.all([
           fetchTopTracks(token),
           fetchTopArtists(token),
@@ -91,6 +94,7 @@ export function useSpotifyAuth(): SpotifyAuthState {
       });
   }, []);
 
+  // These are derived on every render from the raw data above
   const playCounts = computePlayCounts(recentPlays);
   const genreCounts = computeGenreCounts(topArtists);
 

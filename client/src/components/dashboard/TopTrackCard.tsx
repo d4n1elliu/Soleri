@@ -1,6 +1,7 @@
 import type { SpotifyTrack } from '../../types';
 import { formatTrackLength } from '../../lib';
 
+// Large card for the user's #1 most listened track and directly links to Spotify
 export function TopTrackCard({ track }: { track: SpotifyTrack }) {
   return (
     <a

@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
 
-/** Extracts the primary artist name, stripping featured artists. */
+// Extracting the primary artist name and removing featured artists in song title
+// e.g. Justin Bieber feat Skrillex to just "Justin Bieber"
+
 function primaryArtist(rawArtist) {
   return rawArtist
     .split(/\s+(?:featuring|feat\.?|ft\.?|&|\+|x|with)\s+/i)[0]
     .trim();
 }
 
+// Converts HTML entities like &amp; back to normal characters
 function htmlDecode(str) {
   return str
     .replace(/&amp;/g, '&')
@@ -18,6 +21,8 @@ function htmlDecode(str) {
     .replace(/&apos;/g, "'");
 }
 
+// Scrapes the Billboard Hot 100 page and returns a list of artist names.
+// Billboard has no public API so we parse the raw HTML instead.
 async function fetchHot100Artists() {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000);
@@ -36,7 +41,7 @@ async function fetchHot100Artists() {
 
     const html = await res.text();
 
-    // Split page into per-row blocks then extract the artist link from each
+    // Each chart entry is separated by this class name in the HTML
     const rows = html.split('o-chart-results-list-row-container');
     const seen = new Set();
     const names = [];
@@ -47,6 +52,7 @@ async function fetchHot100Artists() {
       const raw = htmlDecode(m[1].trim());
       const primary = primaryArtist(raw);
       const key = primary.toLowerCase();
+      // Skip duplicates — the same artist can appear multiple times on the chart
       if (primary && !seen.has(key)) {
         seen.add(key);
         names.push(primary);
@@ -60,11 +66,12 @@ async function fetchHot100Artists() {
   }
 }
 
+// Pulls the Bearer token out of the Authorization header
 function getToken(req) {
   return req.headers.authorization?.split(' ')[1];
 }
 
-/** Proxies a Spotify Web API GET request through to the client. */
+// Forwards a request to the Spotify API and sends the response back to the client
 async function proxySpotify(req, res, url, label) {
   const token = getToken(req);
   if (!token) return res.status(401).json({ error: 'Missing access token' });
@@ -82,6 +89,7 @@ async function proxySpotify(req, res, url, label) {
   }
 }
 
+// Swaps the OAuth code Spotify sends back for an access token
 router.get('/authenticate', async (req, res) => {
   const { code } = req.query;
   if (!code) return res.status(400).json({ error: 'Missing code parameter' });
@@ -109,6 +117,7 @@ router.get('/authenticate', async (req, res) => {
   }
 });
 
+// These three routes just proxy straight through to Spotify
 router.get('/top-songs', (req, res) =>
   proxySpotify(req, res, 'https://api.spotify.com/v1/me/top/tracks?limit=50', 'top tracks'),
 );
@@ -126,6 +135,8 @@ router.get('/recently_played_song', (req, res) =>
   ),
 );
 
+// Scrapes Billboard, then looks up each artist on Spotify to get their popularity and image.
+// Done server-side because it makes ~100 Spotify searches and we don't want that in the browser.
 router.get('/billboard', async (req, res) => {
   const token = getToken(req);
   if (!token) return res.status(401).json({ error: 'Missing access token' });
@@ -145,7 +156,7 @@ router.get('/billboard', async (req, res) => {
         const data = await response.json();
         const artist = data.artists?.items?.[0];
         if (!artist) return null;
-        // Discard results with no image — they're almost always wrong Spotify matches
+        // No image usually means it's the wrong Spotify match, so skip it
         if (!artist.images?.length) return null;
 
         return {
@@ -159,6 +170,7 @@ router.get('/billboard', async (req, res) => {
       }),
     );
 
+    // Remove nulls and deduplicate by name
     const resolvedSeen = new Set();
     const artists = resolved.filter((a) => {
       if (!a) return false;
@@ -179,6 +191,7 @@ router.get('/billboard', async (req, res) => {
       artists.reduce((sum, a) => sum + a.followers, 0) / artists.length,
     );
 
+    // Tally genres across all artists and return the top 12
     const genreCounts = {};
     for (const artist of artists) {
       for (const genre of artist.genres) {

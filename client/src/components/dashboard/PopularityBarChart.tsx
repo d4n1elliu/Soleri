@@ -7,6 +7,8 @@ import {
   TOOLTIP_LABEL_STYLE,
 } from '../../lib';
 
+// Bar chart showing Spotify's popularity score (0–100) for each of the user's top tracks.
+// The #1 track is highlighted in green and the rest are grey.
 export function PopularityBarChart({ tracks }: { tracks: SpotifyTrack[] }) {
   const data = tracks.map((track) => ({
     name: track.name,
@@ -20,6 +22,7 @@ export function PopularityBarChart({ tracks }: { tracks: SpotifyTrack[] }) {
       </h3>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+          {/* Track names are hidden as there are too many to show on a small chart */}
           <XAxis dataKey="name" hide />
           <YAxis domain={[0, 100]} tick={{ fill: '#71717a', fontSize: 11 }} />
           <Tooltip

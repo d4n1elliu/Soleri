@@ -4,6 +4,7 @@ import { buildSpotifyAuthUrl } from './api';
 import { LandingPage } from './components/landing';
 import { Dashboard, ShareModal } from './components/dashboard';
 
+// Root of the app which decides whether to show the landing page or the dashboard
 export default function App() {
   const {
     isLoggedIn,
@@ -17,8 +18,10 @@ export default function App() {
     billboardLoading,
     spotifyId,
   } = useSpotifyAuth();
+
   const [shareOpen, setShareOpen] = useState(false);
 
+  // Show a spinner while the initial Spotify data is loading
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-zinc-900">
@@ -27,6 +30,7 @@ export default function App() {
     );
   }
 
+  // If user not logged in, then Sshow the marketing landing page
   if (!isLoggedIn) {
     return <LandingPage loginUrl={buildSpotifyAuthUrl()} />;
   }
@@ -36,7 +40,8 @@ export default function App() {
       <header className="relative mb-8 text-center sm:mb-12">
         <h1 className="text-3xl font-bold tracking-tight">Soleri</h1>
         <p className="mt-2 text-sm text-zinc-400">Your Personal Spotify Analytics Dashboard</p>
-        {/* Waits for user id before showing the button */}
+
+        {/* Wait for the Spotify ID before showing the Share button */}
         {spotifyId && (
           <button
             onClick={() => setShareOpen(true)}
@@ -49,9 +54,12 @@ export default function App() {
           </button>
         )}
       </header>
+
+      {/* Modal that shows the QR code and copyable profile link */}
       {shareOpen && spotifyId && (
         <ShareModal spotifyId={spotifyId} onClose={() => setShareOpen(false)} />
       )}
+
       <Dashboard
         topTracks={topTracks}
         topArtists={topArtists}

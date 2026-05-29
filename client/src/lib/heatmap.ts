@@ -1,21 +1,22 @@
 import type { RecentPlay } from '../types';
 
-/** A 7x24 listening heatmap with derived pattern summaries. */
+// A 7x24 grid (days × hours) of play counts, plus some handy summary numbers
 export interface HeatmapData {
-  /** grid[day][hour] = number of plays started in that slot (day 0 = Sunday). */
-  grid: number[][];
-  max: number;
+  grid: number[][];  // grid[day][hour] = plays in that slot (day 0 = Sunday)
+  max: number;       // highest count in any single cell, used to scale the colours
   total: number;
-  focus: number; // plays during 09:00–17:59
-  windDown: number; // plays during 18:00–23:59
-  lateNight: number; // plays during 00:00–08:59
-  peakDay: number;
-  peakHour: number;
+  focus: number;     // plays during 9am–6pm (work hours)
+  windDown: number;  // plays during 6pm–midnight
+  lateNight: number; // plays during midnight–9am
+  peakDay: number;   // day index (0=Sun) with the single busiest hour
+  peakHour: number;  // hour (0-23) that had the most plays
 }
 
-/** Buckets recent plays into an hour-by-day grid and summarises the pattern. */
+// Slots each recent play into the right cell of the 7×24 grid
 export function buildHeatmap(plays: RecentPlay[]): HeatmapData {
+  // Start with a 7×24 grid of zeros
   const grid: number[][] = Array.from({ length: 7 }, () => Array(24).fill(0));
+
   for (const play of plays) {
     const date = new Date(play.played_at);
     if (Number.isNaN(date.getTime())) continue;
@@ -23,15 +24,17 @@ export function buildHeatmap(plays: RecentPlay[]): HeatmapData {
   }
 
   const flat = grid.flat();
-  const max = Math.max(1, ...flat);
+  const max = Math.max(1, ...flat); // at least 1 to avoid dividing by zero
   const total = flat.reduce((sum, n) => sum + n, 0);
 
+  // Tally time-of-day buckets and find the single busiest slot
   let focus = 0;
   let windDown = 0;
   let lateNight = 0;
   let peakDay = 0;
   let peakHour = 0;
   let peakCount = 0;
+
   for (let day = 0; day < 7; day++) {
     for (let hour = 0; hour < 24; hour++) {
       const count = grid[day][hour];

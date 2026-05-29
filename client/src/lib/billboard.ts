@@ -1,17 +1,20 @@
 import type { BillboardArtist, SpotifyTopArtist, SpotifyTrack } from '../types';
 
+// Lowercase set of Billboard artist names, used for fast lookups
 function billboardNameSet(artists: BillboardArtist[]): Set<string> {
   return new Set(artists.map((a) => a.name.toLowerCase()));
 }
 
+// One row in the side-by-side comparison table
 export interface ComparisonRow {
   rank: number;
   userArtist: SpotifyTopArtist | null;
   billboardArtist: BillboardArtist | null;
-  userIsOnBillboard: boolean;
-  billboardIsInUserTop: boolean;
+  userIsOnBillboard: boolean;   // the user's artist also appears on Billboard
+  billboardIsInUserTop: boolean; // the Billboard artist is also in the user's top list
 }
 
+// Zips the user's top artists against the Billboard list side by side (rank vs rank)
 export function buildComparisonRows(
   topArtists: SpotifyTopArtist[],
   billboardArtists: BillboardArtist[],
@@ -35,11 +38,13 @@ export function buildComparisonRows(
   });
 }
 
+// Average Spotify popularity score (0-100) across the user's top tracks
 export function computeUserAvgPopularity(tracks: SpotifyTrack[]): number {
   if (tracks.length === 0) return 0;
   return Math.round(tracks.reduce((s, t) => s + t.popularity, 0) / tracks.length);
 }
 
+// How many of the user's top artists also appear on the Billboard chart
 export function countArtistOverlap(
   topArtists: SpotifyTopArtist[],
   billboardArtists: BillboardArtist[],

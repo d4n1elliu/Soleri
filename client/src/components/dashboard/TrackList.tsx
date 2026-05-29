@@ -1,6 +1,7 @@
 import type { SpotifyTrack } from '../../types';
 import { formatTrackLength } from '../../lib';
 
+// Scrollable list of tracks #2–20, each linking to user's Spotify history
 export function TrackList({ tracks }: { tracks: SpotifyTrack[] }) {
   return (
     <div className="space-y-1.5">
@@ -12,7 +13,9 @@ export function TrackList({ tracks }: { tracks: SpotifyTrack[] }) {
           rel="noreferrer"
           className="flex items-center gap-3 rounded-lg bg-zinc-800 px-3 py-2.5 transition-colors hover:bg-zinc-700"
         >
+          {/* Rank starts at 2 because #1 is shown separately in TopTrackCard */}
           <span className="w-5 text-center text-sm text-zinc-500">{index + 2}</span>
+          {/* Prefer the smaller thumbnail (index 2) to save space */}
           <img
             src={track.album.images[2]?.url ?? track.album.images[0]?.url}
             alt={track.album.name}

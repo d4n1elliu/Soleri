@@ -27,7 +27,7 @@ interface DashboardProps {
   billboardLoading: boolean;
 }
 
-/** The signed-in analytics dashboard: summary widgets plus listening insights. */
+// Lays out all the dashboard sections in order: top tracks, charts, then insights
 export function Dashboard({
   topTracks,
   topArtists,
