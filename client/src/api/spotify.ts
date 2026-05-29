@@ -76,6 +76,14 @@ export function computeGenreCounts(
     .slice(0, 8);
 }
 
+export async function fetchUserProfile(token: string): Promise<{ id: string; display_name: string } | null> {
+  const res = await fetch('https://api.spotify.com/v1/me', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+
 export function buildSpotifyAuthUrl(): string {
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID as string;
   const redirectUri = import.meta.env.VITE_REDIRECT_URI as string;
