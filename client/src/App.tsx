@@ -36,7 +36,7 @@ export default function App() {
       <header className="relative mb-8 text-center sm:mb-12">
         <h1 className="text-3xl font-bold tracking-tight">Soleri</h1>
         <p className="mt-2 text-sm text-zinc-400">Your Personal Spotify Analytics Dashboard</p>
-        {/* wait for the id before showing the button */}
+        {/* Waits for user id before showing the button */}
         {spotifyId && (
           <button
             onClick={() => setShareOpen(true)}

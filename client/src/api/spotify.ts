@@ -30,7 +30,7 @@ export async function fetchTopArtists(token: string): Promise<SpotifyTopArtist[]
   return data.items ?? [];
 }
 
-/** Raw recently-played history, including the `played_at` timestamp per play. */
+/** Recently played playlist history, including 'when the song was plaged' timestamp per play. */
 export async function fetchRecentPlays(token: string): Promise<RecentPlay[]> {
   const res = await fetch('/api/recently_played_song', {
     headers: { Authorization: `Bearer ${token}` },
@@ -40,7 +40,7 @@ export async function fetchRecentPlays(token: string): Promise<RecentPlay[]> {
   return data.items ?? [];
 }
 
-/** Billboard chart benchmark data, resolved server-side against Spotify. */
+/** Billboard chart benchmark data and resolved server-side against Spotify. */
 export async function fetchBillboard(token: string): Promise<BillboardData | null> {
   const res = await fetch('/api/billboard', {
     headers: { Authorization: `Bearer ${token}` },
@@ -49,7 +49,7 @@ export async function fetchBillboard(token: string): Promise<BillboardData | nul
   return res.json();
 }
 
-/** Counts how many times each track id appears in the recent-play history. */
+/** Tracks how many times each song id appears in the recent played history. */
 export function computePlayCounts(plays: RecentPlay[]): Record<string, number> {
   const counts: Record<string, number> = {};
   for (const play of plays) {
@@ -60,7 +60,7 @@ export function computePlayCounts(plays: RecentPlay[]): Record<string, number> {
   return counts;
 }
 
-/** Tallies genres across the user's top artists, returning the eight largest. */
+/** Tallies genres across the user's top artists and returns the eight largest. */
 export function computeGenreCounts(
   artists: SpotifyTopArtist[],
 ): { genre: string; count: number }[] {
@@ -76,7 +76,7 @@ export function computeGenreCounts(
     .slice(0, 8);
 }
 
-// calls Spotify directly (not our server proxy) since we just need the user's id
+// Calls Spotify directly (not our server proxy) since we just require the user's id
 export async function fetchUserProfile(token: string): Promise<{ id: string; display_name: string } | null> {
   const res = await fetch('https://api.spotify.com/v1/me', {
     headers: { Authorization: `Bearer ${token}` },
