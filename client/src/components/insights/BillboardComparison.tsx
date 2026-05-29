@@ -13,6 +13,7 @@ interface Props {
   topTracks: SpotifyTrack[];
 }
 
+// Small circular artist photo which falls back to a grey circle if no image
 function ArtistAvatar({ src, alt }: { src: string | null | undefined; alt: string }) {
   return src ? (
     <img src={src} alt={alt} className="h-8 w-8 shrink-0 rounded-full object-cover" />
@@ -21,6 +22,9 @@ function ArtistAvatar({ src, alt }: { src: string | null | undefined; alt: strin
   );
 }
 
+// Side-by-side table comparing the user's top artists against the Billboard Hot 100.
+// Rows are matched by rank (#1 vs #1, #2 vs #2), not by artist.
+// A green ✓ marks any artist that appears on both lists.
 export function BillboardComparison({ billboard, billboardLoading, topArtists, topTracks }: Props) {
   if (billboardLoading) {
     return (
@@ -58,7 +62,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
         How your taste stacks up against the Billboard Hot 100
       </p>
 
-      {/* Summary stat cards */}
+      {/* Three headline stats */}
       <div className="mb-6 grid grid-cols-3 gap-2 sm:gap-4">
         <div className="rounded-lg bg-zinc-900 p-4 text-center">
           <p className="text-2xl font-bold text-white">{userAvgPopularity}</p>
@@ -77,9 +81,8 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
         </div>
       </div>
 
-      {/* Side-by-side table */}
+      {/* Side by side artist table */}
       <div className="overflow-x-auto">
-        {/* Section titles */}
         <div className="mb-2 grid grid-cols-[minmax(0,1fr)_1px_minmax(0,1fr)] gap-0">
           <p className="text-xs font-medium uppercase tracking-widest text-zinc-400">
             Your Top Artists
@@ -90,7 +93,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
           </p>
         </div>
 
-        {/* Column sub-headers — label the numbers */}
+        {/* Column subheaders */}
         <div className="grid grid-cols-[minmax(0,1fr)_1px_minmax(0,1fr)] gap-0">
           <div className="flex items-center justify-center">
             <span className="whitespace-nowrap rounded bg-zinc-700 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-widest text-zinc-400">
@@ -107,12 +110,11 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
           </div>
         </div>
 
-        {/* Divider */}
         <div className="mt-2 h-px bg-zinc-700" />
 
-        {/* Rows */}
         <div className="divide-y divide-zinc-700/50">
           {rows.map((row) => {
+            // Highlights the row if either artist appears on both lists
             const highlighted = row.userIsOnBillboard || row.billboardIsInUserTop;
             return (
               <div
@@ -147,6 +149,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
                   <span className="shrink-0 text-xs text-zinc-400">
                     {row.userArtist?.popularity ?? ''}
                   </span>
+                  {/* ✓ = this user's artist also appears on Billboard */}
                   {row.userIsOnBillboard && (
                     <span
                       className="ml-1 shrink-0 text-[10px] font-bold"
@@ -158,11 +161,12 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
                   )}
                 </div>
 
-                {/* Centre divider */}
+                {/* Vertical divider between the two columns */}
                 <div className="h-full min-h-[44px] bg-zinc-600" />
 
                 {/* Billboard side */}
                 <div className="flex items-center gap-2 py-2 pl-4">
+                  {/* ✓ = this Billboard artist is also in the user's top list */}
                   {row.billboardIsInUserTop && (
                     <span
                       className="mr-1 shrink-0 text-[10px] font-bold"
@@ -203,7 +207,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
         </div>
       </div>
 
-      {/* Legend and explanation */}
+      {/* Explanation of how to read the table */}
       <div className="mt-5 rounded-lg bg-zinc-900 p-5">
         <p className="mb-3 text-sm font-semibold text-zinc-200">Billboard Top 100 Information</p>
         <ul className="space-y-2.5 text-sm text-zinc-400">

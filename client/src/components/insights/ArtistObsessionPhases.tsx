@@ -1,6 +1,9 @@
 import type { RecentPlay, SpotifyTopArtist } from '../../types';
 import { buildObsessionPhases, formatShortDate } from '../../lib';
 
+// Shows artists the user went through a heavy phase with.
+// Each card has a timeline bar showing when in the history the phase happened,
+// and a badge saying whether the obsession is still ongoing or has faded out.
 export function ArtistObsessionPhases({
   plays,
   topArtists,
@@ -9,6 +12,8 @@ export function ArtistObsessionPhases({
   topArtists: SpotifyTopArtist[];
 }) {
   const { phases, start, span } = buildObsessionPhases(plays);
+
+  // Build a lookup map so we can grab artist images from the top artists data
   const artistById = new Map(topArtists.map((artist) => [artist.id, artist]));
 
   if (phases.length === 0) {
@@ -37,7 +42,10 @@ export function ArtistObsessionPhases({
       <div className="grid gap-3 sm:grid-cols-2">
         {phases.map((phase) => {
           const artist = artistById.get(phase.artistId);
+          // Use the smallest image available to keep it crisp at the small size
           const image = artist?.images?.[artist.images.length - 1]?.url;
+
+          // Position and width of the phase bar as a percentage of the full history window
           const leftPct = ((phase.first - start) / span) * 100;
           const widthPct = Math.max(4, ((phase.last - phase.first) / span) * 100);
 
@@ -51,6 +59,7 @@ export function ArtistObsessionPhases({
                     className="h-11 w-11 rounded-full object-cover"
                   />
                 ) : (
+                  // Fallback: show the first letter of the artist name
                   <span className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-800 text-base font-bold text-green-400">
                     {phase.name.charAt(0).toUpperCase()}
                   </span>
@@ -61,6 +70,7 @@ export function ArtistObsessionPhases({
                   </p>
                   <p className="text-xs text-zinc-500">{phase.count} plays</p>
                 </div>
+                {/* Amber colour for fading out and green for active music listened to */}
                 <span
                   className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium ${
                     phase.faded
@@ -72,7 +82,7 @@ export function ArtistObsessionPhases({
                 </span>
               </div>
 
-              {/* Timeline of where the phase sat in the overall history */}
+              {/* Timeline bar showing where in the history window this phase fell */}
               <div className="relative mt-4 h-1.5 rounded-full bg-zinc-800">
                 <div
                   className={`absolute h-full rounded-full ${

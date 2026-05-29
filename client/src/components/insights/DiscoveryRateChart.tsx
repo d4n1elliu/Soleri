@@ -18,8 +18,11 @@ import {
   TOOLTIP_LABEL_STYLE,
 } from '../../lib';
 
+// Purple line colour to distinguish the discovery rate from the play count bars
 const DISCOVERY_LINE = '#8b5cf6';
 
+// Stacked bar chart showing new vs replayed tracks per day/week,
+// with a purple line overlaid showing the discovery rate (%) for each period
 export function DiscoveryRateChart({ plays }: { plays: RecentPlay[] }) {
   const { buckets, weekly, overallRate, newTracks, newArtists, totalPlays } =
     analyseDiscovery(plays);
@@ -47,6 +50,7 @@ export function DiscoveryRateChart({ plays }: { plays: RecentPlay[] }) {
         last {totalPlays} plays
       </p>
 
+      {/* Two y-axes: left for play counts and right for the discovery rate % */}
       <ResponsiveContainer width="100%" height={300}>
         <ComposedChart data={buckets} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
           <CartesianGrid stroke="#27272a" vertical={false} />
@@ -77,6 +81,8 @@ export function DiscoveryRateChart({ plays }: { plays: RecentPlay[] }) {
               <span style={{ color: '#a1a1aa', fontSize: 12 }}>{value}</span>
             )}
           />
+          {/* Green bars = first-time plays, 
+              grey bars = replays (stacked) */}
           <Bar
             yAxisId="count"
             dataKey="new"
@@ -103,6 +109,7 @@ export function DiscoveryRateChart({ plays }: { plays: RecentPlay[] }) {
         </ComposedChart>
       </ResponsiveContainer>
 
+      {/* Summary stats below the chart */}
       <div className="mt-5 grid gap-3 sm:grid-cols-3">
         <div className="rounded-lg bg-zinc-900 p-3">
           <p className="text-xs text-zinc-500">Discovery rate</p>

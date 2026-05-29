@@ -6,6 +6,7 @@ import {
   TOOLTIP_LABEL_STYLE,
 } from '../../lib';
 
+// Pie chart showing the user's top 8 genres, tallied from their top artists
 export function GenrePieChart({ genres }: { genres: { genre: string; count: number }[] }) {
   if (genres.length === 0) {
     return <p className="text-center text-sm text-zinc-500">No genre data available.</p>;
@@ -26,10 +27,12 @@ export function GenrePieChart({ genres }: { genres: { genre: string; count: numb
             cy="45%"
             outerRadius={100}
             dataKey="value"
+            // Show percentage inside each slice
             label={({ percent }) => `${((percent ?? 0) * 100).toFixed(0)}%`}
             labelLine={false}
           >
             {data.map((_, i) => (
+              // Cycle through the colour palette if there are more than 8 genres
               <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
             ))}
           </Pie>

@@ -2,34 +2,36 @@ import type { RecentPlay } from '../types';
 import { formatShortDate } from './format';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-// Above this history span the chart switches from daily to weekly buckets.
+// Switch from daily to weekly buckets when the history spans more than 21 days
 const WEEKLY_SPAN_DAYS = 21;
 
-/** New vs. replayed plays for a single time bucket. */
+// New vs replayed plays for a single time bucket (a day or a week)
 export interface DiscoveryBucket {
-  key: number;
-  label: string;
-  new: number;
-  replayed: number;
-  rate: number;
+  key: number;    // Timestamp used to sort and identify the bucket
+  label: string;  // Readable date shown on the chart axis
+  new: number;      // Tracks heard for the first time in this period
+  replayed: number; // Tracks the user has played before
+  rate: number;     // Percentage of plays that were new (0-100)
 }
 
-/** Full discovery breakdown across the recent listening history. */
+// Full breakdown returned to the chart component
 export interface DiscoverySummary {
   buckets: DiscoveryBucket[];
-  weekly: boolean;
-  overallRate: number;
+  weekly: boolean;    // true = buckets are weeks, false = days
+  overallRate: number; // % of all plays that were a unique track
   newTracks: number;
   newArtists: number;
   totalPlays: number;
 }
 
+// Snap a timestamp back to midnight so plays on the same day share a bucket key
 function startOfDay(ts: number): number {
   const date = new Date(ts);
   date.setHours(0, 0, 0, 0);
   return date.getTime();
 }
 
+// Snap to the Monday of the week, so weekly buckets always start on Monday
 function startOfWeek(ts: number): number {
   const date = new Date(startOfDay(ts));
   const mondayOffset = (date.getDay() + 6) % 7;
@@ -37,7 +39,7 @@ function startOfWeek(ts: number): number {
   return date.getTime();
 }
 
-/** Classifies each play as a new track or a replay and buckets it over time. */
+// Goes through the play history in order and marks each play as "new" or "replayed"
 export function analyseDiscovery(plays: RecentPlay[]): DiscoverySummary {
   const sorted = plays
     .filter((p) => !Number.isNaN(new Date(p.played_at).getTime()))
@@ -79,6 +81,7 @@ export function analyseDiscovery(plays: RecentPlay[]): DiscoverySummary {
 
     const trackId = play.track?.id;
     if (trackId && !seenTracks.has(trackId)) {
+      // If it is first time the song track appears, then it will label as discovery
       seenTracks.add(trackId);
       bucket.new += 1;
     } else {
@@ -90,6 +93,7 @@ export function analyseDiscovery(plays: RecentPlay[]): DiscoverySummary {
     buckets.set(key, bucket);
   }
 
+  // Calculate the discovery rate (%) for each bucket
   const ordered = [...buckets.values()].sort((a, b) => a.key - b.key);
   for (const bucket of ordered) {
     const total = bucket.new + bucket.replayed;

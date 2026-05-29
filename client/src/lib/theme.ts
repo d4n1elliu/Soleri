@@ -1,12 +1,10 @@
-/** Shared visual constants for the dashboard and charts. */
-
-/** Spotify brand green. */
+// Shared colours and chart styles for the dashboard
 export const SPOTIFY_GREEN = '#1db954';
 
-/** Neutral fill used for secondary chart elements. */
+// Grey for bars that aren't highlighted
 export const NEUTRAL_FILL = '#3f3f46';
 
-/** Categorical palette for multi-series charts (e.g. the genre pie). */
+// Colours for multi slice charts like the genre pie
 export const CHART_COLORS = [
   '#1db954',
   '#1ed760',
@@ -18,17 +16,16 @@ export const CHART_COLORS = [
   '#ec4899',
 ];
 
-/** Recharts tooltip container styling. */
+// Dark tooltip style for every chart
 export const TOOLTIP_CONTENT_STYLE = {
   background: '#18181b',
   border: 'none',
   borderRadius: 8,
 };
 
-/** Recharts tooltip label styling. */
 export const TOOLTIP_LABEL_STYLE = { color: '#ffffff', fontSize: 12 };
 
-/** Spotify green at a given alpha, used for heatmap intensity. */
+// Spotify green with adjustable transparency, for heatmap shading
 export function greenWithAlpha(alpha: number): string {
   return `rgba(29, 185, 84, ${alpha})`;
 }
