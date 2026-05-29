@@ -52,7 +52,7 @@ async function fetchHot100Artists() {
       const raw = htmlDecode(m[1].trim());
       const primary = primaryArtist(raw);
       const key = primary.toLowerCase();
-      // Skip duplicates — the same artist can appear multiple times on the chart
+      // Remove duplicated artist so only one artist can appear on the chart at once
       if (primary && !seen.has(key)) {
         seen.add(key);
         names.push(primary);
@@ -135,8 +135,8 @@ router.get('/recently_played_song', (req, res) =>
   ),
 );
 
-// Scrapes Billboard, then looks up each artist on Spotify to get their popularity and image.
-// Done server-side because it makes ~100 Spotify searches and we don't want that in the browser.
+// Gets the Billboard chart, then finds each artist's popularity and image on Spotify.
+// Runs on the server because it makes a lot of Spotify lookups.
 router.get('/billboard', async (req, res) => {
   const token = getToken(req);
   if (!token) return res.status(401).json({ error: 'Missing access token' });
@@ -156,7 +156,7 @@ router.get('/billboard', async (req, res) => {
         const data = await response.json();
         const artist = data.artists?.items?.[0];
         if (!artist) return null;
-        // No image usually means it's the wrong Spotify match, so skip it
+        // No image found then skip it
         if (!artist.images?.length) return null;
 
         return {
