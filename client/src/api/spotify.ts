@@ -76,6 +76,7 @@ export function computeGenreCounts(
     .slice(0, 8);
 }
 
+// calls Spotify directly (not our server proxy) since we just need the user's id
 export async function fetchUserProfile(token: string): Promise<{ id: string; display_name: string } | null> {
   const res = await fetch('https://api.spotify.com/v1/me', {
     headers: { Authorization: `Bearer ${token}` },
