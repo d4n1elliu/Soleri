@@ -8,7 +8,7 @@ export async function exchangeCodeForToken(code: string): Promise<string | null>
   return data.access_token ?? null;
 }
 
-// Gets the user's top 20 most-listened tracks
+// Gets the user's top 50 most-listened tracks
 export async function fetchTopTracks(token: string): Promise<SpotifyTrack[]> {
   const res = await fetch('/api/top-songs', {
     headers: { Authorization: `Bearer ${token}` },
