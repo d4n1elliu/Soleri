@@ -95,7 +95,7 @@ export function ShareModal({ spotifyId, onClose }: ShareModalProps) {
           </button>
         </div>
 
-        {/* disabled until the QR is ready so you can't download a blank image */}
+        {/* Disabling the QR code until it is ready as you can't download a blank image */}
         <button
           onClick={downloadQr}
           disabled={!qrDataUrl}
