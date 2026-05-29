@@ -12,9 +12,8 @@ import {
   fetchRecentPlays,
   fetchBillboard,
   fetchUserProfile,
-  computePlayCounts,
-  computeGenreCounts,
 } from '../api';
+import { computePlayCounts, computeGenreCounts } from '../lib';
 
 interface GenreEntry {
   genre: string;
