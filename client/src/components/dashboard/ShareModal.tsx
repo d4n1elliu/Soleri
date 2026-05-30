@@ -1,35 +1,49 @@
 import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
+import type { SpotifyTopArtist, SpotifyTrack } from '../../types';
+import { encodeTasteProfile } from '../../lib';
 
 interface ShareModalProps {
-  spotifyId: string; // e.g. "smedjan"
+  spotifyId: string;
+  displayName: string;
+  topArtists: SpotifyTopArtist[];
+  topTracks: SpotifyTrack[];
+  genreCounts: { genre: string; count: number }[];
   onClose: () => void;
 }
 
-export function ShareModal({ spotifyId, onClose }: ShareModalProps) {
-  // Starts empty and filled in once the QR library finishes generating the image
+export function ShareModal({
+  spotifyId,
+  displayName,
+  topArtists,
+  topTracks,
+  genreCounts,
+  onClose,
+}: ShareModalProps) {
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [copied, setCopied] = useState(false);
 
   const profileUrl = `https://soleri.app/u/${spotifyId}`;
 
-  // Generate the QR as a base64 PNG; white on dark so it fits the modal
+  // QR URL embeds the taste payload so scanners can show a comparison view
+  const tasteEncoded = encodeTasteProfile(displayName, topArtists, topTracks, genreCounts);
+  const qrUrl = `${profileUrl}?p=${tasteEncoded}`;
+
   useEffect(() => {
-    QRCode.toDataURL(profileUrl, {
+    QRCode.toDataURL(qrUrl, {
       width: 200,
       margin: 2,
       color: { dark: '#ffffff', light: '#27272a' },
+      errorCorrectionLevel: 'L',
     }).then(setQrDataUrl);
-  }, [profileUrl]);
+  }, [qrUrl]);
 
-  // Copy to clipboard and then briefly show a checkmark
   function copyUrl() {
     navigator.clipboard.writeText(profileUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
 
-  // Create a hidden <a> pointing at the base64 PNG and click it to trigger a download
   function downloadQr() {
     const a = document.createElement('a');
     a.href = qrDataUrl;
@@ -38,12 +52,10 @@ export function ShareModal({ spotifyId, onClose }: ShareModalProps) {
   }
 
   return (
-    // Clicking on the dark backdrop closes the modal
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
       onClick={onClose}
     >
-      {/* Stop clicks inside the card from bubbling up to the backdrop */}
       <div
         className="w-full max-w-xs rounded-2xl bg-zinc-800 p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
@@ -59,7 +71,6 @@ export function ShareModal({ spotifyId, onClose }: ShareModalProps) {
           </button>
         </div>
 
-        {/* Pulsing placeholder while the QR is generating */}
         <div className="mb-5 flex justify-center">
           {qrDataUrl ? (
             <img
@@ -74,7 +85,10 @@ export function ShareModal({ spotifyId, onClose }: ShareModalProps) {
           )}
         </div>
 
-        {/* In URL row, the icon swaps to a tick after copying */}
+        <p className="mb-3 text-center text-xs text-zinc-500">
+          Friends who scan this will see your taste match
+        </p>
+
         <div className="mb-3 flex items-center gap-2 rounded-lg bg-zinc-700 px-3 py-2.5">
           <span className="flex-1 truncate text-sm text-zinc-300">{profileUrl}</span>
           <button
@@ -95,7 +109,6 @@ export function ShareModal({ spotifyId, onClose }: ShareModalProps) {
           </button>
         </div>
 
-        {/* Disabling the QR code until it is ready as you can't download a blank image */}
         <button
           onClick={downloadQr}
           disabled={!qrDataUrl}

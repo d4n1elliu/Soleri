@@ -32,6 +32,8 @@ interface SpotifyAuthState {
   billboard: BillboardData | null;
   billboardLoading: boolean;
   spotifyId: string | null;
+  displayName: string | null;
+  token: string | null;
 }
 
 export function useSpotifyAuth(): SpotifyAuthState {
@@ -44,6 +46,8 @@ export function useSpotifyAuth(): SpotifyAuthState {
   const [billboardLoading, setBillboardLoading] = useState(false);
   // Null on load; Share button stays hidden until this comes back
   const [spotifyId, setSpotifyId] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     // Spotify redirects back here with ?code=... after the user logs in
@@ -61,6 +65,7 @@ export function useSpotifyAuth(): SpotifyAuthState {
           return;
         }
         setIsLoggedIn(true);
+        setToken(token);
 
         // Billboard takes longer (lots of lookups), so it loads separately
         // and never blocks the rest of the dashboard from appearing
@@ -71,7 +76,10 @@ export function useSpotifyAuth(): SpotifyAuthState {
 
         // Run separately so it doesn't hold up the main dashboard fetch
         fetchUserProfile(token).then((profile) => {
-          if (profile) setSpotifyId(profile.id);
+          if (profile) {
+            setSpotifyId(profile.id);
+            setDisplayName(profile.display_name);
+          }
         });
 
         // Fetch the main dashboard data all at once
@@ -108,5 +116,7 @@ export function useSpotifyAuth(): SpotifyAuthState {
     billboard,
     billboardLoading,
     spotifyId,
+    displayName,
+    token,
   };
 }

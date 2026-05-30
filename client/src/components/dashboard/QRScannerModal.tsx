@@ -3,6 +3,7 @@ import jsQR from 'jsqr';
 
 interface QRScannerModalProps {
   onClose: () => void;
+  onTasteMatch?: (encodedPayload: string, theirSpotifyId: string) => void;
 }
 
 // BarcodeDetector is not yet in the TypeScript lib, so we declare it minimally
@@ -20,8 +21,24 @@ declare global {
 }
 
 const SOLERI_ORIGIN = 'https://soleri.app';
+const SOLERI_USER_PATH = SOLERI_ORIGIN + '/u/';
 
-export function QRScannerModal({ onClose }: QRScannerModalProps) {
+interface ParsedSoleriUrl {
+  spotifyId: string;
+  tastePayload: string | null;
+}
+
+function parseSoleriUrl(url: string): ParsedSoleriUrl | null {
+  if (!url.startsWith(SOLERI_USER_PATH)) return null;
+  const rest = url.slice(SOLERI_USER_PATH.length);
+  const qIndex = rest.indexOf('?');
+  const spotifyId = qIndex >= 0 ? rest.slice(0, qIndex) : rest;
+  if (!spotifyId) return null;
+  const params = new URLSearchParams(qIndex >= 0 ? rest.slice(qIndex + 1) : '');
+  return { spotifyId, tastePayload: params.get('p') };
+}
+
+export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -61,17 +78,15 @@ export function QRScannerModal({ onClose }: QRScannerModalProps) {
 
     let result: string | null = null;
 
-    // Try native BarcodeDetector first (Chrome, Edge, Android WebView)
     if (detectorRef.current) {
       try {
         const codes = await detectorRef.current.detect(canvas);
         if (codes.length > 0) result = codes[0].rawValue;
       } catch {
-        // detector failed on this frame — fall through to jsQR
+        // fall through to jsQR
       }
     }
 
-    // jsQR fallback (Firefox, Safari, etc.)
     if (!result) {
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const code = jsQR(imageData.data, canvas.width, canvas.height, {
@@ -90,7 +105,6 @@ export function QRScannerModal({ onClose }: QRScannerModalProps) {
   }, [stopCamera]);
 
   useEffect(() => {
-    // Initialise BarcodeDetector once
     if (window.BarcodeDetector) {
       detectorRef.current = new window.BarcodeDetector({ formats: ['qr_code'] });
     }
@@ -118,11 +132,49 @@ export function QRScannerModal({ onClose }: QRScannerModalProps) {
     return stopCamera;
   }, [scanFrame, stopCamera]);
 
-  const isSoleriUrl = scannedUrl?.startsWith(SOLERI_ORIGIN + '/u/');
+  const parsed = scannedUrl ? parseSoleriUrl(scannedUrl) : null;
+  const isSoleriUrl = !!parsed;
+  const hasTastePayload = !!(parsed?.tastePayload && onTasteMatch);
+
+  function handleTasteMatch() {
+    if (parsed?.tastePayload && onTasteMatch) {
+      stopCamera();
+      onTasteMatch(parsed.tastePayload, parsed.spotifyId);
+      onClose();
+    }
+  }
 
   function openUrl() {
-    if (scannedUrl) window.open(scannedUrl, '_blank', 'noopener,noreferrer');
+    if (scannedUrl) {
+      // Open the clean profile URL (without the long taste payload)
+      const cleanUrl = parsed
+        ? `${SOLERI_USER_PATH}${parsed.spotifyId}`
+        : scannedUrl;
+      window.open(cleanUrl, '_blank', 'noopener,noreferrer');
+    }
     handleClose();
+  }
+
+  async function restartCamera() {
+    scanningRef.current = true;
+    setStatus('requesting');
+    setScannedUrl(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+        setStatus('scanning');
+        scanFrame();
+      }
+    } catch {
+      setErrorMsg('Camera access denied.');
+      setStatus('error');
+    }
   }
 
   return (
@@ -149,17 +201,10 @@ export function QRScannerModal({ onClose }: QRScannerModalProps) {
         {/* Camera viewport */}
         {status !== 'found' && (
           <div className="relative mx-5 mb-4 overflow-hidden rounded-xl bg-zinc-900" style={{ aspectRatio: '1' }}>
-            <video
-              ref={videoRef}
-              className="h-full w-full object-cover"
-              muted
-              playsInline
-            />
-            {/* Scanning overlay */}
+            <video ref={videoRef} className="h-full w-full object-cover" muted playsInline />
             {status === 'scanning' && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="relative h-48 w-48">
-                  {/* Corner brackets */}
                   <span className="absolute left-0 top-0 h-8 w-8 border-l-2 border-t-2 border-green-400 rounded-tl-md" />
                   <span className="absolute right-0 top-0 h-8 w-8 border-r-2 border-t-2 border-green-400 rounded-tr-md" />
                   <span className="absolute left-0 bottom-0 h-8 w-8 border-l-2 border-b-2 border-green-400 rounded-bl-md" />
@@ -172,7 +217,6 @@ export function QRScannerModal({ onClose }: QRScannerModalProps) {
                 <p className="text-sm text-zinc-400">Requesting camera…</p>
               </div>
             )}
-            {/* Hidden canvas used for frame analysis */}
             <canvas ref={canvasRef} className="hidden" />
           </div>
         )}
@@ -194,11 +238,33 @@ export function QRScannerModal({ onClose }: QRScannerModalProps) {
               <span className="text-sm text-green-300 font-medium">QR code detected!</span>
             </div>
 
-            <div className="rounded-lg bg-zinc-700 px-3 py-2.5">
-              <p className="truncate text-sm text-zinc-300">{scannedUrl}</p>
-            </div>
+            {isSoleriUrl && (
+              <div className="rounded-lg bg-zinc-700 px-3 py-2.5">
+                <p className="truncate text-sm text-zinc-300">
+                  {SOLERI_USER_PATH}{parsed!.spotifyId}
+                </p>
+              </div>
+            )}
 
-            {isSoleriUrl ? (
+            {hasTastePayload ? (
+              <>
+                <button
+                  onClick={handleTasteMatch}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-green-500"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  Compare Tastes
+                </button>
+                <button
+                  onClick={openUrl}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-zinc-600 py-2 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-white"
+                >
+                  View profile
+                </button>
+              </>
+            ) : isSoleriUrl ? (
               <button
                 onClick={openUrl}
                 className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-green-500"
@@ -210,40 +276,21 @@ export function QRScannerModal({ onClose }: QRScannerModalProps) {
                 View Soleri profile
               </button>
             ) : (
-              <button
-                onClick={openUrl}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-zinc-700 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-600"
-              >
-                Open link
-              </button>
+              <>
+                <div className="rounded-lg bg-zinc-700 px-3 py-2.5">
+                  <p className="truncate text-sm text-zinc-300">{scannedUrl}</p>
+                </div>
+                <button
+                  onClick={openUrl}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-zinc-700 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-600"
+                >
+                  Open link
+                </button>
+              </>
             )}
 
             <button
-              onClick={() => {
-                scanningRef.current = true;
-                setStatus('requesting');
-                setScannedUrl(null);
-                // Re-start camera
-                async function restart() {
-                  try {
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                      video: { facingMode: { ideal: 'environment' } },
-                      audio: false,
-                    });
-                    streamRef.current = stream;
-                    if (videoRef.current) {
-                      videoRef.current.srcObject = stream;
-                      await videoRef.current.play();
-                      setStatus('scanning');
-                      scanFrame();
-                    }
-                  } catch {
-                    setErrorMsg('Camera access denied.');
-                    setStatus('error');
-                  }
-                }
-                restart();
-              }}
+              onClick={restartCamera}
               className="w-full rounded-lg border border-zinc-600 py-2 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-white"
             >
               Scan again

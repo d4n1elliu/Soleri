@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { useSpotifyAuth } from './hooks';
 import { buildSpotifyAuthUrl } from './api';
 import { LandingPage } from './components/landing';
-import { Dashboard, ShareModal, QRScannerModal } from './components/dashboard';
+import { Dashboard, ShareModal, QRScannerModal, TasteMatchModal } from './components/dashboard';
+
+interface TasteMatchState {
+  encodedPayload: string;
+  theirSpotifyId: string;
+}
 
 // Root of the app which decides whether to show the landing page or the dashboard
 export default function App() {
@@ -17,10 +22,17 @@ export default function App() {
     billboard,
     billboardLoading,
     spotifyId,
+    displayName,
+    token: _token,
   } = useSpotifyAuth();
 
   const [shareOpen, setShareOpen] = useState(false);
   const [scanOpen, setScanOpen] = useState(false);
+  const [tasteMatch, setTasteMatch] = useState<TasteMatchState | null>(null);
+
+  function handleTasteMatch(encodedPayload: string, theirSpotifyId: string) {
+    setTasteMatch({ encodedPayload, theirSpotifyId });
+  }
 
   // Show a spinner while the initial Spotify data is loading
   if (isLoading) {
@@ -77,11 +89,36 @@ export default function App() {
       </header>
 
       {/* QR scanner modal */}
-      {scanOpen && <QRScannerModal onClose={() => setScanOpen(false)} />}
+      {scanOpen && (
+        <QRScannerModal
+          onClose={() => setScanOpen(false)}
+          onTasteMatch={handleTasteMatch}
+        />
+      )}
 
-      {/* Modal that shows the QR code and copyable profile link */}
+      {/* Share modal — includes taste profile encoded into the QR */}
       {shareOpen && spotifyId && (
-        <ShareModal spotifyId={spotifyId} onClose={() => setShareOpen(false)} />
+        <ShareModal
+          spotifyId={spotifyId}
+          displayName={displayName ?? spotifyId}
+          topArtists={topArtists}
+          topTracks={topTracks}
+          genreCounts={genreCounts}
+          onClose={() => setShareOpen(false)}
+        />
+      )}
+
+      {/* Taste match modal — shown after scanning a friend's QR */}
+      {tasteMatch && (
+        <TasteMatchModal
+          encodedPayload={tasteMatch.encodedPayload}
+          theirSpotifyId={tasteMatch.theirSpotifyId}
+          myDisplayName={displayName ?? 'You'}
+          myTopArtists={topArtists}
+          myTopTracks={topTracks}
+          myGenreCounts={genreCounts}
+          onClose={() => setTasteMatch(null)}
+        />
       )}
 
       <Dashboard
