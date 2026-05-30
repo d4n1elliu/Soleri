@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSpotifyAuth } from './hooks';
 import { buildSpotifyAuthUrl } from './api';
 import { LandingPage } from './components/landing';
-import { Dashboard, ShareModal } from './components/dashboard';
+import { Dashboard, ShareModal, QRScannerModal } from './components/dashboard';
 
 // Root of the app which decides whether to show the landing page or the dashboard
 export default function App() {
@@ -20,6 +20,7 @@ export default function App() {
   } = useSpotifyAuth();
 
   const [shareOpen, setShareOpen] = useState(false);
+  const [scanOpen, setScanOpen] = useState(false);
 
   // Show a spinner while the initial Spotify data is loading
   if (isLoading) {
@@ -30,7 +31,7 @@ export default function App() {
     );
   }
 
-  // If user not logged in, then Sshow the marketing landing page
+  // If user not logged in, show the marketing landing page
   if (!isLoggedIn) {
     return <LandingPage loginUrl={buildSpotifyAuthUrl()} />;
   }
@@ -40,6 +41,19 @@ export default function App() {
       <header className="relative mb-8 text-center sm:mb-12">
         <h1 className="text-3xl font-bold tracking-tight">Soleri</h1>
         <p className="mt-2 text-sm text-zinc-400">Your Personal Spotify Analytics Dashboard</p>
+
+        {/* Scan button — left side of the header */}
+        <button
+          onClick={() => setScanOpen(true)}
+          className="absolute left-0 top-0 flex items-center gap-1.5 rounded-full border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white"
+          aria-label="Scan QR code"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1z" clipRule="evenodd" />
+            <path d="M11 4a1 1 0 10-2 0v1a1 1 0 002 0V4zM10 7a1 1 0 011 1v1h2a1 1 0 110 2h-3a1 1 0 01-1-1V8a1 1 0 011-1zM16 9a1 1 0 100 2 1 1 0 000-2zM9 13a1 1 0 011-1h1a1 1 0 110 2v2a1 1 0 11-2 0v-3zM7 11a1 1 0 100-2H4a1 1 0 100 2h3zM17 13a1 1 0 01-1 1h-2a1 1 0 110-2h2a1 1 0 011 1zM16 17a1 1 0 100-2h-3a1 1 0 100 2h3z" />
+          </svg>
+          Scan
+        </button>
 
         {/* Wait for the Spotify ID before showing the Share button */}
         {spotifyId && (
@@ -54,6 +68,9 @@ export default function App() {
           </button>
         )}
       </header>
+
+      {/* QR scanner modal */}
+      {scanOpen && <QRScannerModal onClose={() => setScanOpen(false)} />}
 
       {/* Modal that shows the QR code and copyable profile link */}
       {shareOpen && spotifyId && (
