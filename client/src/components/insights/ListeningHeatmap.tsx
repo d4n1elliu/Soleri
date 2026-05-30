@@ -38,7 +38,7 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
       </p>
 
       <div className="overflow-x-auto">
-        <div className="min-w-[440px]">
+        <div className="min-w-[340px]">
           {/* Hour labels along the top */}
           <div
             className="grid text-[10px] text-zinc-500"
@@ -99,7 +99,7 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
       </div>
 
       {/* Summary stats below the grid */}
-      <div className="mt-5 grid gap-3 sm:grid-cols-3">
+      <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
         <div className="rounded-lg bg-zinc-900 p-3">
           <p className="text-xs text-zinc-500">Peak slot</p>
           <p className="mt-1 text-sm font-semibold text-green-400">
@@ -107,14 +107,18 @@ export function ListeningHeatmap({ plays }: { plays: RecentPlay[] }) {
           </p>
         </div>
         <div className="rounded-lg bg-zinc-900 p-3">
-          <p className="text-xs text-zinc-500">Work focus (9am–6pm)</p>
+          <p className="text-xs text-zinc-500">
+            <span className="hidden sm:inline">Work focus (9am–6pm)</span>
+            <span className="sm:hidden">Work hrs</span>
+          </p>
           <p className="mt-1 text-sm font-semibold text-white">{pct(focus)}%</p>
         </div>
         <div className="rounded-lg bg-zinc-900 p-3">
-          <p className="text-xs text-zinc-500">Wind down (6pm–12am)</p>
-          <p className="mt-1 text-sm font-semibold text-white">
-            {pct(windDown)}%
+          <p className="text-xs text-zinc-500">
+            <span className="hidden sm:inline">Wind down (6pm–12am)</span>
+            <span className="sm:hidden">Evening</span>
           </p>
+          <p className="mt-1 text-sm font-semibold text-white">{pct(windDown)}%</p>
         </div>
       </div>
       {lateNight > 0 && (

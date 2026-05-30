@@ -39,14 +39,14 @@ export function Dashboard({
 }: DashboardProps) {
   return (
     <div className="mx-auto max-w-6xl space-y-8">
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 md:gap-6 md:grid-cols-3">
         {topTracks[0] && <TopTrackCard track={topTracks[0]} />}
         <div className="relative md:col-span-1">
-          <div className="hide-scrollbar h-[420px] overflow-y-auto md:absolute md:inset-0 md:h-auto">
+          <div className="hide-scrollbar h-72 overflow-y-auto sm:h-[420px] md:absolute md:inset-0 md:h-auto">
             <TrackList tracks={topTracks.slice(1, 50)} />
           </div>
         </div>
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
           <PopularityBarChart tracks={topTracks.slice(0, 50)} />
           <GenrePieChart genres={genreCounts} />
         </div>

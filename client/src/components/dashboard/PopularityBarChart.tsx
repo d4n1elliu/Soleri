@@ -20,7 +20,7 @@ export function PopularityBarChart({ tracks }: { tracks: SpotifyTrack[] }) {
       <h3 className="mb-4 text-sm font-medium uppercase tracking-widest text-zinc-400">
         Popularity
       </h3>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
           {/* Track names are hidden as there are too many to show on a small chart */}
           <XAxis dataKey="name" hide />
