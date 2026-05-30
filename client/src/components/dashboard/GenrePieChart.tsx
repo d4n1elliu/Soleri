@@ -19,13 +19,13 @@ export function GenrePieChart({ genres }: { genres: { genre: string; count: numb
       <h3 className="mb-4 text-sm font-medium uppercase tracking-widest text-zinc-400">
         Top Genres
       </h3>
-      <ResponsiveContainer width="100%" height={320}>
+      <ResponsiveContainer width="100%" height={280}>
         <PieChart style={{ outline: 'none' }}>
           <Pie
             data={data}
             cx="50%"
             cy="45%"
-            outerRadius={100}
+            outerRadius={85}
             dataKey="value"
             // Show percentage inside each slice
             label={({ percent }) => `${((percent ?? 0) * 100).toFixed(0)}%`}
