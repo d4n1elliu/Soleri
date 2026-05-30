@@ -110,7 +110,7 @@ export function DiscoveryRateChart({ plays }: { plays: RecentPlay[] }) {
       </ResponsiveContainer>
 
       {/* Summary stats below the chart */}
-      <div className="mt-5 grid gap-3 sm:grid-cols-3">
+      <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
         <div className="rounded-lg bg-zinc-900 p-3">
           <p className="text-xs text-zinc-500">Discovery rate</p>
           <p className="mt-1 text-sm font-semibold text-purple-400">

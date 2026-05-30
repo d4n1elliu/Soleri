@@ -39,7 +39,7 @@ export function ArtistObsessionPhases({
         Artists you played heavily over a stretch of your recent history
       </p>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {phases.map((phase) => {
           const artist = artistById.get(phase.artistId);
           // Use the smallest image available to keep it crisp at the small size
