@@ -4,5 +4,6 @@ export * from './PopularityBarChart';
 export * from './RecentPlayCount';
 export * from './QRScannerModal';
 export * from './ShareModal';
+export * from './TasteMatchModal';
 export * from './TopTrackCard';
 export * from './TrackList';
