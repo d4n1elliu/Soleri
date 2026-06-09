@@ -22,13 +22,13 @@ const FEATURES = [
   },
   {
     title: 'Listening Marathons',
-    desc: 'Your longest uninterrupted listening sessions, ranked.',
+    desc: 'Your longest uninterrupted listening sessions.',
     detail: 'Relive your longest music runs! Every marathon session captured, dated and ranked so you can see when music truly took over.',
   },
   {
     title: 'Artist Obsessions',
     desc: 'Phases where one artist took over your life',
-    detail: 'Map the arc of every artist obsession: when it started, how intense it peaked, and when you finally moved on.',
+    detail: 'Map the arc of every artist obsession: when it started, how intense it peaked and when you finally moved on.',
   },
   {
     title: 'Billboard Comparison',
@@ -41,7 +41,7 @@ const STEPS = [
   {
     step: '01',
     title: 'Connect your Spotify account',
-    desc: 'Sign in securely via Spotify OAuth. Soleri only requests read-only access and never stores your credentials or modifies your library.',
+    desc: 'Sign in securely via Spotify OAuth. Soleri only requests read only access and never stores your credentials or modifies your personal library.',
     detail: 'Takes under 10 seconds. No credit card required.',
   },
   {
@@ -85,15 +85,9 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
             </a>
             <a
               href={loginUrl}
-              className="text-sm font-medium text-zinc-300 transition-colors hover:text-white"
-            >
-              Log in
-            </a>
-            <a
-              href={loginUrl}
               className="rounded-full bg-green-500 px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-green-400"
             >
-              Get started
+              Connect with Spotify
             </a>
             {/* Hamburger — mobile only */}
             <button
@@ -199,9 +193,6 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
           <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
             Everything your music says about you
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-center text-zinc-400">
-            Six ways to show your recent listening data. 
-          </p>
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((feature) => (
               <div
@@ -226,9 +217,6 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
           <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
             How it works
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-center text-zinc-400">
-            From connecting your Spotify account to a fully personalised dashboard in three steps.
-          </p>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {STEPS.map((step) => (
               <div
