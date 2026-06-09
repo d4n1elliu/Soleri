@@ -15,8 +15,8 @@ export function GenrePieChart({ genres }: { genres: { genre: string; count: numb
   const data = genres.map((g) => ({ name: g.genre, value: g.count }));
 
   return (
-    <div className="rounded-xl bg-zinc-800 p-6">
-      <h3 className="mb-4 text-sm font-medium uppercase tracking-widest text-zinc-400">
+    <div className="rounded-2xl bg-zinc-900 p-5 ring-1 ring-zinc-800">
+      <h3 className="mb-4 text-sm font-semibold text-white">
         Top Genres
       </h3>
       <ResponsiveContainer width="100%" height={280}>

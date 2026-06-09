@@ -16,8 +16,8 @@ export function PopularityBarChart({ tracks }: { tracks: SpotifyTrack[] }) {
   }));
 
   return (
-    <div className="rounded-xl bg-zinc-800 p-4">
-      <h3 className="mb-4 text-sm font-medium uppercase tracking-widest text-zinc-400">
+    <div className="rounded-2xl bg-zinc-900 p-5 ring-1 ring-zinc-800">
+      <h3 className="mb-4 text-sm font-semibold text-white">
         Popularity
       </h3>
       <ResponsiveContainer width="100%" height={220}>

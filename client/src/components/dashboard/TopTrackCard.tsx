@@ -11,7 +11,7 @@ export function TopTrackCard({ track }: { track: SpotifyTrack }) {
       href={track.external_urls.spotify}
       target="_blank"
       rel="noreferrer"
-      className="block rounded-xl bg-zinc-800 p-4 shadow transition-colors hover:bg-zinc-700"
+      className="block rounded-2xl bg-zinc-900 p-5 ring-1 ring-zinc-800 transition-colors hover:ring-zinc-600"
     >
       {/* Mobile (< sm): compact horizontal layout so the image doesn't dominate the screen */}
       <div className="flex items-center gap-4 sm:hidden">

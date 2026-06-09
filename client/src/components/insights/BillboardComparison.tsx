@@ -28,8 +28,8 @@ function ArtistAvatar({ src, alt }: { src: string | null | undefined; alt: strin
 export function BillboardComparison({ billboard, billboardLoading, topArtists, topTracks }: Props) {
   if (billboardLoading) {
     return (
-      <section className="rounded-xl bg-zinc-800 p-6">
-        <h3 className="mb-1 text-sm font-medium uppercase tracking-widest text-zinc-400">
+      <section className="rounded-2xl bg-zinc-900 ring-1 ring-zinc-800 p-6">
+        <h3 className="mb-1 text-base font-semibold text-white">
           Billboard Comparison
         </h3>
         <p className="mt-4 text-center text-sm text-zinc-500">Loading Billboard data…</p>
@@ -39,8 +39,8 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
 
   if (!billboard) {
     return (
-      <section className="rounded-xl bg-zinc-800 p-6">
-        <h3 className="mb-1 text-sm font-medium uppercase tracking-widest text-zinc-400">
+      <section className="rounded-2xl bg-zinc-900 ring-1 ring-zinc-800 p-6">
+        <h3 className="mb-1 text-base font-semibold text-white">
           Billboard Comparison
         </h3>
         <p className="mt-4 text-center text-sm text-zinc-500">Billboard data unavailable.</p>
@@ -54,8 +54,8 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
   const popularityDiff = userAvgPopularity - billboard.averagePopularity;
 
   return (
-    <section className="rounded-xl bg-zinc-800 p-3 sm:p-6">
-      <h3 className="mb-1 text-sm font-medium uppercase tracking-widest text-zinc-400">
+    <section className="rounded-2xl bg-zinc-900 ring-1 ring-zinc-800 p-4 sm:p-7">
+      <h3 className="mb-1 text-base font-semibold text-white">
         Billboard Comparison
       </h3>
       <p className="mb-6 text-xs text-zinc-500">
@@ -64,15 +64,15 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
 
       {/* Three headline stats */}
       <div className="mb-6 grid grid-cols-3 gap-2 sm:gap-4">
-        <div className="rounded-lg bg-zinc-900 p-4 text-center">
+        <div className="rounded-lg bg-zinc-800 p-4 text-center">
           <p className="text-2xl font-bold text-white">{userAvgPopularity}</p>
           <p className="mt-1 text-xs text-zinc-500">Your avg popularity</p>
         </div>
-        <div className="rounded-lg bg-zinc-900 p-4 text-center">
+        <div className="rounded-lg bg-zinc-800 p-4 text-center">
           <p className="text-2xl font-bold text-white">{billboard.averagePopularity}</p>
           <p className="mt-1 text-xs text-zinc-500">Billboard avg</p>
         </div>
-        <div className="rounded-lg bg-zinc-900 p-4 text-center">
+        <div className="rounded-lg bg-zinc-800 p-4 text-center">
           <p className="text-2xl font-bold" style={{ color: SPOTIFY_GREEN }}>
             {overlapCount}
             <span className="text-base font-normal text-zinc-500"> / {billboard.artists.length}</span>
@@ -208,7 +208,7 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
       </div>
 
       {/* Explanation of how to read the table */}
-      <div className="mt-5 rounded-lg bg-zinc-900 p-5">
+      <div className="mt-5 rounded-lg bg-zinc-800 p-5">
         <p className="mb-3 text-sm font-semibold text-zinc-200">Billboard Top 100 Information</p>
         <ul className="space-y-2.5 text-sm text-zinc-400">
           <li className="flex items-start gap-2.5">

@@ -9,7 +9,16 @@ interface TasteMatchState {
   theirSpotifyId: string;
 }
 
-// Root of the app which decides whether to show the landing page or the dashboard
+const NAV_ITEMS = [
+  { label: 'Overview', href: '#overview' },
+  { label: 'Recent Plays', href: '#recent-plays' },
+  { label: 'Listening Clock', href: '#listening-clock' },
+  { label: 'Marathons', href: '#listening-marathons' },
+  { label: 'Artist Obsessions', href: '#artist-obsessions' },
+  { label: 'Discovery Rate', href: '#discovery-rate' },
+  { label: 'Billboard', href: '#billboard' },
+];
+
 export default function App() {
   const {
     isLoggedIn,
@@ -34,30 +43,37 @@ export default function App() {
     setTasteMatch({ encodedPayload, theirSpotifyId });
   }
 
-  // Show a spinner while the initial Spotify data is loading
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-900">
+      <div className="flex min-h-screen items-center justify-center bg-zinc-950">
         <p className="text-zinc-400">Loading your tracks…</p>
       </div>
     );
   }
 
-  // If user not logged in, show the marketing landing page
   if (!isLoggedIn) {
     return <LandingPage loginUrl={buildSpotifyAuthUrl()} />;
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900 px-3 pb-16 pt-6 text-white sm:px-6 sm:pt-12">
-      <header className="mb-8 sm:mb-12">
-        {/* Three-column flex row: each outer col is flex-1 so the title stays exactly centred
-            regardless of whether the Share button has loaded yet */}
-        <div className="flex items-center">
-          <div className="flex flex-1 justify-start">
+    <div className="min-h-screen bg-zinc-950 text-white">
+      {/* Sticky top navbar */}
+      <header className="sticky top-0 z-20 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur">
+        <div className="flex items-center justify-between px-6 py-3.5">
+          <div className="flex items-center gap-2.5">
+            <img src="/Soleri.svg" alt="Soleri" className="h-7 w-7 rounded-md" />
+            <span className="font-bold tracking-tight">Soleri</span>
+          </div>
+          {displayName && (
+            <p className="hidden text-sm text-zinc-500 sm:block">
+              Welcome back,{' '}
+              <span className="font-medium text-zinc-300">{displayName}</span>
+            </p>
+          )}
+          <div className="flex items-center gap-2">
             <button
               onClick={() => setScanOpen(true)}
-              className="flex items-center gap-1.5 rounded-full border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white"
+              className="flex items-center gap-1.5 rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white"
               aria-label="Scan QR code"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -66,15 +82,10 @@ export default function App() {
               </svg>
               Scan
             </button>
-          </div>
-
-          <h1 className="text-3xl font-bold tracking-tight">Soleri</h1>
-
-          <div className="flex flex-1 justify-end">
             {spotifyId && (
               <button
                 onClick={() => setShareOpen(true)}
-                className="flex items-center gap-1.5 rounded-full border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white"
+                className="flex items-center gap-1.5 rounded-lg bg-green-500 px-3 py-1.5 text-sm font-medium text-black transition-colors hover:bg-green-400"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
@@ -84,19 +95,47 @@ export default function App() {
             )}
           </div>
         </div>
-
-        <p className="mt-2 text-center text-sm text-zinc-400">Your Personal Spotify Analytics Dashboard</p>
       </header>
 
-      {/* QR scanner modal */}
+      <div className="flex">
+        {/* Left sidebar nav — desktop only */}
+        <aside className="sticky top-[57px] hidden h-[calc(100vh-57px)] w-52 shrink-0 overflow-y-auto border-r border-zinc-800 py-6 lg:block">
+          <nav className="flex flex-col gap-0.5 px-3">
+            <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-widest text-zinc-600">
+              Dashboard
+            </p>
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="rounded-lg px-3 py-2 text-sm text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Main content */}
+        <main className="min-w-0 flex-1 px-4 pb-16 pt-8 sm:px-8">
+          <Dashboard
+            topTracks={topTracks}
+            topArtists={topArtists}
+            recentPlays={recentPlays}
+            playCounts={playCounts}
+            genreCounts={genreCounts}
+            billboard={billboard}
+            billboardLoading={billboardLoading}
+          />
+        </main>
+      </div>
+
       {scanOpen && (
         <QRScannerModal
           onClose={() => setScanOpen(false)}
           onTasteMatch={handleTasteMatch}
         />
       )}
-
-      {/* Share modal — includes taste profile encoded into the QR */}
       {shareOpen && spotifyId && (
         <ShareModal
           spotifyId={spotifyId}
@@ -107,8 +146,6 @@ export default function App() {
           onClose={() => setShareOpen(false)}
         />
       )}
-
-      {/* Taste match modal — shown after scanning a friend's QR */}
       {tasteMatch && (
         <TasteMatchModal
           encodedPayload={tasteMatch.encodedPayload}
@@ -120,16 +157,6 @@ export default function App() {
           onClose={() => setTasteMatch(null)}
         />
       )}
-
-      <Dashboard
-        topTracks={topTracks}
-        topArtists={topArtists}
-        recentPlays={recentPlays}
-        playCounts={playCounts}
-        genreCounts={genreCounts}
-        billboard={billboard}
-        billboardLoading={billboardLoading}
-      />
     </div>
   );
 }

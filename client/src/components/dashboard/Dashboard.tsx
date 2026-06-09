@@ -27,7 +27,6 @@ interface DashboardProps {
   billboardLoading: boolean;
 }
 
-// Lays out all the dashboard sections in order: top tracks, charts, then insights
 export function Dashboard({
   topTracks,
   topArtists,
@@ -38,41 +37,50 @@ export function Dashboard({
   billboardLoading,
 }: DashboardProps) {
   return (
-    <div className="mx-auto w-full max-w-6xl flex flex-col gap-8">
-      <div className="grid grid-cols-1 gap-4 md:gap-6 md:grid-cols-3">
+    <div id="overview" className="mx-auto flex w-full max-w-5xl flex-col gap-6">
+      <div id="listening-stats" className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
         {topTracks[0] && <TopTrackCard track={topTracks[0]} />}
         <div className="relative md:col-span-1">
           <div className="hide-scrollbar h-72 overflow-y-auto sm:h-[420px] md:absolute md:inset-0 md:h-auto">
             <TrackList tracks={topTracks.slice(1, 50)} />
           </div>
         </div>
-        <div className="space-y-4 md:space-y-6">
+        <div className="space-y-4 md:space-y-5">
           <PopularityBarChart tracks={topTracks.slice(0, 50)} />
           <GenrePieChart genres={genreCounts} />
         </div>
       </div>
 
-      <div>
-        <h2 className="mb-4 text-sm font-medium uppercase tracking-widest text-zinc-400">
-          Recent Play Count
-        </h2>
+      <div id="recent-plays" className="rounded-2xl bg-zinc-900 p-5 ring-1 ring-zinc-800 sm:p-7">
+        <h2 className="mb-1 text-base font-semibold text-white">Recent Play Count</h2>
+        <p className="mb-5 text-xs text-zinc-500">Your most replayed tracks from the last 50 plays</p>
         <RecentPlayCount tracks={topTracks} playCounts={playCounts} />
       </div>
 
-      <ListeningHeatmap plays={recentPlays} />
+      <div id="listening-clock">
+        <ListeningHeatmap plays={recentPlays} />
+      </div>
 
-      <ListeningMarathons plays={recentPlays} />
+      <div id="listening-marathons">
+        <ListeningMarathons plays={recentPlays} />
+      </div>
 
-      <ArtistObsessionPhases plays={recentPlays} topArtists={topArtists} />
+      <div id="artist-obsessions">
+        <ArtistObsessionPhases plays={recentPlays} topArtists={topArtists} />
+      </div>
 
-      <DiscoveryRateChart plays={recentPlays} />
+      <div id="discovery-rate">
+        <DiscoveryRateChart plays={recentPlays} />
+      </div>
 
-      <BillboardComparison
-        billboard={billboard}
-        billboardLoading={billboardLoading}
-        topArtists={topArtists}
-        topTracks={topTracks}
-      />
+      <div id="billboard">
+        <BillboardComparison
+          billboard={billboard}
+          billboardLoading={billboardLoading}
+          topArtists={topArtists}
+          topTracks={topTracks}
+        />
+      </div>
     </div>
   );
 }
