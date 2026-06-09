@@ -51,29 +51,29 @@ export function Dashboard({
         </div>
       </div>
 
-      <div id="recent-plays" className="rounded-2xl bg-zinc-900 p-5 ring-1 ring-zinc-800 sm:p-7">
+      <div id="recent-plays" className="scroll-mt-20 rounded-2xl bg-zinc-900 p-5 ring-1 ring-zinc-800 sm:p-7">
         <h2 className="mb-1 text-base font-semibold text-white">Recent Play Count</h2>
         <p className="mb-5 text-xs text-zinc-500">Your most replayed tracks from the last 50 plays</p>
         <RecentPlayCount tracks={topTracks} playCounts={playCounts} />
       </div>
 
-      <div id="listening-clock">
+      <div id="listening-clock" className="scroll-mt-20">
         <ListeningHeatmap plays={recentPlays} />
       </div>
 
-      <div id="listening-marathons">
+      <div id="listening-marathons" className="scroll-mt-20">
         <ListeningMarathons plays={recentPlays} />
       </div>
 
-      <div id="artist-obsessions">
+      <div id="artist-obsessions" className="scroll-mt-20">
         <ArtistObsessionPhases plays={recentPlays} topArtists={topArtists} />
       </div>
 
-      <div id="discovery-rate">
+      <div id="discovery-rate" className="scroll-mt-20">
         <DiscoveryRateChart plays={recentPlays} />
       </div>
 
-      <div id="billboard">
+      <div id="billboard" className="scroll-mt-20">
         <BillboardComparison
           billboard={billboard}
           billboardLoading={billboardLoading}
