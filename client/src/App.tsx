@@ -67,7 +67,7 @@ export default function App() {
           {displayName && (
             <p className="hidden text-sm text-zinc-500 sm:block">
               Welcome back {' '}
-              <span className="font-medium uppercase tracking-wide text-zinc-300">{displayName}</span>
+              <span className="ml-2 font-medium uppercase tracking-wide text-zinc-300">{displayName}</span>
             </p>
           )}
           <div className="flex items-center gap-2">
