@@ -65,8 +65,8 @@ export default function App() {
             <span className="font-bold tracking-tight">Soleri</span>
           </div>
           {displayName && (
-            <p className="hidden text-sm text-zinc-500 sm:block">
-              Welcome back,{' '}
+            <p className="hidden text-sm uppercase tracking-wide text-zinc-500 sm:block">
+              Welcome back {' '}
               <span className="font-medium text-zinc-300">{displayName}</span>
             </p>
           )}
