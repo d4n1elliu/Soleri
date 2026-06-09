@@ -39,16 +39,22 @@ const FEATURES = [
 
 const STEPS = [
   {
-    title: 'Connect your Spotify',
-    desc: 'Securely sign in with Spotify. We only request read access to your listening data.',
+    step: '01',
+    title: 'Connect your Spotify account',
+    desc: 'Sign in securely via Spotify OAuth. Soleri only requests read-only access and never stores your credentials or modifies your library.',
+    detail: 'Takes under 10 seconds. No credit card required.',
   },
   {
-    title: 'We analyse your history',
-    desc: 'Soleri crunches your top tracks, artists and recent plays into clear insights.',
+    step: '02',
+    title: 'We analyse your listening history',
+    desc: 'Soleri pulls your top tracks, artists, genres and recent play history directly from the Spotify API and processes it in real time.',
+    detail: 'Your last 6 months of data turned into six distinct insights instantly.',
   },
   {
-    title: 'Explore your dashboard',
-    desc: 'Dive into heatmaps, marathons, discovery trends and your Billboard score.',
+    step: '03',
+    title: 'Explore your personal dashboard',
+    desc: 'Browse your Listening Stats, Clock, Discovery Rate, Marathons, Artist Obsessions and Billboard Comparison all in one place.',
+    detail: 'Share your taste profile with friends via your personal QR code.',
   },
 ];
 
@@ -59,8 +65,8 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
     <div className="min-h-screen bg-zinc-900 text-white">
       {/* Navigation bar */}
       <nav className="sticky top-0 z-30 border-b border-zinc-800/80 bg-zinc-900/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between px-8 py-4">
+          <div className="flex items-center gap-2.5">
             <img src="/Soleri.svg" alt="Soleri logo" className="h-8 w-8 rounded-md" />
             <span className="text-lg font-bold tracking-tight">Soleri</span>
           </div>
@@ -221,22 +227,22 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
             How it works
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-center text-zinc-400">
-            From connecting your account to exploring your dashboard in three
-            simple steps.
+            From connecting your Spotify account to a fully personalised dashboard in three steps.
           </p>
-          <div className="mt-12 grid gap-4 md:grid-cols-3">
-            {STEPS.map((step, index) => (
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {STEPS.map((step) => (
               <div
                 key={step.title}
-                className="rounded-2xl bg-zinc-800/60 p-6 ring-1 ring-zinc-800"
+                className="relative flex flex-col rounded-2xl bg-zinc-900 p-8 ring-1 ring-zinc-800 transition-colors hover:ring-zinc-700"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-green-500 text-sm font-bold text-black">
-                  {index + 1}
+                <span className="text-5xl font-black text-zinc-800 leading-none select-none">
+                  {step.step}
                 </span>
-                <h3 className="mt-4 text-base font-semibold text-white">
+                <h3 className="mt-4 text-lg font-semibold text-white">
                   {step.title}
                 </h3>
-                <p className="mt-1 text-sm text-zinc-400">{step.desc}</p>
+                <p className="mt-3 text-sm leading-relaxed text-zinc-400">{step.desc}</p>
+                <p className="mt-4 text-xs font-medium text-green-500">{step.detail}</p>
               </div>
             ))}
           </div>
