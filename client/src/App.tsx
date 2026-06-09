@@ -65,15 +65,6 @@ export default function App() {
             <img src="/Soleri.svg" alt="Soleri" className="h-7 w-7 rounded-md" />
             <span className="font-bold tracking-tight">Soleri</span>
           </div>
-          {/* Mobile sections dropdown trigger - hidden on desktop */}
-          <button
-            onClick={() => setMobileNavOpen((o) => !o)}
-            className="flex items-center justify-center rounded-lg border border-zinc-700 p-2 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white lg:hidden"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
           {displayName && (
             <p className="hidden text-sm text-zinc-500 sm:block lg:block">
               Welcome back{' '}
@@ -81,6 +72,15 @@ export default function App() {
             </p>
           )}
           <div className="flex items-center gap-2">
+            {/* Mobile sections dropdown trigger — hidden on desktop */}
+            <button
+              onClick={() => setMobileNavOpen((o) => !o)}
+              className="flex items-center justify-center rounded-lg border border-zinc-700 p-2 text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white lg:hidden"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
             <button
               onClick={() => setScanOpen(true)}
               className="flex items-center gap-1.5 rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white"
