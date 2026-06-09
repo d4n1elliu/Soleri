@@ -10,7 +10,7 @@ interface TasteMatchState {
 }
 
 const NAV_ITEMS = [
-  { label: 'Overview', href: '#overview' },
+  { label: 'Overview', href: '#' },
   { label: 'Recent Plays', href: '#recent-plays' },
   { label: 'Listening Clock', href: '#listening-clock' },
   { label: 'Marathons', href: '#listening-marathons' },
