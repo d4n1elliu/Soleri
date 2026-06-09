@@ -28,7 +28,7 @@ export function RecentPlayCount({
       {tracksWithPlays.map((track) => (
         <div
           key={track.id}
-          className="flex items-center gap-4 rounded-lg bg-zinc-800 px-4 py-3"
+          className="flex items-center gap-4 rounded-lg bg-zinc-800/60 px-4 py-3 ring-1 ring-zinc-700/50"
         >
           <img
             src={track.album.images[2]?.url ?? track.album.images[0]?.url}
