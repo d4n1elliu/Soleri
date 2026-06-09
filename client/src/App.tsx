@@ -66,7 +66,7 @@ export default function App() {
           </div>
           {displayName && (
             <p className="hidden text-sm text-zinc-500 sm:block">
-              Welcome back{' '}
+              Welcome back {' '}
               <span className="font-medium uppercase tracking-wide text-zinc-300">{displayName}</span>
             </p>
           )}
