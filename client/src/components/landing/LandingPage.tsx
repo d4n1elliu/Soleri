@@ -85,15 +85,9 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
             </a>
             <a
               href={loginUrl}
-              className="text-sm font-medium text-zinc-300 transition-colors hover:text-white"
-            >
-              Log in
-            </a>
-            <a
-              href={loginUrl}
               className="rounded-full bg-green-500 px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-green-400"
             >
-              Get started
+              Connect with Spotify
             </a>
             {/* Hamburger — mobile only */}
             <button
