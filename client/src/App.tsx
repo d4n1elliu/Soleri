@@ -38,6 +38,7 @@ export default function App() {
   const [shareOpen, setShareOpen] = useState(false);
   const [scanOpen, setScanOpen] = useState(false);
   const [tasteMatch, setTasteMatch] = useState<TasteMatchState | null>(null);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   function handleTasteMatch(encodedPayload: string, theirSpotifyId: string) {
     setTasteMatch({ encodedPayload, theirSpotifyId });
@@ -64,9 +65,19 @@ export default function App() {
             <img src="/Soleri.svg" alt="Soleri" className="h-7 w-7 rounded-md" />
             <span className="font-bold tracking-tight">Soleri</span>
           </div>
+          {/* Mobile sections dropdown trigger — hidden on desktop */}
+          <button
+            onClick={() => setMobileNavOpen((o) => !o)}
+            className="flex items-center gap-1.5 rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white lg:hidden"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            Sections
+          </button>
           {displayName && (
-            <p className="hidden text-sm text-zinc-500 sm:block">
-              Welcome back {' '}
+            <p className="hidden text-sm text-zinc-500 sm:block lg:block">
+              Welcome back{' '}
               <span className="ml-2 font-medium uppercase tracking-wide text-zinc-300">{displayName}</span>
             </p>
           )}
@@ -95,6 +106,27 @@ export default function App() {
             )}
           </div>
         </div>
+
+        {/* Mobile nav dropdown */}
+        {mobileNavOpen && (
+          <div className="border-t border-zinc-800 bg-zinc-950 px-4 py-3 lg:hidden">
+            <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-widest text-zinc-600">
+              Dashboard
+            </p>
+            <div className="grid grid-cols-2 gap-1">
+              {NAV_ITEMS.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileNavOpen(false)}
+                  className="rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
       </header>
 
       <div className="flex">
