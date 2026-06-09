@@ -6,32 +6,26 @@ import theWeeknd from '../../assets/the_weekend.jpg';
 
 const FEATURES = [
   {
-    icon: '🎧',
     title: 'Listening Stats',
     desc: 'Your top tracks, artists and genres at a glance.',
   },
   {
-    icon: '🕒',
     title: 'Listening Clock',
     desc: 'A heatmap of when you listen across hours and days.',
   },
   {
-    icon: '📈',
     title: 'Discovery Rate',
     desc: 'See how often you explore new music versus replaying favourites.',
   },
   {
-    icon: '🔥',
     title: 'Listening Marathons',
     desc: 'Your longest uninterrupted listening sessions, ranked.',
   },
   {
-    icon: '💫',
     title: 'Artist Obsessions',
     desc: 'Phases where one artist took over — then faded out.',
   },
   {
-    icon: '🏆',
     title: 'Billboard Comparison',
     desc: 'Measure your taste against the Billboard chart artists.',
   },
@@ -202,8 +196,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
                 key={feature.title}
                 className="rounded-2xl bg-zinc-900 p-5 ring-1 ring-zinc-800 transition-colors hover:ring-zinc-700"
               >
-                <span className="text-2xl">{feature.icon}</span>
-                <h3 className="mt-3 text-base font-semibold text-white">
+                <h3 className="text-base font-semibold text-white">
                   {feature.title}
                 </h3>
                 <p className="mt-1 text-sm text-zinc-400">{feature.desc}</p>
