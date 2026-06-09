@@ -188,7 +188,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       </section>
 
       {/* Feature band */}
-      <section id="features" className="bg-zinc-950 py-20">
+      <section id="features" className="scroll-mt-16 bg-zinc-950 py-20">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
             Everything your music says about you
@@ -212,7 +212,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="py-20">
+      <section id="how-it-works" className="scroll-mt-16 py-20">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
             How it works
