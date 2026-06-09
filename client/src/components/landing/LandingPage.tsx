@@ -8,26 +8,32 @@ const FEATURES = [
   {
     title: 'Listening Stats',
     desc: 'Your top tracks, artists and genres at a glance.',
+    detail: 'Check out your all time and recent favourites ranked by play count, broken down by track, artist and genre.',
   },
   {
     title: 'Listening Clock',
     desc: 'A heatmap of when you listen across hours and days.',
+    detail: 'Discover whether you are a night listener, a morning commuter or a weekend binge listener.',
   },
   {
     title: 'Discovery Rate',
     desc: 'See how often you explore new music versus replaying favourites.',
+    detail: 'Track how adventurous your taste is over time and watch your discovery score shift as you branch out or settle in.',
   },
   {
     title: 'Listening Marathons',
     desc: 'Your longest uninterrupted listening sessions, ranked.',
+    detail: 'Relive your longest music runs! Every marathon session captured, dated and ranked so you can see when music truly took over.',
   },
   {
     title: 'Artist Obsessions',
-    desc: 'Phases where one artist took over — then faded out.',
+    desc: 'Phases where one artist took over your life',
+    detail: 'Map the arc of every artist obsession: when it started, how intense it peaked, and when you finally moved on.',
   },
   {
     title: 'Billboard Comparison',
     desc: 'Measure your taste against the Billboard chart artists.',
+    detail: 'Find out where your listening overlaps with the mainstream.',
   },
 ];
 
@@ -190,16 +196,18 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
           <p className="mx-auto mt-3 max-w-xl text-center text-zinc-400">
             Six ways to show your recent listening data. 
           </p>
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((feature) => (
               <div
                 key={feature.title}
-                className="rounded-2xl bg-zinc-900 p-5 ring-1 ring-zinc-800 transition-colors hover:ring-zinc-700"
+                className="flex flex-col rounded-2xl bg-zinc-900 p-8 ring-1 ring-zinc-800 transition-colors hover:ring-zinc-700"
               >
-                <h3 className="text-base font-semibold text-white">
+                <div className="mb-5 h-px w-10 bg-green-500" />
+                <h3 className="text-lg font-semibold text-white">
                   {feature.title}
                 </h3>
-                <p className="mt-1 text-sm text-zinc-400">{feature.desc}</p>
+                <p className="mt-2 text-sm font-medium text-zinc-300">{feature.desc}</p>
+                <p className="mt-3 text-sm leading-relaxed text-zinc-500">{feature.detail}</p>
               </div>
             ))}
           </div>
