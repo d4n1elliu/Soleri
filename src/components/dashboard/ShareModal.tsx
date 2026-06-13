@@ -1,27 +1,46 @@
 import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
+import type { SpotifyTopArtist, SpotifyTrack } from '../../types';
+import { encodeTasteProfile } from '../../lib';
+
 interface ShareModalProps {
   spotifyId: string;
+  displayName: string;
+  topArtists: SpotifyTopArtist[];
+  topTracks: SpotifyTrack[];
+  genreCounts: { genre: string; count: number }[];
   onClose: () => void;
 }
 
-export function ShareModal({ spotifyId, onClose }: ShareModalProps) {
+export function ShareModal({
+  spotifyId,
+  displayName,
+  topArtists,
+  topTracks,
+  genreCounts,
+  onClose,
+}: ShareModalProps) {
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const profileUrl = `https://open.spotify.com/user/${spotifyId}`;
+  // Custom scheme — no URL dependency, scanner recognizes soleri:// prefix
+  const payload = encodeTasteProfile(spotifyId, displayName, topArtists, topTracks, genreCounts);
+  const qrContent = `soleri://taste/${payload}`;
+
+  // Spotify profile shown as the human-readable link
+  const spotifyUrl = `https://open.spotify.com/user/${spotifyId}`;
 
   useEffect(() => {
-    QRCode.toDataURL(profileUrl, {
+    QRCode.toDataURL(qrContent, {
       width: 300,
       margin: 2,
       color: { dark: '#000000', light: '#ffffff' },
-      errorCorrectionLevel: 'M',
+      errorCorrectionLevel: 'L',
     }).then(setQrDataUrl);
-  }, [profileUrl]);
+  }, [qrContent]);
 
   function copyUrl() {
-    navigator.clipboard.writeText(profileUrl);
+    navigator.clipboard.writeText(spotifyUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -69,15 +88,15 @@ export function ShareModal({ spotifyId, onClose }: ShareModalProps) {
         </div>
 
         <p className="mb-3 text-center text-xs text-zinc-500">
-          Scan to open on Spotify
+          Scan with Soleri to compare music tastes
         </p>
 
         <div className="mb-3 flex items-center gap-2 rounded-lg bg-zinc-700 px-3 py-2.5">
-          <span className="flex-1 truncate text-sm text-zinc-300">{profileUrl}</span>
+          <span className="flex-1 truncate text-sm text-zinc-300">{spotifyUrl}</span>
           <button
             onClick={copyUrl}
             className="shrink-0 text-zinc-400 transition-colors hover:text-white"
-            aria-label="Copy link"
+            aria-label="Copy Spotify link"
           >
             {copied ? (
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-400" viewBox="0 0 20 20" fill="currentColor">
