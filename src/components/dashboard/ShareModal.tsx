@@ -31,9 +31,9 @@ export function ShareModal({
 
   useEffect(() => {
     QRCode.toDataURL(qrUrl, {
-      width: 200,
+      width: 240,
       margin: 2,
-      color: { dark: '#ffffff', light: '#27272a' },
+      color: { dark: '#000000', light: '#ffffff' },
       errorCorrectionLevel: 'L',
     }).then(setQrDataUrl);
   }, [qrUrl]);
@@ -73,15 +73,16 @@ export function ShareModal({
 
         <div className="mb-5 flex justify-center">
           {qrDataUrl ? (
-            <img
-              src={qrDataUrl}
-              alt="Profile QR code"
-              className="rounded-lg"
-              width={200}
-              height={200}
-            />
+            <div className="rounded-xl bg-white p-3">
+              <img
+                src={qrDataUrl}
+                alt="Profile QR code"
+                width={240}
+                height={240}
+              />
+            </div>
           ) : (
-            <div className="h-[200px] w-[200px] rounded-lg bg-zinc-700 animate-pulse" />
+            <div className="h-[264px] w-[264px] rounded-xl bg-zinc-700 animate-pulse" />
           )}
         </div>
 
