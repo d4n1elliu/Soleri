@@ -173,7 +173,7 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
         )}
 
         {!scannedUrl && !errorMsg && (
-          <p className="px-5 pb-5 text-center text-xs text-zinc-500">
+          <p className="px-5 py-4 text-center text-xs text-zinc-500">
             Point your camera at a Soleri profile QR code
           </p>
         )}
