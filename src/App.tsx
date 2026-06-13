@@ -3,6 +3,7 @@ import { useSpotifyAuth } from './hooks';
 import { buildSpotifyAuthUrl } from './api';
 import { LandingPage } from './components/landing';
 import { Dashboard, ShareModal, QRScannerModal, TasteMatchModal } from './components/dashboard';
+import { encodeTasteProfile } from './lib';
 
 interface TasteMatchState {
   encodedPayload: string;
@@ -41,7 +42,14 @@ export default function App() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   function handleTasteMatch(theirSpotifyId: string) {
-    window.open(`https://open.spotify.com/user/${theirSpotifyId}`, '_blank', 'noopener,noreferrer');
+    const encodedPayload = encodeTasteProfile(
+      theirSpotifyId,
+      displayName ?? theirSpotifyId,
+      topArtists,
+      topTracks,
+      genreCounts,
+    );
+    setTasteMatch({ encodedPayload, theirSpotifyId });
   }
 
   if (isLoading) {
