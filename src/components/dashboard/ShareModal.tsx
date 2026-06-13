@@ -31,7 +31,7 @@ export function ShareModal({
       color: { dark: '#000000', light: '#ffffff' },
       errorCorrectionLevel: 'L',
     }).then(setQrDataUrl);
-  }, [qrContent]);
+  }, [spotifyUrl]);
 
   function copyUrl() {
     navigator.clipboard.writeText(spotifyUrl);
