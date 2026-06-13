@@ -1,4 +1,3 @@
-// An artist's id and name, used inside their song tracks
 export interface SpotifyArtist {
   id: string;
   name: string;
@@ -12,14 +11,13 @@ export interface SpotifyAlbum {
 export interface SpotifyTrack {
   id: string;
   name: string;
-  popularity: number;   // Spotify's 0–100 popularity score
+  popularity: number;
   duration_ms: number;
   artists: SpotifyArtist[];
   album: SpotifyAlbum;
   external_urls: { spotify: string };
 }
 
-// A full artist, with genres, followers and more
 export interface SpotifyTopArtist extends SpotifyArtist {
   genres: string[];
   popularity: number;
@@ -28,13 +26,11 @@ export interface SpotifyTopArtist extends SpotifyArtist {
   external_urls: { spotify: string };
 }
 
-// A track plus when it was played
 export interface RecentPlay {
   played_at: string;
   track: SpotifyTrack;
 }
 
-// A Billboard Hot 100 artist matched to Spotify data
 export interface BillboardArtist {
   name: string;
   popularity: number;
@@ -44,7 +40,6 @@ export interface BillboardArtist {
   url: string;
 }
 
-// The response from our /api/billboard endpoint
 export interface BillboardData {
   artists: BillboardArtist[];
   averagePopularity: number;
