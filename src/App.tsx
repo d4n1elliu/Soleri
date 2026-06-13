@@ -170,10 +170,6 @@ export default function App() {
       {shareOpen && spotifyId && (
         <ShareModal
           spotifyId={spotifyId}
-          displayName={displayName ?? spotifyId}
-          topArtists={topArtists}
-          topTracks={topTracks}
-          genreCounts={genreCounts}
           onClose={() => setShareOpen(false)}
         />
       )}

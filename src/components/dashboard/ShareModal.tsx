@@ -1,42 +1,24 @@
 import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
-import type { SpotifyTopArtist, SpotifyTrack } from '../../types';
-import { encodeTasteProfile } from '../../lib';
-
 interface ShareModalProps {
   spotifyId: string;
-  displayName: string;
-  topArtists: SpotifyTopArtist[];
-  topTracks: SpotifyTrack[];
-  genreCounts: { genre: string; count: number }[];
   onClose: () => void;
 }
 
-export function ShareModal({
-  spotifyId,
-  displayName,
-  topArtists,
-  topTracks,
-  genreCounts,
-  onClose,
-}: ShareModalProps) {
+export function ShareModal({ spotifyId, onClose }: ShareModalProps) {
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [copied, setCopied] = useState(false);
 
   const profileUrl = `${window.location.origin}/u/${spotifyId}`;
 
-  // QR URL embeds the taste payload so scanners can show a comparison view
-  const tasteEncoded = encodeTasteProfile(displayName, topArtists, topTracks, genreCounts);
-  const qrUrl = `${profileUrl}?p=${tasteEncoded}`;
-
   useEffect(() => {
-    QRCode.toDataURL(qrUrl, {
+    QRCode.toDataURL(profileUrl, {
       width: 300,
-      margin: 1,
+      margin: 2,
       color: { dark: '#000000', light: '#ffffff' },
-      errorCorrectionLevel: 'L',
+      errorCorrectionLevel: 'M',
     }).then(setQrDataUrl);
-  }, [qrUrl]);
+  }, [profileUrl]);
 
   function copyUrl() {
     navigator.clipboard.writeText(profileUrl);
