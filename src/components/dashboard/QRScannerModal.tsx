@@ -46,10 +46,10 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
   }
 
   function openUrl() {
-    if (scannedUrl) {
-      const cleanUrl = parsed ? `${SOLERI_USER_PATH}${parsed.spotifyId}` : scannedUrl;
-      window.open(cleanUrl, '_blank', 'noopener,noreferrer');
-    }
+    const target = parsed
+      ? `https://open.spotify.com/user/${parsed.spotifyId}`
+      : scannedUrl;
+    if (target) window.open(target, '_blank', 'noopener,noreferrer');
     onClose();
   }
 
