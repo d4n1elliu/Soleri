@@ -60,5 +60,15 @@ export async function fetchUserProfile(
 }
 
 export function buildSpotifyAuthUrl(): string {
-  return '/api/auth/login';
+  const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID as string;
+  const redirectUri = import.meta.env.VITE_REDIRECT_URI as string;
+  return (
+    'https://accounts.spotify.com/authorize?' +
+    new URLSearchParams({
+      response_type: 'code',
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      scope: 'user-read-email user-top-read user-read-recently-played',
+    })
+  );
 }
