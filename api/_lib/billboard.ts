@@ -1,12 +1,10 @@
-// Returns only the primary artist, dropping any "feat." artist credits
-function primaryArtist(rawArtist) {
+function primaryArtist(rawArtist: string): string {
   return rawArtist
     .split(/\s+(?:featuring|feat\.?|ft\.?|&|\+|x|with)\s+/i)[0]
     .trim();
 }
 
-// Converts HTML entities like &amp; back to normal characters
-function htmlDecode(str) {
+function htmlDecode(str: string): string {
   return str
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
@@ -16,9 +14,7 @@ function htmlDecode(str) {
     .replace(/&apos;/g, "'");
 }
 
-// Removes the Billboard Hot 100 page and returns a list of artist names.
-// Billboard has no public API so we parse the raw HTML instead.
-async function fetchHot100Artists() {
+export async function fetchHot100Artists(): Promise<string[]> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000);
 
@@ -35,11 +31,9 @@ async function fetchHot100Artists() {
     if (!res.ok) throw new Error(`Billboard responded ${res.status}`);
 
     const html = await res.text();
-
-    // Each chart entry is separated by this class name in the HTML
     const rows = html.split('o-chart-results-list-row-container');
-    const seen = new Set();
-    const names = [];
+    const seen = new Set<string>();
+    const names: string[] = [];
 
     for (const row of rows) {
       const m = row.match(/<span[^>]*c-label[^>]*>[\s\S]*?<a[^>]*>([^<]+)<\/a>/);
@@ -47,7 +41,6 @@ async function fetchHot100Artists() {
       const raw = htmlDecode(m[1].trim());
       const primary = primaryArtist(raw);
       const key = primary.toLowerCase();
-      // Remove duplicates artists so the same artist can appear multiple times on the chart
       if (primary && !seen.has(key)) {
         seen.add(key);
         names.push(primary);
@@ -61,4 +54,46 @@ async function fetchHot100Artists() {
   }
 }
 
-module.exports = { fetchHot100Artists };
+export interface BillboardArtistResult {
+  name: string;
+  popularity: number;
+  followers: number;
+  genres: string[];
+  image: string | null;
+  url: string;
+}
+
+export async function lookupArtist(
+  name: string,
+  token: string,
+): Promise<BillboardArtistResult | null> {
+  const url =
+    'https://api.spotify.com/v1/search?' +
+    new URLSearchParams({ q: name, type: 'artist', limit: '1' });
+
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!response.ok) return null;
+
+  const data = await response.json() as { artists?: { items?: Array<{
+    name: string;
+    popularity: number;
+    followers: { total: number };
+    genres: string[];
+    images: { url: string }[];
+    external_urls: { spotify: string };
+    id: string;
+  }> } };
+  const artist = data.artists?.items?.[0];
+  if (!artist || !artist.images?.length) return null;
+
+  return {
+    name: artist.name,
+    popularity: artist.popularity ?? 0,
+    followers: artist.followers?.total ?? 0,
+    genres: artist.genres ?? [],
+    image: artist.images[artist.images.length - 1].url,
+    url: artist.external_urls?.spotify ?? `https://open.spotify.com/artist/${artist.id}`,
+  };
+}
