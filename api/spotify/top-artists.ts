@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getToken, unauthorized, serverError } from '../_lib/http';
-import { spotifyFetch } from '../_lib/spotify';
+import { getToken, unauthorized, serverError } from '../_lib/http.js';
+import { spotifyFetch } from '../_lib/spotify.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const token = getToken(req);

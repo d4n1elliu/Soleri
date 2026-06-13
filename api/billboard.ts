@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getToken, unauthorized, serverError } from './_lib/http';
-import { fetchHot100Artists, lookupArtist } from './_lib/billboard';
+import { getToken, unauthorized, serverError } from './_lib/http.js';
+import { fetchHot100Artists, lookupArtist } from './_lib/billboard.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const token = getToken(req);
