@@ -23,7 +23,7 @@ export function ShareModal({
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const profileUrl = `https://soleri.app/u/${spotifyId}`;
+  const profileUrl = `${window.location.origin}/u/${spotifyId}`;
 
   // QR URL embeds the taste payload so scanners can show a comparison view
   const tasteEncoded = encodeTasteProfile(displayName, topArtists, topTracks, genreCounts);
@@ -31,8 +31,8 @@ export function ShareModal({
 
   useEffect(() => {
     QRCode.toDataURL(qrUrl, {
-      width: 240,
-      margin: 2,
+      width: 300,
+      margin: 1,
       color: { dark: '#000000', light: '#ffffff' },
       errorCorrectionLevel: 'L',
     }).then(setQrDataUrl);
@@ -77,12 +77,12 @@ export function ShareModal({
               <img
                 src={qrDataUrl}
                 alt="Profile QR code"
-                width={240}
-                height={240}
+                width={300}
+                height={300}
               />
             </div>
           ) : (
-            <div className="h-[264px] w-[264px] rounded-xl bg-zinc-700 animate-pulse" />
+            <div className="h-[324px] w-[324px] rounded-xl bg-zinc-700 animate-pulse" />
           )}
         </div>
 
