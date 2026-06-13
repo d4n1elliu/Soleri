@@ -74,9 +74,9 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
           </button>
         </div>
 
-        {/* Camera viewport */}
+        {/* Camera viewport 4:3 */}
         {!scannedUrl && !errorMsg && (
-          <div className="relative mx-5 mb-4 overflow-hidden rounded-xl bg-zinc-900" style={{ aspectRatio: '1' }}>
+          <div className="relative overflow-hidden bg-zinc-900" style={{ aspectRatio: '4/3' }}>
             <Scanner
               onScan={handleScan}
               onError={(err) => setErrorMsg(String(err))}
@@ -85,7 +85,7 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
             />
             {/* Corner brackets overlay */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="relative h-48 w-48">
+              <div className="relative h-52 w-52">
                 <span className="absolute left-0 top-0 h-8 w-8 border-l-2 border-t-2 border-green-400 rounded-tl-md" />
                 <span className="absolute right-0 top-0 h-8 w-8 border-r-2 border-t-2 border-green-400 rounded-tr-md" />
                 <span className="absolute left-0 bottom-0 h-8 w-8 border-l-2 border-b-2 border-green-400 rounded-bl-md" />
