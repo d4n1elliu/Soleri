@@ -1,11 +1,24 @@
 import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
+import type { SpotifyTopArtist, SpotifyTrack } from '../../types';
+
 interface ShareModalProps {
   spotifyId: string;
+  displayName: string;
+  topArtists: SpotifyTopArtist[];
+  topTracks: SpotifyTrack[];
+  genreCounts: { genre: string; count: number }[];
   onClose: () => void;
 }
 
-export function ShareModal({ spotifyId, onClose }: ShareModalProps) {
+export function ShareModal({
+  spotifyId,
+  displayName: _displayName,
+  topArtists: _topArtists,
+  topTracks: _topTracks,
+  genreCounts: _genreCounts,
+  onClose,
+}: ShareModalProps) {
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [copied, setCopied] = useState(false);
 
