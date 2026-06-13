@@ -1,7 +1,8 @@
 import type { SpotifyTopArtist, SpotifyTrack } from '../types';
 
-// Compact taste payload encoded into the QR URL
+// Compact taste payload encoded into the QR
 export interface TastePayload {
+  id: string;   // Spotify user ID
   n: string;    // display name (max 20 chars)
   a: string[];  // top 10 artist IDs
   g: string[];  // top 5 genre strings
@@ -34,12 +35,14 @@ function fromBase64Url(str: string): string {
 }
 
 export function encodeTasteProfile(
+  spotifyId: string,
   displayName: string,
   topArtists: SpotifyTopArtist[],
   topTracks: SpotifyTrack[],
   genreCounts: { genre: string; count: number }[],
 ): string {
   const payload: TastePayload = {
+    id: spotifyId,
     n: displayName.slice(0, 20),
     a: topArtists.slice(0, 10).map((a) => a.id),
     g: genreCounts.slice(0, 5).map((g) => g.genre),
