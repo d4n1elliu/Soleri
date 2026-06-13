@@ -9,7 +9,7 @@ export function ShareModal({ spotifyId, onClose }: ShareModalProps) {
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const profileUrl = `${window.location.origin}/u/${spotifyId}`;
+  const profileUrl = `https://open.spotify.com/user/${spotifyId}`;
 
   useEffect(() => {
     QRCode.toDataURL(profileUrl, {
@@ -69,7 +69,7 @@ export function ShareModal({ spotifyId, onClose }: ShareModalProps) {
         </div>
 
         <p className="mb-3 text-center text-xs text-zinc-500">
-          Friends who scan this will see your taste match
+          Scan to open on Spotify
         </p>
 
         <div className="mb-3 flex items-center gap-2 rounded-lg bg-zinc-700 px-3 py-2.5">
