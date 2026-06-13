@@ -1,21 +1,25 @@
 import { useState } from 'react';
 import { Scanner } from '@yudiel/react-qr-scanner';
-import { decodeTasteProfile } from '../../lib/tasteProfile';
 
 interface QRScannerModalProps {
   onClose: () => void;
-  onTasteMatch?: (encodedPayload: string, theirSpotifyId: string) => void;
+  onTasteMatch?: (spotifyId: string) => void;
 }
 
-const SOLERI_SCHEME = 'soleri://taste/';
+const SPOTIFY_USER_PREFIX = 'https://open.spotify.com/user/';
+
+function parseSpotifyUserId(url: string): string | null {
+  if (!url.startsWith(SPOTIFY_USER_PREFIX)) return null;
+  const id = url.slice(SPOTIFY_USER_PREFIX.length).split('?')[0].split('/')[0];
+  return id || null;
+}
 
 export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
   const [scannedValue, setScannedValue] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const isSoleriQr = scannedValue?.startsWith(SOLERI_SCHEME) ?? false;
-  const encodedPayload = isSoleriQr ? scannedValue!.slice(SOLERI_SCHEME.length) : null;
-  const parsed = encodedPayload ? decodeTasteProfile(encodedPayload) : null;
+  const spotifyUserId = scannedValue ? parseSpotifyUserId(scannedValue) : null;
+  const isSpotifyUser = !!spotifyUserId;
 
   function handleScan(results: { rawValue: string }[]) {
     if (results.length > 0 && !scannedValue) {
@@ -23,18 +27,18 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
     }
   }
 
-  function handleTasteMatch() {
-    if (encodedPayload && parsed?.id && onTasteMatch) {
-      onTasteMatch(encodedPayload, parsed.id);
-      onClose();
-    }
-  }
-
   function viewOnSpotify() {
-    if (parsed?.id) {
-      window.open(`https://open.spotify.com/user/${parsed.id}`, '_blank', 'noopener,noreferrer');
+    if (spotifyUserId) {
+      window.open(`${SPOTIFY_USER_PREFIX}${spotifyUserId}`, '_blank', 'noopener,noreferrer');
     }
     onClose();
+  }
+
+  function handleTasteMatch() {
+    if (spotifyUserId && onTasteMatch) {
+      onTasteMatch(spotifyUserId);
+      onClose();
+    }
   }
 
   return (
@@ -67,7 +71,6 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
               styles={{ container: { width: '100%', height: '100%' } }}
               components={{ finder: false }}
             />
-            {/* Corner brackets overlay */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="relative h-52 w-52">
                 <span className="absolute left-0 top-0 h-8 w-8 border-l-2 border-t-2 border-green-400 rounded-tl-md" />
@@ -86,16 +89,16 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
           </div>
         )}
 
-        {/* Scanned — Soleri QR with taste payload */}
-        {scannedValue && isSoleriQr && parsed && (
+        {/* Scanned — Spotify user QR */}
+        {scannedValue && isSpotifyUser && (
           <div className="px-5 pb-5 space-y-3">
             <div className="flex items-center gap-2 rounded-lg bg-green-900/40 border border-green-700 px-4 py-3">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0 text-green-400" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
               <div>
-                <p className="text-sm font-medium text-green-300">Soleri user found!</p>
-                <p className="text-xs text-green-400/70">{parsed.n}</p>
+                <p className="text-sm font-medium text-green-300">Spotify user found!</p>
+                <p className="text-xs text-zinc-400 truncate max-w-[200px]">{spotifyUserId}</p>
               </div>
             </div>
 
@@ -131,10 +134,10 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
           </div>
         )}
 
-        {/* Scanned — non-Soleri QR */}
-        {scannedValue && !isSoleriQr && (
+        {/* Scanned — non-Spotify QR */}
+        {scannedValue && !isSpotifyUser && (
           <div className="px-5 pb-5 space-y-3">
-            <div className="flex items-center gap-2 rounded-lg bg-zinc-700 px-4 py-3">
+            <div className="rounded-lg bg-zinc-700 px-3 py-2.5">
               <p className="truncate text-sm text-zinc-300">{scannedValue}</p>
             </div>
             <button

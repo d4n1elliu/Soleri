@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
 import type { SpotifyTopArtist, SpotifyTrack } from '../../types';
-import { encodeTasteProfile } from '../../lib';
 
 interface ShareModalProps {
   spotifyId: string;
@@ -14,30 +13,25 @@ interface ShareModalProps {
 
 export function ShareModal({
   spotifyId,
-  displayName,
-  topArtists,
-  topTracks,
-  genreCounts,
+  displayName: _displayName,
+  topArtists: _topArtists,
+  topTracks: _topTracks,
+  genreCounts: _genreCounts,
   onClose,
 }: ShareModalProps) {
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [copied, setCopied] = useState(false);
 
-  // Custom scheme — no URL dependency, scanner recognizes soleri:// prefix
-  const payload = encodeTasteProfile(spotifyId, displayName, topArtists, topTracks, genreCounts);
-  const qrContent = `soleri://taste/${payload}`;
-
-  // Spotify profile shown as the human-readable link
   const spotifyUrl = `https://open.spotify.com/user/${spotifyId}`;
 
   useEffect(() => {
-    QRCode.toDataURL(qrContent, {
+    QRCode.toDataURL(spotifyUrl, {
       width: 300,
       margin: 2,
       color: { dark: '#000000', light: '#ffffff' },
       errorCorrectionLevel: 'L',
     }).then(setQrDataUrl);
-  }, [qrContent]);
+  }, [spotifyUrl]);
 
   function copyUrl() {
     navigator.clipboard.writeText(spotifyUrl);

@@ -40,8 +40,8 @@ export default function App() {
   const [tasteMatch, setTasteMatch] = useState<TasteMatchState | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
-  function handleTasteMatch(encodedPayload: string, theirSpotifyId: string) {
-    setTasteMatch({ encodedPayload, theirSpotifyId });
+  function handleTasteMatch(theirSpotifyId: string) {
+    window.open(`https://open.spotify.com/user/${theirSpotifyId}`, '_blank', 'noopener,noreferrer');
   }
 
   if (isLoading) {
