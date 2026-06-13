@@ -6,7 +6,7 @@ interface QRScannerModalProps {
   onTasteMatch?: (encodedPayload: string, theirSpotifyId: string) => void;
 }
 
-const SOLERI_ORIGIN = 'https://soleri.app';
+const SOLERI_ORIGIN = window.location.origin;
 const SOLERI_USER_PATH = SOLERI_ORIGIN + '/u/';
 
 interface ParsedSoleriUrl {
