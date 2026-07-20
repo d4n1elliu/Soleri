@@ -1,6 +1,6 @@
 # Soleri
 
-A personal Spotify analytics dashboard that turns your listening history into clear, visual insights.
+A personal dashboard that turns your Spotify listening history into clear visual insights.
 
 ## Features
 - **Listening Stats**: Top tracks, artists, genre breakdown, and recent play counts
