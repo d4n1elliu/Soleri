@@ -12,11 +12,11 @@ A personal dashboard that turns your Spotify listening history into clear visual
 
 ## Tech Stack
 **Frontend**
-- React 19 + TypeScript
+- React.js
+- TypeScript
 - Tailwind CSS v4
 - Recharts
-- Vite
-- Deployed on Vercel
+- Framer Motion
 
 **Backend**
 - Vercel Serverless Functions
