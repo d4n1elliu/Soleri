@@ -43,9 +43,6 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
               <span className="text-xs font-semibold uppercase tracking-widest text-green-400">Core Features</span>
               <h2 className="mt-2 text-3xl font-light tracking-tight text-white sm:text-4xl">Data pipeline & metrics</h2>
             </div>
-            <p className="max-w-md text-xs leading-relaxed text-zinc-400">
-              Built on React, TypeScript, and Tailwind CSS. Leverages asynchronous REST API endpoints to calculate listening metrics in real time.
-            </p>
           </div>
 
           <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -81,7 +78,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
             <a href="https://developer.spotify.com" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">Spotify API</a>
             <a href="https://github.com/d4n1elliu/Spoti-list" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">Source Code</a>
           </div>
-          <div>© Soleri Portfolio Project</div>
+          <div>© 2026 Soleri. All Rights Reserved. </div>
         </div>
       </footer>
     </div>
