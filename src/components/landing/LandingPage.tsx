@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import justinBieber from '../../assets/JustinBieberCoachella2026.png';
 import rose from '../../assets/rose.jpg';
 import sabrinaCarpenter from '../../assets/sabrina_carpenter.jpg';
@@ -41,7 +42,7 @@ const STEPS = [
   {
     step: '01',
     title: 'Connect your Spotify account',
-    desc: 'Sign in securely via Spotify OAuth. Soleri only requests read only access and never stores your credentials or modifies your personal library.',
+    desc: 'Sign in securely via Spotify OAuth. Soleri only requests read-only access and never stores your credentials or modifies your personal library.',
     detail: 'Takes under 10 seconds. No credit card required.',
   },
   {
@@ -58,11 +59,29 @@ const STEPS = [
   },
 ];
 
+// Motion Variants
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.215, 0.61, 0.355, 1] },
+  },
+};
+
 export function LandingPage({ loginUrl }: { loginUrl: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-zinc-900 text-white">
+    <div className="min-h-screen bg-zinc-900 text-white selection:bg-green-500 selection:text-black">
       {/* Navigation bar */}
       <nav className="sticky top-0 z-30 border-b border-zinc-800/80 bg-zinc-900/80 backdrop-blur">
         <div className="flex items-center justify-between px-8 py-4">
@@ -83,12 +102,14 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
             >
               How it works
             </a>
-            <a
+            <motion.a
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               href={loginUrl}
-              className="rounded-full bg-green-500 px-7 py-3 text-sm font-semibold text-black transition-colors hover:bg-green-400"
+              className="rounded-full bg-green-500 px-7 py-3 text-sm font-semibold text-black shadow-lg shadow-green-500/10 transition-shadow hover:shadow-green-500/25"
             >
               Connect with Spotify
-            </a>
+            </motion.a>
             {/* Hamburger — mobile only */}
             <button
               onClick={() => setMenuOpen((o) => !o)}
@@ -102,125 +123,195 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
           </div>
         </div>
 
-        {/* Mobile dropdown */}
-        {menuOpen && (
-          <div className="border-t border-zinc-800 bg-zinc-900 px-6 py-3 sm:hidden">
-            <a
-              href="#features"
-              onClick={() => setMenuOpen(false)}
-              className="block py-2.5 text-sm text-zinc-400 transition-colors hover:text-white"
+        {/* Animated Mobile dropdown */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden border-t border-zinc-800 bg-zinc-900 px-6 py-3 sm:hidden"
             >
-              Features
-            </a>
-            <a
-              href="#how-it-works"
-              onClick={() => setMenuOpen(false)}
-              className="block py-2.5 text-sm text-zinc-400 transition-colors hover:text-white"
-            >
-              How it works
-            </a>
-          </div>
-        )}
+              <a
+                href="#features"
+                onClick={() => setMenuOpen(false)}
+                className="block py-2.5 text-sm text-zinc-400 transition-colors hover:text-white"
+              >
+                Features
+              </a>
+              <a
+                href="#how-it-works"
+                onClick={() => setMenuOpen(false)}
+                className="block py-2.5 text-sm text-zinc-400 transition-colors hover:text-white"
+              >
+                How it works
+              </a>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero — text left, collage right */}
       <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-green-500/20 blur-3xl" />
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 lg:grid-cols-2 lg:py-24">
-          {/* Left column */}
-          <div className="text-center lg:text-left">
-            <span className="inline-block rounded-full border border-zinc-700 px-4 py-1 text-xs uppercase tracking-widest text-zinc-400">
+          
+          {/* Left column (Staggered Animation) */}
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="text-center lg:text-left"
+          >
+            <motion.span variants={itemVariants} className="inline-block rounded-full border border-zinc-700 bg-zinc-900/50 px-4 py-1 text-xs uppercase tracking-widest text-zinc-400 backdrop-blur">
               Your Personal Spotify Analytics
-            </span>
-            <h1 className="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+            </motion.span>
+            
+            <motion.h1 variants={itemVariants} className="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
               Understand your music taste like never before
-            </h1>
-            <p className="mx-auto mt-5 max-w-md text-base text-zinc-400 lg:mx-0">
+            </motion.h1>
+            
+            <motion.p variants={itemVariants} className="mx-auto mt-5 max-w-md text-base text-zinc-400 lg:mx-0">
               Soleri turns your Spotify listening history into a personal
-              dashboard discover your patterns, obsessions and how your taste
+              dashboard—discover your patterns, obsessions, and how your taste
               stacks up against the charts.
-            </p>
-            <div className="mt-8 flex justify-center lg:justify-start">
-              <a
+            </motion.p>
+            
+            <motion.div variants={itemVariants} className="mt-8 flex justify-center lg:justify-start">
+              <motion.a
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
                 href={loginUrl}
-                className="rounded-full bg-green-500 px-7 py-3 text-sm font-semibold text-black transition-colors hover:bg-green-400"
+                className="rounded-full bg-green-500 px-8 py-3.5 text-sm font-semibold text-black transition-shadow duration-300 hover:shadow-[0_0_25px_rgba(34,197,94,0.4)]"
               >
                 Connect with Spotify
-              </a>
-            </div>
-            <p className="mt-4 text-xs text-zinc-500">
+              </motion.a>
+            </motion.div>
+            
+            <motion.p variants={itemVariants} className="mt-4 text-xs text-zinc-500">
               Free · No data stored · Read-only access
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          {/* Right column — overlapping photo collage */}
-          <div className="relative hidden h-[460px] lg:block">
-            <div className="absolute left-[22%] top-[4%] z-20 h-64 w-48 rotate-3 overflow-hidden rounded-2xl shadow-2xl ring-2 ring-white/20">
+          {/* Right column — Animated Overlapping Photo Collage */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="relative hidden h-[460px] lg:block"
+          >
+            <motion.div 
+              whileHover={{ scale: 1.05, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="absolute left-[22%] top-[4%] z-20 h-64 w-48 rotate-3 overflow-hidden rounded-2xl shadow-2xl ring-2 ring-white/20 cursor-pointer"
+            >
               <img
                 src={justinBieber}
                 alt="Justin Bieber at Coachella"
                 className="h-full w-full object-cover"
               />
-            </div>
-            <div className="absolute right-0 top-0 z-10 h-44 w-36 -rotate-6 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10">
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.05, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="absolute right-0 top-0 z-10 h-44 w-36 -rotate-6 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10 cursor-pointer"
+            >
               <img
                 src={rose}
                 alt="Rosé"
                 className="h-full w-full object-cover"
               />
-            </div>
-            <div className="absolute bottom-0 left-[8%] z-10 h-52 w-40 rotate-6 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10">
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.05, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="absolute bottom-0 left-[8%] z-10 h-52 w-40 rotate-6 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10 cursor-pointer"
+            >
               <img
                 src={theWeeknd}
                 alt="The Weeknd performing"
                 className="h-full w-full object-cover"
               />
-            </div>
-            <div className="absolute bottom-[8%] right-[4%] z-30 h-48 w-40 rotate-3 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10">
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.05, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="absolute bottom-[8%] right-[4%] z-30 h-48 w-40 rotate-3 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10 cursor-pointer"
+            >
               <img
                 src={sabrinaCarpenter}
                 alt="Sabrina Carpenter"
                 className="h-full w-full object-cover"
               />
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Feature band */}
       <section id="features" className="scroll-mt-16 bg-zinc-950 py-20">
         <div className="mx-auto max-w-6xl px-6">
-          <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center text-3xl font-bold tracking-tight sm:text-4xl"
+          >
             Everything your music says about you
-          </h2>
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          </motion.h2>
+
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {FEATURES.map((feature) => (
-              <div
+              <motion.div
                 key={feature.title}
-                className="flex flex-col rounded-2xl bg-zinc-900 p-8 ring-1 ring-zinc-800 transition-colors hover:ring-zinc-700"
+                variants={itemVariants}
+                whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                className="group flex flex-col rounded-2xl bg-zinc-900 p-8 ring-1 ring-zinc-800 transition-colors hover:ring-zinc-700 hover:bg-zinc-900/90"
               >
-                <div className="mb-5 h-px w-10 bg-green-500" />
-                <h3 className="text-lg font-semibold text-white">
+                <div className="mb-5 h-px w-10 bg-green-500 transition-all duration-300 group-hover:w-16" />
+                <h3 className="text-lg font-semibold text-white group-hover:text-green-400 transition-colors">
                   {feature.title}
                 </h3>
                 <p className="mt-2 text-sm font-medium text-zinc-300">{feature.desc}</p>
                 <p className="mt-3 text-sm leading-relaxed text-zinc-500">{feature.detail}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* How it works */}
       <section id="how-it-works" className="scroll-mt-16 py-20">
         <div className="mx-auto max-w-6xl px-6">
-          <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center text-3xl font-bold tracking-tight sm:text-4xl"
+          >
             How it works
-          </h2>
-          <div className="mt-14 grid gap-6 md:grid-cols-3">
+          </motion.h2>
+
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="mt-14 grid gap-6 md:grid-cols-3"
+          >
             {STEPS.map((step) => (
-              <div
+              <motion.div
                 key={step.title}
+                variants={itemVariants}
+                whileHover={{ y: -4 }}
                 className="relative flex flex-col rounded-2xl bg-zinc-900 p-8 ring-1 ring-zinc-800 transition-colors hover:ring-zinc-700"
               >
                 <span className="text-5xl font-black text-zinc-800 leading-none select-none">
@@ -231,15 +322,21 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-zinc-400">{step.desc}</p>
                 <p className="mt-4 text-xs font-medium text-green-500">{step.detail}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Closing call to action */}
       <section className="px-6 pb-24">
-        <div className="mx-auto flex max-w-4xl flex-col items-center rounded-3xl bg-gradient-to-br from-green-500/15 to-zinc-800 px-6 py-14 text-center ring-1 ring-white/5">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mx-auto flex max-w-4xl flex-col items-center rounded-3xl bg-gradient-to-br from-green-500/15 to-zinc-800 px-6 py-14 text-center ring-1 ring-white/10"
+        >
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
             Ready to see your sound?
           </h2>
@@ -247,13 +344,15 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
             Connect your account and your personalised dashboard will be ready
             in seconds.
           </p>
-          <a
+          <motion.a
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             href={loginUrl}
-            className="mt-6 rounded-full bg-green-500 px-8 py-3 text-sm font-semibold text-black transition-colors hover:bg-green-400"
+            className="mt-6 rounded-full bg-green-500 px-8 py-3.5 text-sm font-semibold text-black transition-shadow hover:shadow-[0_0_25px_rgba(34,197,94,0.4)]"
           >
             Connect with Spotify
-          </a>
-        </div>
+          </motion.a>
+        </motion.div>
       </section>
 
       {/* Footer */}
