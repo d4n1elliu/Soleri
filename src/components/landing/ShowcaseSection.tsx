@@ -5,9 +5,6 @@ export function ShowcaseSection() {
     <div className="w-full px-4 sm:px-8">
       {/* Header - Minimal & Editorial */}
       <div className="mb-12 border-b border-zinc-900 pb-6 text-left">
-        <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400">
-          Interactive Showcase
-        </span>
         <h2 className="mt-2 text-4xl font-light tracking-tight text-white sm:text-6xl">
           Explore your music universe.
         </h2>
