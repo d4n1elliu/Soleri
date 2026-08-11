@@ -27,19 +27,24 @@ export function FeatureCard({ feature, index, variants }: { feature: Feature; in
   );
 }
 
-export function StepCard({ step, variants }: { step: Step; variants: Variants }) {
+export function StepCard({ step, index, variants }: { step: Step; index: number; variants: Variants }) {
   return (
     <motion.div
       variants={variants}
       whileHover={{ y: -4 }}
-      className="relative flex flex-col rounded-2xl bg-zinc-900 p-8 ring-1 ring-zinc-800 transition-colors hover:ring-zinc-700"
+      className="flex flex-col justify-between rounded-3xl border border-zinc-800/80 bg-zinc-900/30 p-8 backdrop-blur-xl"
     >
-      <span className="text-5xl font-black text-zinc-800 leading-none select-none">
-        {step.step}
-      </span>
-      <h3 className="mt-4 text-lg font-semibold text-white">{step.title}</h3>
-      <p className="mt-3 text-sm leading-relaxed text-zinc-400">{step.desc}</p>
-      <p className="mt-4 text-xs font-medium text-green-500">{step.detail}</p>
+      <div>
+        <span className="font-mono text-xs uppercase tracking-widest text-zinc-500">
+          {String(index + 1).padStart(2, '0')} / {step.tag}
+        </span>
+        <h3 className="mt-4 text-xl font-normal text-white">{step.title}</h3>
+        <p className="mt-2 text-xs text-zinc-400 leading-relaxed">{step.desc}</p>
+      </div>
+
+      <div className="mt-8 border-t border-zinc-800/60 pt-6">
+        <p className="text-xs leading-relaxed text-emerald-400">{step.detail}</p>
+      </div>
     </motion.div>
   );
 }
