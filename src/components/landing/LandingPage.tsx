@@ -1,6 +1,6 @@
 import { motion, type Variants } from 'framer-motion';
 import { FEATURES, STEPS } from './LandingData';
-import { FeatureCard, StepCard } from './LandingCards';
+import { FeatureCard } from './LandingCards';
 import { LandingNav } from './LandingNav';
 import { LandingHero } from './LandingHero';
 import { LandingCta } from './LandingCta';
@@ -53,16 +53,17 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       </section>
 
       {/* System Architecture Flow */}
-      <section id="architecture" className="scroll-mt-20 border-t border-zinc-900 bg-zinc-900/20 py-28 px-6">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center">
-            <span className="text-xs font-semibold uppercase tracking-widest text-green-400">System Flow</span>
-            <h2 className="mt-2 text-3xl font-light tracking-tight text-white sm:text-4xl">How data flows through Soleri</h2>
+      <section id="architecture" className="scroll-mt-20 border-t border-zinc-900 py-20 px-4 sm:px-8">
+        <div className="w-full px-4 sm:px-8">
+          <div className="mb-12 border-b border-zinc-900 pb-6 text-left">
+            <h2 className="mt-2 text-4xl font-light tracking-tight text-white sm:text-6xl">
+              How it works.
+            </h2>
           </div>
 
-          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} className="mt-16 grid gap-6 md:grid-cols-3">
-            {STEPS.map((step) => (
-              <StepCard key={step.title} step={step} variants={itemVariants} />
+          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
+            {STEPS.map((step, index) => (
+              <FeatureCard key={step.title} feature={step} index={index} variants={itemVariants} />
             ))}
           </motion.div>
         </div>
