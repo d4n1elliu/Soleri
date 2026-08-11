@@ -37,9 +37,8 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
 
       {/* Engineering Capabilities Grid */}
       <section id="features" className="scroll-mt-20 py-20 px-4 sm:px-8">
-        <div className="w-full">
+        <div className="w-full px-4 sm:px-8">
           <div className="mb-12 border-b border-zinc-900 pb-6 text-left">
-            <span className="font-mono text-xs uppercase tracking-widest text-zinc-500">Core Features</span>
             <h2 className="mt-2 text-4xl font-light tracking-tight text-white sm:text-6xl">
               Data pipeline and metrics.
             </h2>
