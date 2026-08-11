@@ -6,6 +6,7 @@ import { LandingHero } from './LandingHero';
 import { LandingCta } from './LandingCta';
 import { ShowcaseSection } from './ShowcaseSection';
 import { HeroCollage } from './HeroCollage';
+import { VideoShowcase } from './VideoShowcase';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -22,6 +23,9 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
     <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-green-500 selection:text-black font-sans antialiased">
       <LandingNav loginUrl={loginUrl} />
       <LandingHero loginUrl={loginUrl} />
+
+      {/* Product Demo Video */}
+      <VideoShowcase />
 
       {/* Interactive Feature Highlights */}
       <section id="overview" className="relative w-full px-4 sm:px-8 py-20">
