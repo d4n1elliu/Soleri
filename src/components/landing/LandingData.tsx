@@ -1,7 +1,13 @@
 export interface Feature {
+  tag: string;
   title: string;
   desc: string;
-  detail: string;
+  stat: {
+    value: string;
+    unit?: string;
+    label: string;
+    accent?: boolean;
+  };
 }
 
 export interface Step {
@@ -13,34 +19,40 @@ export interface Step {
 
 export const FEATURES: Feature[] = [
   {
+    tag: 'Overview',
     title: 'Listening Stats',
-    desc: 'Your top tracks, artists and genres at a glance.',
-    detail: 'Check out your all time and recent favourites ranked by play count, broken down by track, artist and genre.',
+    desc: 'Top tracks, artists and genres.',
+    stat: { value: '2,847', unit: 'tracks', label: 'Analysed Past 3 Months', accent: true },
   },
   {
+    tag: 'Patterns',
     title: 'Listening Clock',
-    desc: 'A heatmap of when you listen across hours and days.',
-    detail: 'Discover whether you are a night listener, a morning commuter or a weekend binge listener.',
+    desc: 'Your listening habits by hour.',
+    stat: { value: '11 PM', label: 'Peak Listening Hour' },
   },
   {
+    tag: 'Discovery',
     title: 'Discovery Rate',
-    desc: 'See how often you explore new music versus replaying favourites.',
-    detail: 'Track how adventurous your taste is over time and watch your discovery score shift as you branch out or settle in.',
+    desc: 'New music versus replayed favourites.',
+    stat: { value: '27%', label: 'New Artists This Month', accent: true },
   },
   {
+    tag: 'Sessions',
     title: 'Listening Marathons',
     desc: 'Your longest uninterrupted listening sessions.',
-    detail: 'Relive your longest music runs! Every marathon session captured, dated and ranked so you can see when music truly took over.',
+    stat: { value: '5.8', unit: 'hrs', label: 'Longest Session' },
   },
   {
+    tag: 'Phases',
     title: 'Artist Obsessions',
-    desc: 'Phases where one artist took over your life',
-    detail: 'Map the arc of every artist obsession: when it started, how intense it peaked and when you finally moved on.',
+    desc: 'When one artist took over.',
+    stat: { value: '19', unit: 'days', label: 'Longest Obsession', accent: true },
   },
   {
+    tag: 'Charts',
     title: 'Billboard Comparison',
-    desc: 'Measure your taste against the Billboard chart artists.',
-    detail: 'Find out where your listening overlaps with the mainstream.',
+    desc: 'Your taste versus the charts.',
+    stat: { value: '31%', label: 'Mainstream Overlap' },
   },
 ];
 

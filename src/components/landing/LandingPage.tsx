@@ -36,18 +36,18 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       </section>
 
       {/* Engineering Capabilities Grid */}
-      <section id="features" className="scroll-mt-20 py-28 px-6">
-        <div className="mx-auto max-w-6xl">
-          <div className="flex flex-col items-start justify-between gap-4 border-b border-zinc-900 pb-8 sm:flex-row sm:items-end">
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-widest text-green-400">Core Features</span>
-              <h2 className="mt-2 text-3xl font-light tracking-tight text-white sm:text-4xl">Data pipeline & metrics</h2>
-            </div>
+      <section id="features" className="scroll-mt-20 py-20 px-4 sm:px-8">
+        <div className="w-full">
+          <div className="mb-12 border-b border-zinc-900 pb-6 text-left">
+            <span className="font-mono text-xs uppercase tracking-widest text-zinc-500">Core Features</span>
+            <h2 className="mt-2 text-4xl font-light tracking-tight text-white sm:text-6xl">
+              Data pipeline and metrics.
+            </h2>
           </div>
 
-          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURES.map((feature) => (
-              <FeatureCard key={feature.title} feature={feature} variants={itemVariants} />
+          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map((feature, index) => (
+              <FeatureCard key={feature.title} feature={feature} index={index} variants={itemVariants} />
             ))}
           </motion.div>
         </div>
