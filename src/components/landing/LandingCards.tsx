@@ -1,5 +1,5 @@
 import { motion, type Variants } from 'framer-motion';
-import type { Feature, Step } from './LandingData';
+import type { Feature } from './LandingData';
 
 export function FeatureCard({ feature, index, variants }: { feature: Feature; index: number; variants: Variants }) {
   return (
@@ -22,28 +22,6 @@ export function FeatureCard({ feature, index, variants }: { feature: Feature; in
           {feature.stat.unit && <span className="text-sm font-normal text-zinc-400"> {feature.stat.unit}</span>}
         </p>
         <p className="mt-1 text-[11px] font-medium tracking-wide uppercase text-zinc-500">{feature.stat.label}</p>
-      </div>
-    </motion.div>
-  );
-}
-
-export function StepCard({ step, index, variants }: { step: Step; index: number; variants: Variants }) {
-  return (
-    <motion.div
-      variants={variants}
-      whileHover={{ y: -4 }}
-      className="flex flex-col justify-between rounded-3xl border border-zinc-800/80 bg-zinc-900/30 p-8 backdrop-blur-xl"
-    >
-      <div>
-        <span className="font-mono text-xs uppercase tracking-widest text-zinc-500">
-          {String(index + 1).padStart(2, '0')} / {step.tag}
-        </span>
-        <h3 className="mt-4 text-xl font-normal text-white">{step.title}</h3>
-        <p className="mt-2 text-xs text-zinc-400 leading-relaxed">{step.desc}</p>
-      </div>
-
-      <div className="mt-8 border-t border-zinc-800/60 pt-6">
-        <p className="text-xs leading-relaxed text-emerald-400">{step.detail}</p>
       </div>
     </motion.div>
   );

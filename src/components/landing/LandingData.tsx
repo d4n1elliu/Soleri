@@ -10,12 +10,6 @@ export interface Feature {
   };
 }
 
-export interface Step {
-  tag: string;
-  title: string;
-  desc: string;
-  detail: string;
-}
 
 export const FEATURES: Feature[] = [
   {
@@ -56,23 +50,23 @@ export const FEATURES: Feature[] = [
   },
 ];
 
-export const STEPS: Step[] = [
+export const STEPS: Feature[] = [
   {
     tag: 'Connect',
-    title: 'Connect your Spotify account',
-    desc: 'Sign in securely via Spotify OAuth. Soleri only requests read-only access and never stores your credentials or modifies your personal library.',
-    detail: 'Takes under 10 seconds. No credit card required.',
+    title: 'Connect Spotify',
+    desc: 'Sign in securely with read-only Spotify OAuth and your credentials are never stored.',
+    stat: { value: '10', unit: 'sec', label: 'Average Setup Time', accent: true },
   },
   {
     tag: 'Analyse',
-    title: 'We analyse your listening history',
-    desc: 'Soleri pulls your top tracks, artists, genres and recent play history directly from the Spotify API and processes it in real time.',
-    detail: 'Your last 6 months of data turned into six distinct insights instantly.',
+    title: 'We analyse your history',
+    desc: 'Soleri pulls your listening history from the Spotify API and processes it in real time.',
+    stat: { value: '6', unit: 'months', label: 'Of Listening History' },
   },
   {
     tag: 'Explore',
-    title: 'Explore your personal dashboard',
-    desc: 'Browse your Listening Stats, Clock, Discovery Rate, Marathons, Artist Obsessions and Billboard Comparison all in one place.',
-    detail: 'Share your taste profile with friends via your personal QR code.',
+    title: 'Explore your dashboard',
+    desc: 'Browse all six insights in one personal dashboard.',
+    stat: { value: 'QR', label: 'Share Your Taste Profile', accent: true },
   },
 ];

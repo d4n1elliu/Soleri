@@ -1,6 +1,6 @@
 import { motion, type Variants } from 'framer-motion';
 import { FEATURES, STEPS } from './LandingData';
-import { FeatureCard, StepCard } from './LandingCards';
+import { FeatureCard } from './LandingCards';
 import { LandingNav } from './LandingNav';
 import { LandingHero } from './LandingHero';
 import { LandingCta } from './LandingCta';
@@ -57,13 +57,13 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
         <div className="w-full px-4 sm:px-8">
           <div className="mb-12 border-b border-zinc-900 pb-6 text-left">
             <h2 className="mt-2 text-4xl font-light tracking-tight text-white sm:text-6xl">
-              How data flows through Soleri.
+              How it works.
             </h2>
           </div>
 
           <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
             {STEPS.map((step, index) => (
-              <StepCard key={step.title} step={step} index={index} variants={itemVariants} />
+              <FeatureCard key={step.title} feature={step} index={index} variants={itemVariants} />
             ))}
           </motion.div>
         </div>
