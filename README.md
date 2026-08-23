@@ -83,4 +83,6 @@ Music data and artist metadata is provided by the [Spotify Web API](https://deve
 See [NOTICE](./NOTICE) for full third-party license information.
 
 ## License
-This project is licensed under the MIT License, see the [LICENSE](./LICENSE) file for details.
+Licensed under the **MIT License** — see [LICENSE](LICENSE). You're free to use,
+modify and distribute this project, including commercially, as long as the
+copyright notice and licence text are included.
