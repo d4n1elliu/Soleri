@@ -214,12 +214,6 @@ export function BillboardComparison({ billboard, billboardLoading, topArtists, t
           <li className="flex items-start gap-2.5">
             <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500" />
             <span>
-              <span className="font-medium text-zinc-200">Rows are independent.</span> Your #1 sits next to Billboard's #1, then #2 next to Billboard's #2 and so on. Same rank but different artists.
-            </span>
-          </li>
-          <li className="flex items-start gap-2.5">
-            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500" />
-            <span>
               <span className="font-medium text-zinc-200">Popularity</span> is Spotify's 0–100 score (based on streams and recency), shown for both your artists and Billboard's.
             </span>
           </li>
