@@ -77,6 +77,8 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
           <div className="flex items-center gap-6">
             <a href="https://developer.spotify.com" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">Spotify API</a>
             <a href="https://github.com/d4n1elliu/Spoti-list" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">Source Code</a>
+            <a href="/terms" className="hover:text-zinc-300 transition-colors">Terms of Service</a>
+            <a href="/privacy" className="hover:text-zinc-300 transition-colors">Privacy Policy</a>
           </div>
           <div>© 2026 Soleri. All Rights Reserved. </div>
         </div>

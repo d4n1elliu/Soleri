@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSpotifyAuth } from './hooks';
 import { buildSpotifyAuthUrl } from './api';
 import { LandingPage } from './components/landing';
+import { TermsPage, PrivacyPage } from './components/legal';
 import { Dashboard, ShareModal, QRScannerModal, TasteMatchModal } from './components/dashboard';
 import { encodeTasteProfile } from './lib';
 
@@ -21,6 +22,7 @@ const NAV_ITEMS = [
 ];
 
 export default function App() {
+  const path = window.location.pathname;
   const {
     isLoggedIn,
     topTracks,
@@ -50,6 +52,14 @@ export default function App() {
       genreCounts,
     );
     setTasteMatch({ encodedPayload, theirSpotifyId });
+  }
+
+  if (path === '/terms') {
+    return <TermsPage />;
+  }
+
+  if (path === '/privacy') {
+    return <PrivacyPage />;
   }
 
   if (isLoading) {
