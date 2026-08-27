@@ -61,5 +61,5 @@ const SECTIONS: LegalSection[] = [
 ];
 
 export function PrivacyPage() {
-  return <LegalPage title="Privacy Policy." effectiveDate="August 27, 2026" sections={SECTIONS} />;
+  return <LegalPage title="Privacy Policy." lastUpdated="August 27, 2026" sections={SECTIONS} />;
 }
