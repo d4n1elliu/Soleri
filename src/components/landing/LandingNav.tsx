@@ -18,9 +18,9 @@ export function LandingNav({ loginUrl }: { loginUrl: string }) {
         {/* Far Right: Links + Demo Button */}
         <div className="flex items-center gap-8">
           <div className="hidden gap-8 text-xs font-medium uppercase tracking-widest text-zinc-400 md:flex">
-            <a href="#overview" className="transition-colors hover:text-white">Overview</a>
-            <a href="#features" className="transition-colors hover:text-white">Capabilities</a>
-            <a href="#architecture" className="transition-colors hover:text-white">Architecture</a>
+            <a href="#overview" className="transition-colors hover:text-white">Explore</a>
+            <a href="#features" className="transition-colors hover:text-white">Insights</a>
+            <a href="#architecture" className="transition-colors hover:text-white">How It Works</a>
           </div>
 
           <motion.a 
@@ -29,7 +29,7 @@ export function LandingNav({ loginUrl }: { loginUrl: string }) {
             href={loginUrl} 
             className="rounded-full bg-white px-5 py-2 text-xs font-semibold uppercase tracking-wider text-black transition-colors hover:bg-zinc-200"
           >
-            Demo App
+            Live Demo
           </motion.a>
 
           <button 
@@ -52,9 +52,9 @@ export function LandingNav({ loginUrl }: { loginUrl: string }) {
             exit={{ height: 0, opacity: 0 }} 
             className="overflow-hidden border-t border-zinc-900 bg-zinc-950 px-4 py-4 md:hidden"
           >
-            <a href="#overview" onClick={() => setMenuOpen(false)} className="block py-2 text-xs font-medium uppercase tracking-wider text-zinc-400 hover:text-white">Overview</a>
-            <a href="#features" onClick={() => setMenuOpen(false)} className="block py-2 text-xs font-medium uppercase tracking-wider text-zinc-400 hover:text-white">Capabilities</a>
-            <a href="#architecture" onClick={() => setMenuOpen(false)} className="block py-2 text-xs font-medium uppercase tracking-wider text-zinc-400 hover:text-white">Architecture</a>
+            <a href="#overview" onClick={() => setMenuOpen(false)} className="block py-2 text-xs font-medium uppercase tracking-wider text-zinc-400 hover:text-white">Explore</a>
+            <a href="#features" onClick={() => setMenuOpen(false)} className="block py-2 text-xs font-medium uppercase tracking-wider text-zinc-400 hover:text-white">Insights</a>
+            <a href="#architecture" onClick={() => setMenuOpen(false)} className="block py-2 text-xs font-medium uppercase tracking-wider text-zinc-400 hover:text-white">How It Works</a>
           </motion.div>
         )}
       </AnimatePresence>

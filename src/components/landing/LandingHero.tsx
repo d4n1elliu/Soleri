@@ -29,7 +29,7 @@ export function LandingHero({ loginUrl }: { loginUrl: string }) {
   return (
     <section
       ref={heroRef}
-      className="relative flex min-h-[80vh] flex-col items-center justify-center px-4 py-20 text-center"
+      className="relative flex flex-col items-center justify-center px-4 pt-28 pb-20 text-center sm:pt-36"
     >
       {/* Radial Glow */}
       <motion.div
