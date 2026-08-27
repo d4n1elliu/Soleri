@@ -5,11 +5,11 @@ export interface LegalSection {
 
 interface LegalPageProps {
   title: string;
-  effectiveDate: string;
+  lastUpdated: string;
   sections: LegalSection[];
 }
 
-export function LegalPage({ title, effectiveDate, sections }: LegalPageProps) {
+export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-green-500 selection:text-black font-sans antialiased">
       {/* Nav */}
@@ -32,10 +32,8 @@ export function LegalPage({ title, effectiveDate, sections }: LegalPageProps) {
       <header className="px-4 pt-20 sm:px-8">
         <div className="w-full px-4 sm:px-8">
           <div className="border-b border-zinc-900 pb-6">
-            <span className="font-mono text-xs uppercase tracking-widest text-zinc-500">
-              Effective {effectiveDate}
-            </span>
-            <h1 className="mt-2 text-4xl font-light tracking-tight text-white sm:text-6xl">{title}</h1>
+            <h1 className="text-4xl font-light tracking-tight text-white sm:text-6xl">{title}</h1>
+            <p className="mt-4 text-sm text-zinc-500">Last updated on {lastUpdated}</p>
           </div>
         </div>
       </header>
