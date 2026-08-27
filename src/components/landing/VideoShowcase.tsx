@@ -38,7 +38,7 @@ export function VideoShowcase() {
               <span className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
             </div>
             <span className="rounded-full bg-zinc-950/60 px-4 py-1 font-mono text-[11px] tracking-widest text-zinc-500">
-              soleri.app
+              Live Dashboard Preview
             </span>
           </div>
 
