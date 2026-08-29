@@ -21,8 +21,10 @@ const NAV_ITEMS = [
   { label: 'Billboard', href: '#billboard' },
 ];
 
-export default function App() {
-  const path = window.location.pathname;
+// ssrPath is provided by the build-time prerenderer (scripts/prerender.mjs),
+// where window does not exist. In the browser it is always undefined.
+export default function App({ ssrPath }: { ssrPath?: string }) {
+  const path = ssrPath ?? window.location.pathname;
   const {
     isLoggedIn,
     topTracks,
