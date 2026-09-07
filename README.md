@@ -35,16 +35,14 @@ cd Soleri/client
 
 # Install dependencies
 npm install
-
-# Set up environment variables
-cp .env.example .env
 ```
 
 ### Environment Variables
-Create a `.env` file inside the `client/` directory:
+Create a `.env` file in the project root:
 ```env
 VITE_SPOTIFY_CLIENT_ID=your_client_id
 VITE_REDIRECT_URI=http://localhost:5173
+VITE_SITE_URL=https://your-domain.com
 ```
 
 ### Running Locally

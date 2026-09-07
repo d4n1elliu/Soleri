@@ -22,6 +22,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-green-500 selection:text-black font-sans antialiased">
       <LandingNav loginUrl={loginUrl} />
+      <main>
       <LandingHero loginUrl={loginUrl} />
 
       {/* Product Demo Video */}
@@ -74,6 +75,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       </section>
 
       <LandingCta loginUrl={loginUrl} />
+      </main>
 
       {/* Footer */}
       <footer className="border-t border-zinc-900 px-8 py-8 text-xs text-zinc-500">
