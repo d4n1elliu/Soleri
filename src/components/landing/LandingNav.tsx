@@ -29,7 +29,7 @@ export function LandingNav({ loginUrl }: { loginUrl: string }) {
             href={loginUrl} 
             className="rounded-full bg-white px-5 py-2 text-xs font-semibold uppercase tracking-wider text-black transition-colors hover:bg-zinc-200"
           >
-            Live Demo
+            Sign In
           </motion.a>
 
           <button 
