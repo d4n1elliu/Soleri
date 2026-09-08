@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type {
   SpotifyTrack,
   SpotifyTopArtist,
   RecentPlay,
   BillboardData,
+  TimeRange,
 } from '../types';
 import {
   exchangeCodeForToken,
@@ -20,7 +21,6 @@ interface GenreEntry {
   count: number;
 }
 
-// Everything the app needs after the user logs in
 interface SpotifyAuthState {
   isLoggedIn: boolean;
   isLoading: boolean;
@@ -34,7 +34,12 @@ interface SpotifyAuthState {
   spotifyId: string | null;
   displayName: string | null;
   token: string | null;
+  timeRange: TimeRange;
+  setTimeRange: (range: TimeRange) => void;
+  topsLoading: boolean;
 }
+
+const DEFAULT_TIME_RANGE: TimeRange = 'medium_term';
 
 export function useSpotifyAuth(): SpotifyAuthState {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -44,13 +49,15 @@ export function useSpotifyAuth(): SpotifyAuthState {
   const [recentPlays, setRecentPlays] = useState<RecentPlay[]>([]);
   const [billboard, setBillboard] = useState<BillboardData | null>(null);
   const [billboardLoading, setBillboardLoading] = useState(false);
-  // Null on load; Share button stays hidden until this comes back
   const [spotifyId, setSpotifyId] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE);
+  const [topsLoading, setTopsLoading] = useState(false);
+  // The initial load fetches tops itself; this skips the range effect's first run
+  const rangeFetchArmed = useRef(false);
 
   useEffect(() => {
-    // Spotify redirects back here with ?code=... after the user logs in
     const code = new URLSearchParams(window.location.search).get('code');
     if (!code) return;
 
@@ -84,8 +91,8 @@ export function useSpotifyAuth(): SpotifyAuthState {
 
         // Fetch the main dashboard data all at once
         return Promise.all([
-          fetchTopTracks(token),
-          fetchTopArtists(token),
+          fetchTopTracks(token, DEFAULT_TIME_RANGE),
+          fetchTopArtists(token, DEFAULT_TIME_RANGE),
           fetchRecentPlays(token),
         ])
           .then(([tracks, artists, plays]) => {
@@ -101,7 +108,31 @@ export function useSpotifyAuth(): SpotifyAuthState {
       });
   }, []);
 
-  // These are derived on every render from the raw data above
+  // Refetch top tracks/artists when the user picks a different time range
+  useEffect(() => {
+    if (!token) return;
+    if (!rangeFetchArmed.current) {
+      rangeFetchArmed.current = true;
+      return;
+    }
+
+    let stale = false;
+    setTopsLoading(true);
+    Promise.all([fetchTopTracks(token, timeRange), fetchTopArtists(token, timeRange)])
+      .then(([tracks, artists]) => {
+        if (stale) return;
+        setTopTracks(tracks);
+        setTopArtists(artists);
+      })
+      .finally(() => {
+        if (!stale) setTopsLoading(false);
+      });
+
+    return () => {
+      stale = true;
+    };
+  }, [token, timeRange]);
+
   const playCounts = computePlayCounts(recentPlays);
   const genreCounts = computeGenreCounts(topArtists);
 
@@ -118,5 +149,8 @@ export function useSpotifyAuth(): SpotifyAuthState {
     spotifyId,
     displayName,
     token,
+    timeRange,
+    setTimeRange,
+    topsLoading,
   };
 }

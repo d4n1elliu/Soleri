@@ -38,6 +38,9 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
     spotifyId,
     displayName,
     token: _token,
+    timeRange,
+    setTimeRange,
+    topsLoading,
   } = useSpotifyAuth();
 
   const [shareOpen, setShareOpen] = useState(false);
@@ -78,7 +81,6 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      {/* Sticky top navbar */}
       <header className="sticky top-0 z-20 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur">
         <div className="flex items-center justify-between px-6 py-3.5">
           <div className="flex items-center gap-2.5">
@@ -177,6 +179,9 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
             genreCounts={genreCounts}
             billboard={billboard}
             billboardLoading={billboardLoading}
+            timeRange={timeRange}
+            onTimeRangeChange={setTimeRange}
+            topsLoading={topsLoading}
           />
         </main>
       </div>
