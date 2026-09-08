@@ -3,6 +3,7 @@ import type {
   SpotifyTopArtist,
   RecentPlay,
   BillboardData,
+  TimeRange,
 } from '../../types';
 import { TopTrackCard } from './TopTrackCard';
 import { TrackList } from './TrackList';
@@ -25,7 +26,16 @@ interface DashboardProps {
   genreCounts: { genre: string; count: number }[];
   billboard: BillboardData | null;
   billboardLoading: boolean;
+  timeRange: TimeRange;
+  onTimeRangeChange: (range: TimeRange) => void;
+  topsLoading: boolean;
 }
+
+const TIME_RANGE_OPTIONS: { value: TimeRange; label: string }[] = [
+  { value: 'short_term', label: 'Last 4 weeks' },
+  { value: 'medium_term', label: 'Last 6 months' },
+  { value: 'long_term', label: 'All time' },
+];
 
 export function Dashboard({
   topTracks,
@@ -35,10 +45,42 @@ export function Dashboard({
   genreCounts,
   billboard,
   billboardLoading,
+  timeRange,
+  onTimeRangeChange,
+  topsLoading,
 }: DashboardProps) {
   return (
     <div id="overview" className="mx-auto flex w-full max-w-5xl flex-col gap-6">
-      <div id="listening-stats" className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
+      {/* Time range filter for the Spotify top-stats windows */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xs text-zinc-500">
+          Showing your top tracks, artists and genres for{' '}
+          <span className="font-medium text-zinc-300">
+            {TIME_RANGE_OPTIONS.find((o) => o.value === timeRange)?.label.toLowerCase()}
+          </span>
+        </p>
+        <div className="flex w-fit rounded-full bg-zinc-900 p-1 ring-1 ring-zinc-800">
+          {TIME_RANGE_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => onTimeRangeChange(option.value)}
+              disabled={topsLoading}
+              className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${
+                option.value === timeRange
+                  ? 'bg-green-500 text-black'
+                  : 'text-zinc-400 hover:text-white'
+              } ${topsLoading ? 'cursor-wait' : ''}`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div
+        id="listening-stats"
+        className={`grid grid-cols-1 gap-4 transition-opacity md:grid-cols-3 md:gap-5 ${topsLoading ? 'opacity-50' : ''}`}
+      >
         {topTracks[0] && <TopTrackCard track={topTracks[0]} />}
         <div className="relative md:col-span-1">
           <div className="hide-scrollbar h-72 overflow-y-auto sm:h-[420px] md:absolute md:inset-0 md:h-auto">

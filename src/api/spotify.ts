@@ -1,4 +1,4 @@
-import type { SpotifyTrack, SpotifyTopArtist, RecentPlay, BillboardData } from '../types';
+import type { SpotifyTrack, SpotifyTopArtist, RecentPlay, BillboardData, TimeRange } from '../types';
 import { apiFetch, ApiError } from './client';
 
 export async function exchangeCodeForToken(code: string): Promise<string | null> {
@@ -10,18 +10,30 @@ export async function exchangeCodeForToken(code: string): Promise<string | null>
   }
 }
 
-export async function fetchTopTracks(token: string): Promise<SpotifyTrack[]> {
+export async function fetchTopTracks(
+  token: string,
+  timeRange: TimeRange = 'medium_term',
+): Promise<SpotifyTrack[]> {
   try {
-    const data = await apiFetch<{ items?: SpotifyTrack[] }>('/api/spotify/top-tracks', token);
+    const data = await apiFetch<{ items?: SpotifyTrack[] }>(
+      `/api/spotify/top-tracks?time_range=${timeRange}`,
+      token,
+    );
     return data.items ?? [];
   } catch {
     return [];
   }
 }
 
-export async function fetchTopArtists(token: string): Promise<SpotifyTopArtist[]> {
+export async function fetchTopArtists(
+  token: string,
+  timeRange: TimeRange = 'medium_term',
+): Promise<SpotifyTopArtist[]> {
   try {
-    const data = await apiFetch<{ items?: SpotifyTopArtist[] }>('/api/spotify/top-artists', token);
+    const data = await apiFetch<{ items?: SpotifyTopArtist[] }>(
+      `/api/spotify/top-artists?time_range=${timeRange}`,
+      token,
+    );
     return data.items ?? [];
   } catch {
     return [];
