@@ -83,10 +83,10 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
     <div className="min-h-screen bg-zinc-950 text-white">
       <header className="sticky top-0 z-20 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur">
         <div className="flex items-center justify-between px-6 py-3.5">
-          <div className="flex items-center gap-2.5">
+          <a href="/" className="flex items-center gap-2.5">
             <img src="/Soleri.svg" alt="Soleri" className="h-7 w-7 rounded-md" />
             <span className="font-bold tracking-tight">Soleri</span>
-          </div>
+          </a>
           {displayName && (
             <p className="hidden text-sm text-zinc-500 sm:block lg:block">
               Welcome back{' '}
