@@ -30,7 +30,7 @@ export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
 
       {/* Header */}
       <header className="px-4 pt-20 sm:px-8">
-        <div className="w-full px-4 sm:px-8">
+        <div className="mx-auto w-full max-w-3xl">
           <div className="border-b border-zinc-900 pb-6">
             <h1 className="text-4xl font-light tracking-tight text-white sm:text-6xl">{title}</h1>
             <p className="mt-4 text-sm text-zinc-500">Last updated on {lastUpdated}</p>
@@ -40,7 +40,7 @@ export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
 
       {/* Body */}
       <main className="px-4 py-16 sm:px-8">
-        <div className="w-full max-w-3xl px-4 sm:px-8">
+        <div className="mx-auto w-full max-w-3xl">
           <div className="flex flex-col gap-12">
             {sections.map((section, index) => (
               <section key={section.heading}>
