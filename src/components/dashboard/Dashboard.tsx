@@ -52,13 +52,7 @@ export function Dashboard({
   return (
     <div id="overview" className="mx-auto flex w-full max-w-5xl flex-col gap-6">
       {/* Time range filter for the Spotify top-stats windows */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs text-zinc-500">
-          Showing your top tracks, artists and genres for{' '}
-          <span className="font-medium text-zinc-300">
-            {TIME_RANGE_OPTIONS.find((o) => o.value === timeRange)?.label.toLowerCase()}
-          </span>
-        </p>
+      <div className="flex justify-end">
         <div className="flex w-fit rounded-full bg-zinc-900 p-1 ring-1 ring-zinc-800">
           {TIME_RANGE_OPTIONS.map((option) => (
             <button
