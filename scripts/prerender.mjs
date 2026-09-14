@@ -55,7 +55,7 @@ function buildHead(route) {
   ];
   if (route.jsonLd) {
     tags.push(
-      `<script type="application/ld+json">${JSON.stringify(route.jsonLd)}</script>`,
+      `<script type="application/ld+json">${JSON.stringify(route.jsonLd(SITE_URL))}</script>`,
     );
   }
   return tags.join('\n    ');
