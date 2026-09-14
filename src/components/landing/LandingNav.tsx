@@ -9,11 +9,20 @@ export function LandingNav({ loginUrl }: { loginUrl: string }) {
       {/* Set w-full, px-4 (or px-2 / px-0) so items sit right at the edges */}
       <div className="flex w-full items-center justify-between px-4 py-5">
         
-        {/* Far Left: Logo */}
-        <div className="flex items-center gap-3">
+        {/* Far Left: Logo, links back to the top of the home page */}
+        <a
+          href="/"
+          onClick={(e) => {
+            if (window.location.pathname === '/') {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          className="flex items-center gap-3"
+        >
           <img src="/Soleri.svg" alt="Soleri logo" className="h-7 w-7 rounded-md" />
           <span className="text-sm font-semibold tracking-wide uppercase text-white">Soleri</span>
-        </div>
+        </a>
 
         {/* Far Right: Links + Demo Button */}
         <div className="flex items-center gap-8">

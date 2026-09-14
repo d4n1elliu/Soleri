@@ -19,7 +19,7 @@ export const PUBLIC_ROUTES = [
     title: 'Soleri | Visualize your Spotify listening',
     description:
       'Soleri turns your Spotify listening history into live insights: top tracks and artists, listening patterns, discovery rate, artist obsessions and Billboard comparisons.',
-    // Structured data for the landing page; needs the site origin for absolute @id URLs.
+    // Structured data for the landing page, needs the site origin for absolute @id URLs.
     jsonLd: (siteUrl) => ({
       '@context': 'https://schema.org',
       '@graph': [
