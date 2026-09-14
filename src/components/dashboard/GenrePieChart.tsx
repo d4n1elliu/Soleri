@@ -6,6 +6,39 @@ import {
   TOOLTIP_LABEL_STYLE,
 } from '../../lib';
 
+const RADIAN = Math.PI / 180;
+
+interface SliceLabelProps {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percent: number;
+}
+
+// Draws the percentage inside its slice so labels never overflow the card.
+// Slices under 5% skip the label; the tooltip and legend still cover them.
+function renderSliceLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent }: SliceLabelProps) {
+  if (percent < 0.05) return null;
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.55;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="#ffffff"
+      fontSize={12}
+      fontWeight={600}
+      textAnchor="middle"
+      dominantBaseline="central"
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+}
+
 // Pie chart showing the user's top 8 genres, tallied from their top artists
 export function GenrePieChart({ genres }: { genres: { genre: string; count: number }[] }) {
   if (genres.length === 0) {
@@ -27,8 +60,7 @@ export function GenrePieChart({ genres }: { genres: { genre: string; count: numb
             cy="45%"
             outerRadius={85}
             dataKey="value"
-            // Show percentage inside each slice
-            label={({ percent }) => `${((percent ?? 0) * 100).toFixed(0)}%`}
+            label={renderSliceLabel}
             labelLine={false}
           >
             {data.map((_, i) => (
