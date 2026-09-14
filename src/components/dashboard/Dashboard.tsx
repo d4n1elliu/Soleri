@@ -32,7 +32,7 @@ interface DashboardProps {
 }
 
 const TIME_RANGE_OPTIONS: { value: TimeRange; label: string }[] = [
-  { value: 'short_term', label: 'Last 4 weeks' },
+  { value: 'short_term', label: 'Last month' },
   { value: 'medium_term', label: 'Last 6 months' },
   { value: 'long_term', label: 'All time' },
 ];
@@ -52,23 +52,21 @@ export function Dashboard({
   return (
     <div id="overview" className="mx-auto flex w-full max-w-5xl flex-col gap-6">
       {/* Time range filter for the Spotify top-stats windows */}
-      <div className="flex justify-end">
-        <div className="flex w-fit rounded-full bg-zinc-900 p-1 ring-1 ring-zinc-800">
-          {TIME_RANGE_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              onClick={() => onTimeRangeChange(option.value)}
-              disabled={topsLoading}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${
-                option.value === timeRange
-                  ? 'bg-green-500 text-black'
-                  : 'text-zinc-400 hover:text-white'
-              } ${topsLoading ? 'cursor-wait' : ''}`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
+      <div className="flex w-full rounded-full bg-zinc-900 p-1 ring-1 ring-zinc-800">
+        {TIME_RANGE_OPTIONS.map((option) => (
+          <button
+            key={option.value}
+            onClick={() => onTimeRangeChange(option.value)}
+            disabled={topsLoading}
+            className={`flex-1 rounded-full px-3.5 py-1.5 text-center text-xs font-medium transition-colors ${
+              option.value === timeRange
+                ? 'bg-green-500 text-black'
+                : 'text-zinc-400 hover:text-white'
+            } ${topsLoading ? 'cursor-wait' : ''}`}
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
 
       <div
