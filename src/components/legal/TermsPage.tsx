@@ -60,7 +60,7 @@ const SECTIONS: LegalSection[] = [
   {
     heading: 'Contact',
     paragraphs: [
-      'If you have questions about these terms, contact us at daniel.liu8750@gmail.com.',
+      'If you have questions about these terms, contact us at contact@soleri.fyi.',
     ],
   },
 ];
