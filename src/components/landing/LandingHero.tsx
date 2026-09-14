@@ -68,7 +68,7 @@ export function LandingHero({ loginUrl }: { loginUrl: string }) {
             Launch Live App
           </motion.a>
           <a
-            href="https://github.com/d4n1elliu/Spoti-list"
+            href="https://github.com/d4n1elliu/Soleri"
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-full border border-zinc-800 bg-zinc-900/50 px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
