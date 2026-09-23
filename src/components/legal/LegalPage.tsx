@@ -39,7 +39,7 @@ export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
       </header>
 
       {/* Body */}
-      <main className="px-4 py-16 sm:px-8">
+      <main className="px-4 pb-16 pt-12 sm:px-8 sm:pt-16">
         <div className="mx-auto w-full max-w-3xl">
           <div className="flex flex-col gap-12">
             {sections.map((section, index) => (

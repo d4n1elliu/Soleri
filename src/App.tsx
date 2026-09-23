@@ -24,7 +24,8 @@ const NAV_ITEMS = [
 // ssrPath is provided by the build-time prerenderer (scripts/prerender.mjs),
 // where window does not exist. In the browser it is always undefined.
 export default function App({ ssrPath }: { ssrPath?: string }) {
-  const path = ssrPath ?? window.location.pathname;
+  const rawPath = ssrPath ?? window.location.pathname;
+  const path = rawPath.length > 1 ? rawPath.replace(/\/+$/, '') : rawPath;
   const {
     isLoggedIn,
     topTracks,

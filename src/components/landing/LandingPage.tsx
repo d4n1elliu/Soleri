@@ -36,7 +36,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       </section>
 
       {/* Artist Catalog Showcase */}
-      <section className="relative py-20 overflow-hidden border-y border-zinc-900 bg-zinc-950/50">
+      <section className="relative py-10 sm:py-20 overflow-hidden border-y border-zinc-900 bg-zinc-950/50">
         <HeroCollage />
       </section>
 
