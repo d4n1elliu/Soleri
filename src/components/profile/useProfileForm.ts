@@ -64,6 +64,7 @@ export function useProfileForm(token: string, spotifyId: string, spotifyDisplayN
   const [saveError, setSaveError] = useState<string | null>(null);
   const [uploading, setUploading] = useState<{ kind: ImageKind; progress: number } | null>(null);
   const [uploadError, setUploadError] = useState('');
+  const [uploadErrorKind, setUploadErrorKind] = useState<ImageKind | null>(null);
   const [deleting, setDeleting] = useState(false);
   const clearedImages = useRef<Record<ImageKind, boolean>>({ avatar: false, banner: false });
 
@@ -125,10 +126,12 @@ export function useProfileForm(token: string, spotifyId: string, spotifyDisplayN
   async function handleImage(kind: ImageKind, file: File | undefined) {
     if (!file) return;
     setUploadError('');
+    setUploadErrorKind(null);
     try {
       const blob = await processProfileImage(file, kind);
       if (blob.size > PROFILE_LIMITS.imageBytes) {
         setUploadError('That image is too large even after resizing.');
+        setUploadErrorKind(kind);
         return;
       }
       setUploading({ kind, progress: 0 });
@@ -138,6 +141,7 @@ export function useProfileForm(token: string, spotifyId: string, spotifyDisplayN
       setUploading(null);
       if (error || !url) {
         setUploadError(error ?? 'Upload failed');
+        setUploadErrorKind(kind);
         return;
       }
       clearedImages.current[kind] = false;
@@ -148,6 +152,7 @@ export function useProfileForm(token: string, spotifyId: string, spotifyDisplayN
     } catch (err) {
       setUploading(null);
       setUploadError(err instanceof Error ? err.message : 'Could not process that image');
+      setUploadErrorKind(kind);
     }
   }
 
@@ -217,6 +222,7 @@ export function useProfileForm(token: string, spotifyId: string, spotifyDisplayN
     saveError,
     uploading,
     uploadError,
+    uploadErrorKind,
     deleting,
     handleImage,
     clearImage,
