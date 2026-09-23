@@ -1,13 +1,16 @@
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import {
   decodeTasteProfile,
+  isShareId,
   payloadArtists,
   payloadTracks,
   spotifyUserUrl,
   spotifyArtistUrl,
   spotifyTrackUrl,
   type TasteEntry,
+  type TastePayload,
 } from '../../lib';
+import { fetchShare } from '../../api';
 import { InitialAvatar } from '../ui';
 
 function PageShell({ children }: { children: React.ReactNode }) {
@@ -81,10 +84,52 @@ function InvalidShare() {
   );
 }
 
-export function SharedProfilePage({ encoded }: { encoded: string }) {
-  const payload = useMemo(() => decodeTasteProfile(encoded), [encoded]);
+function isValidPayload(payload: TastePayload | null): payload is TastePayload {
+  return !!payload && !!payload.id && !!payload.n;
+}
 
-  if (!payload || !payload.id || !payload.n) {
+export function SharedProfilePage({ encoded }: { encoded: string }) {
+  // Legacy tokens decode locally; short IDs need the API
+  const [payload, setPayload] = useState<TastePayload | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const decoded = decodeTasteProfile(encoded);
+    if (isValidPayload(decoded)) {
+      setPayload(decoded);
+      setLoading(false);
+      return;
+    }
+    if (!isShareId(encoded)) {
+      setPayload(null);
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    fetchShare(encoded).then((fetched) => {
+      if (cancelled) return;
+      setPayload(fetched);
+      setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [encoded]);
+
+  if (loading) {
+    return (
+      <PageShell>
+        <div className="flex flex-col items-center py-24 text-center">
+          <div className="h-20 w-20 animate-pulse rounded-full bg-zinc-800" />
+          <div className="mt-4 h-6 w-40 animate-pulse rounded bg-zinc-800" />
+          <p className="mt-8 text-sm text-zinc-500">Loading profile…</p>
+        </div>
+      </PageShell>
+    );
+  }
+
+  if (!isValidPayload(payload)) {
     return <InvalidShare />;
   }
 
@@ -97,7 +142,7 @@ export function SharedProfilePage({ encoded }: { encoded: string }) {
           Soleri taste profile
         </p>
 
-        {/* Same-tab on purpose: a universal link in a new tab strands iOS Safari on about:blank */}
+        {/* Same-tab: a universal link in a new tab leaves iOS Safari on about:blank */}
         <a
           href={spotifyUserUrl(payload.id)}
           className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-green-500 px-8 text-xs font-semibold uppercase tracking-wider text-black transition-colors hover:bg-green-400"
