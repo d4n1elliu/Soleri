@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import QRCode from 'qrcode';
 import type { SpotifyTopArtist, SpotifyTrack } from '../../types';
+import { encodeTasteProfile, buildShareUrl } from '../../lib';
 
 interface ShareModalProps {
   spotifyId: string;
@@ -13,28 +14,36 @@ interface ShareModalProps {
 
 export function ShareModal({
   spotifyId,
-  displayName: _displayName,
-  topArtists: _topArtists,
-  topTracks: _topTracks,
-  genreCounts: _genreCounts,
+  displayName,
+  topArtists,
+  topTracks,
+  genreCounts,
   onClose,
 }: ShareModalProps) {
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const spotifyUrl = `https://open.spotify.com/user/${spotifyId}`;
+  // A Soleri URL, not open.spotify.com: a universal link would strand iOS Safari on about:blank
+  const shareUrl = useMemo(
+    () =>
+      buildShareUrl(
+        window.location.origin,
+        encodeTasteProfile(spotifyId, displayName, topArtists, topTracks, genreCounts),
+      ),
+    [spotifyId, displayName, topArtists, topTracks, genreCounts],
+  );
 
   useEffect(() => {
-    QRCode.toDataURL(spotifyUrl, {
+    QRCode.toDataURL(shareUrl, {
       width: 300,
       margin: 2,
       color: { dark: '#000000', light: '#ffffff' },
       errorCorrectionLevel: 'L',
     }).then(setQrDataUrl);
-  }, [spotifyUrl]);
+  }, [shareUrl]);
 
   function copyUrl() {
-    navigator.clipboard.writeText(spotifyUrl);
+    navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -86,11 +95,11 @@ export function ShareModal({
         </p>
 
         <div className="mb-3 flex items-center gap-2 rounded-lg bg-zinc-700 px-3 py-2.5">
-          <span className="flex-1 truncate text-sm text-zinc-300">{spotifyUrl}</span>
+          <span className="flex-1 truncate text-sm text-zinc-300">{shareUrl}</span>
           <button
             onClick={copyUrl}
             className="shrink-0 text-zinc-400 transition-colors hover:text-white"
-            aria-label="Copy Spotify link"
+            aria-label="Copy share link"
           >
             {copied ? (
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-400" viewBox="0 0 20 20" fill="currentColor">

@@ -1,24 +1,26 @@
 import { useState } from 'react';
 import { Scanner } from '@yudiel/react-qr-scanner';
+import {
+  decodeTasteProfile,
+  extractSharePayload,
+  parseSpotifyUserId,
+  spotifyUserUrl,
+} from '../../lib';
 
 interface QRScannerModalProps {
   onClose: () => void;
-  onTasteMatch?: (spotifyId: string) => void;
-}
-
-const SPOTIFY_USER_PREFIX = 'https://open.spotify.com/user/';
-
-function parseSpotifyUserId(url: string): string | null {
-  if (!url.startsWith(SPOTIFY_USER_PREFIX)) return null;
-  const id = url.slice(SPOTIFY_USER_PREFIX.length).split('?')[0].split('/')[0];
-  return id || null;
+  onTasteMatch?: (spotifyId: string, encodedPayload?: string) => void;
 }
 
 export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
   const [scannedValue, setScannedValue] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const spotifyUserId = scannedValue ? parseSpotifyUserId(scannedValue) : null;
+  // Soleri share QR (/u/<payload>) or a legacy open.spotify.com/user QR
+  const sharePayload = scannedValue ? extractSharePayload(scannedValue) : null;
+  const shareProfile = sharePayload ? decodeTasteProfile(sharePayload) : null;
+  const spotifyUserId =
+    shareProfile?.id ?? (scannedValue ? parseSpotifyUserId(scannedValue) : null);
   const isSpotifyUser = !!spotifyUserId;
 
   function handleScan(results: { rawValue: string }[]) {
@@ -27,16 +29,9 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
     }
   }
 
-  function viewOnSpotify() {
-    if (spotifyUserId) {
-      window.open(`${SPOTIFY_USER_PREFIX}${spotifyUserId}`, '_blank', 'noopener,noreferrer');
-    }
-    onClose();
-  }
-
   function handleTasteMatch() {
     if (spotifyUserId && onTasteMatch) {
-      onTasteMatch(spotifyUserId);
+      onTasteMatch(spotifyUserId, shareProfile && sharePayload ? sharePayload : undefined);
       onClose();
     }
   }
@@ -97,10 +92,26 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
               <div>
-                <p className="text-sm font-medium text-green-300">Spotify user found!</p>
-                <p className="text-xs text-zinc-400 truncate max-w-[200px]">{spotifyUserId}</p>
+                <p className="text-sm font-medium text-green-300">
+                  {shareProfile ? 'Soleri profile found!' : 'Spotify user found!'}
+                </p>
+                <p className="text-xs text-zinc-400 truncate max-w-[200px]">
+                  {shareProfile?.n ?? spotifyUserId}
+                </p>
               </div>
             </div>
+
+            {shareProfile && sharePayload && (
+              <a
+                href={`/u/${sharePayload}`}
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-green-500"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                </svg>
+                View Profile
+              </a>
+            )}
 
             {onTasteMatch && (
               <button
@@ -114,8 +125,10 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
               </button>
             )}
 
-            <button
-              onClick={viewOnSpotify}
+            {/* Same-tab on purpose: a universal link in a new tab strands iOS Safari on about:blank */}
+            <a
+              href={spotifyUserUrl(spotifyUserId)}
+              onClick={onClose}
               className="flex w-full items-center justify-center gap-2 rounded-lg border border-zinc-600 py-2.5 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -123,7 +136,7 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
                 <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
               </svg>
               View on Spotify
-            </button>
+            </a>
 
             <button
               onClick={() => { setScannedValue(null); setErrorMsg(''); }}
@@ -140,15 +153,15 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
             <div className="rounded-lg bg-zinc-700 px-3 py-2.5">
               <p className="truncate text-sm text-zinc-300">{scannedValue}</p>
             </div>
-            <button
-              onClick={() => {
-                window.open(scannedValue, '_blank', 'noopener,noreferrer');
-                onClose();
-              }}
+            <a
+              href={scannedValue}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={onClose}
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-zinc-700 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-600"
             >
               Open link
-            </button>
+            </a>
             <button
               onClick={() => { setScannedValue(null); setErrorMsg(''); }}
               className="w-full rounded-lg border border-zinc-600 py-2 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-white"
