@@ -2,6 +2,7 @@ export * from './billboard';
 export * from './discovery';
 export * from './format';
 export * from './heatmap';
+export * from './image';
 export * from './marathons';
 export * from './obsession';
 export * from './spotifyUrls';

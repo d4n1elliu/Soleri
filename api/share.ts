@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { randomBytes } from 'node:crypto';
 import { serverError } from './_lib/http.js';
+import { supabaseRest as supabase } from './_lib/supabase.js';
 
 // POST stores a taste payload under a short ID; GET ?id= returns it. Supabase-backed.
 
@@ -61,21 +62,6 @@ function stableStringify(value: unknown): string {
     return `{${entries.join(',')}}`;
   }
   return JSON.stringify(value);
-}
-
-function supabase(path: string, init: RequestInit = {}): Promise<Response> {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) throw new Error('Supabase is not configured');
-  return fetch(`${url}/rest/v1${path}`, {
-    ...init,
-    headers: {
-      apikey: key,
-      Authorization: `Bearer ${key}`,
-      'Content-Type': 'application/json',
-      ...init.headers,
-    },
-  });
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

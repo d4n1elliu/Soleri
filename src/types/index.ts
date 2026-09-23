@@ -1,3 +1,4 @@
+export * from './profile';
 export * from './spotify';
 
 // The top-stats windows the Spotify Web API supports

@@ -12,6 +12,7 @@ interface ShareModalProps {
   topTracks: SpotifyTrack[];
   genreCounts: { genre: string; count: number }[];
   onClose: () => void;
+  onEditProfile?: () => void;
 }
 
 export function ShareModal({
@@ -22,6 +23,7 @@ export function ShareModal({
   topTracks,
   genreCounts,
   onClose,
+  onEditProfile,
 }: ShareModalProps) {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -97,6 +99,14 @@ export function ShareModal({
         <div className="mb-4 flex flex-col items-center gap-2">
           <InitialAvatar name={displayName} src={avatarUrl} />
           <span className="max-w-full truncate text-sm font-medium text-white">{displayName}</span>
+          {onEditProfile && (
+            <button
+              onClick={onEditProfile}
+              className="text-xs text-zinc-500 underline-offset-2 transition-colors hover:text-zinc-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400/60"
+            >
+              Customise profile
+            </button>
+          )}
         </div>
 
         {/* Desktop: card matches the content column; the QR's own margin is the only quiet zone */}

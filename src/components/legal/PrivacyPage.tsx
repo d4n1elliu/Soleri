@@ -19,12 +19,13 @@ const SECTIONS: LegalSection[] = [
     paragraphs: [
       'Your listening data is fetched from the Spotify Web API and processed in your browser to calculate the insights shown on your dashboard, such as listening stats, listening patterns, discovery rate and chart comparisons.',
       'If you create a share link or QR code, Soleri stores a snapshot of your display name, Spotify user ID and your top artists, tracks and genres at that moment, so that anyone with the link can view it. Sharing is always initiated by you, and snapshots are deleted automatically after 90 days.',
+      'If you customise your profile, Soleri stores the details you enter, such as your display name, bio, pronouns, location, links, pinned track, accent colour and any images you upload. This profile is public: anyone who opens your share link can see it. It is kept until you delete it, which you can do at any time from the Edit profile page using Delete my profile data.',
     ],
   },
   {
     heading: 'Data Storage and Retention',
     paragraphs: [
-      'Soleri does not keep a database of your listening history. The only data stored on our servers is the share snapshot described above, which is deleted automatically 90 days after it was created. Your Spotify password and authentication tokens are never stored on our servers.',
+      'Soleri does not keep a database of your listening history. The only data stored on our servers is the share snapshot described above, which is deleted automatically 90 days after it was created, and any profile customisation you choose to save, which is kept until you delete it. Your Spotify password and authentication tokens are never stored on our servers.',
       'Authentication tokens are kept in your browser session so you stay signed in, and insights are computed on demand each time you use the dashboard. Clearing your browser storage or revoking access in your Spotify settings removes Soleri’s access to your data.',
     ],
   },
@@ -61,5 +62,5 @@ const SECTIONS: LegalSection[] = [
 ];
 
 export function PrivacyPage() {
-  return <LegalPage title="Privacy Policy" lastUpdated="September 23, 2026" sections={SECTIONS} />;
+  return <LegalPage title="Privacy Policy" lastUpdated="September 24, 2026" sections={SECTIONS} />;
 }
