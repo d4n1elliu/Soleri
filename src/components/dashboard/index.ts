@@ -1,3 +1,4 @@
+export * from './DashboardHeader';
 export * from './Dashboard';
 export * from './GenrePieChart';
 export * from './PopularityBarChart';

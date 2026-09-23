@@ -40,6 +40,7 @@ export function EditProfilePage({
     saveError,
     uploading,
     uploadError,
+    uploadErrorKind,
     deleting,
     handleImage,
     clearImage,
@@ -101,8 +102,11 @@ export function EditProfilePage({
               <div className="space-y-4">
                 <ImageUploadSection
                   form={form}
+                  spotifyDisplayName={spotifyDisplayName}
+                  spotifyAvatarUrl={spotifyAvatarUrl}
                   uploading={uploading}
                   uploadError={uploadError}
+                  errorKind={uploadErrorKind}
                   onUpload={handleImage}
                   onClear={clearImage}
                 />
