@@ -58,7 +58,7 @@ export function Dashboard({
             key={option.value}
             onClick={() => onTimeRangeChange(option.value)}
             disabled={topsLoading}
-            className={`flex-1 rounded-full px-3.5 py-1.5 text-center text-xs font-medium transition-colors ${
+            className={`flex-1 whitespace-nowrap rounded-full px-2 py-1.5 text-center text-xs font-medium transition-colors sm:px-3.5 ${
               option.value === timeRange
                 ? 'bg-green-500 text-black'
                 : 'text-zinc-400 hover:text-white'
@@ -75,7 +75,8 @@ export function Dashboard({
       >
         {topTracks[0] && <TopTrackCard track={topTracks[0]} />}
         <div className="relative md:col-span-1">
-          <div className="hide-scrollbar h-72 overflow-y-auto sm:h-[420px] md:absolute md:inset-0 md:h-auto">
+          {/* Fade hints there is more; overscroll-contain avoids iOS scroll traps */}
+          <div className="hide-scrollbar h-72 overflow-y-auto overscroll-contain pb-8 [mask-image:linear-gradient(to_bottom,black_calc(100%-2.5rem),transparent)] sm:h-[420px] md:absolute md:inset-0 md:h-auto md:pb-0 md:[mask-image:none]">
             <TrackList tracks={topTracks.slice(1, 50)} />
           </div>
         </div>
@@ -85,7 +86,7 @@ export function Dashboard({
         </div>
       </div>
 
-      <div id="recent-plays" className="scroll-mt-20 rounded-2xl bg-zinc-900 p-5 ring-1 ring-zinc-800 sm:p-7">
+      <div id="recent-plays" className="scroll-mt-20 rounded-2xl bg-zinc-900 p-4 ring-1 ring-zinc-800 sm:p-7">
         <h2 className="mb-1 text-base font-semibold text-white">Recent Play Count</h2>
         <p className="mb-5 text-xs text-zinc-500">Your most replayed tracks from the last 50 plays</p>
         <RecentPlayCount tracks={topTracks} playCounts={playCounts} />
