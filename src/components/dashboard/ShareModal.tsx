@@ -1,12 +1,13 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import type { SpotifyTopArtist, SpotifyTrack } from '../../types';
 import { buildTastePayload, encodePayload, buildShareUrl } from '../../lib';
-import { createShare } from '../../api';
+import { getOrCreateShare } from '../../api';
 import { InitialAvatar, StyledQr, downloadStyledQr } from '../ui';
 
 interface ShareModalProps {
   spotifyId: string;
   displayName: string;
+  avatarUrl?: string | null;
   topArtists: SpotifyTopArtist[];
   topTracks: SpotifyTrack[];
   genreCounts: { genre: string; count: number }[];
@@ -16,6 +17,7 @@ interface ShareModalProps {
 export function ShareModal({
   spotifyId,
   displayName,
+  avatarUrl,
   topArtists,
   topTracks,
   genreCounts,
@@ -23,6 +25,12 @@ export function ShareModal({
 }: ShareModalProps) {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // Panel takes focus so no button opens with a ring
+  useEffect(() => {
+    panelRef.current?.focus();
+  }, []);
 
   const payload = useMemo(
     () => buildTastePayload(spotifyId, displayName, topArtists, topTracks, genreCounts),
@@ -32,7 +40,7 @@ export function ShareModal({
   useEffect(() => {
     let cancelled = false;
     // Long-token fallback if the share API fails
-    createShare(payload).then((id) => {
+    getOrCreateShare(payload).then((id) => {
       if (cancelled) return;
       const token = id ?? encodePayload(payload);
       setShareUrl(buildShareUrl(window.location.origin, token));
@@ -48,7 +56,7 @@ export function ShareModal({
     if (!shareUrl) return;
     navigator.clipboard.writeText(shareUrl);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), 1500);
   }
 
   function nativeShare() {
@@ -69,7 +77,9 @@ export function ShareModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xs rounded-2xl bg-zinc-800 p-5 shadow-2xl"
+        ref={panelRef}
+        tabIndex={-1}
+        className="w-full max-w-xs rounded-2xl bg-zinc-800 p-5 shadow-2xl outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -85,7 +95,7 @@ export function ShareModal({
 
         {/* Identity */}
         <div className="mb-4 flex flex-col items-center gap-2">
-          <InitialAvatar name={displayName} />
+          <InitialAvatar name={displayName} src={avatarUrl} />
           <span className="max-w-full truncate text-sm font-medium text-white">{displayName}</span>
         </div>
 
@@ -106,13 +116,13 @@ export function ShareModal({
 
         {/* Link + copy */}
         <div className="mb-3 flex items-center gap-2 rounded-lg bg-zinc-700 px-3 py-2.5">
-          <span className="flex-1 truncate text-sm text-zinc-300">
+          <span className="min-w-0 flex-1 break-all text-xs leading-relaxed text-zinc-300">
             {shareUrl ?? 'Creating link…'}
           </span>
           <button
             onClick={copyUrl}
             disabled={!shareUrl}
-            className="flex shrink-0 items-center gap-1 text-zinc-400 transition-colors hover:text-white disabled:opacity-40"
+            className="flex shrink-0 items-center gap-1 rounded text-zinc-400 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400 disabled:opacity-40"
             aria-label="Copy share link"
           >
             {copied ? (

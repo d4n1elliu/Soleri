@@ -50,6 +50,19 @@ function validatePayload(body: unknown): SharePayload | null {
   return { id: p.id, n: p.n, a: p.a, g: p.g, t: p.t, an, tn };
 }
 
+// jsonb reorders keys, so compare with sorted keys
+function stableStringify(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`;
+  if (value && typeof value === 'object') {
+    const entries = Object.entries(value as Record<string, unknown>)
+      .filter(([, v]) => v !== undefined)
+      .sort(([a], [b]) => (a < b ? -1 : 1))
+      .map(([k, v]) => `${JSON.stringify(k)}:${stableStringify(v)}`);
+    return `{${entries.join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
 function supabase(path: string, init: RequestInit = {}): Promise<Response> {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -76,13 +89,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (!resp.ok) return serverError(res, 'fetch share', await resp.text());
       const rows = (await resp.json()) as { payload: SharePayload }[];
       if (rows.length === 0) return res.status(404).json({ error: 'Share not found' });
-      res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=86400');
+      // Short CDN cache: shares update in place
+      res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=3600');
       return res.status(200).json({ payload: rows[0].payload });
     }
 
     if (req.method === 'POST') {
       const payload = validatePayload(req.body);
       if (!payload) return res.status(400).json({ error: 'Invalid share payload' });
+
+      // One row per user: reuse the ID, refresh the payload if changed
+      const existingResp = await supabase(
+        `/shares?payload-%3E%3Eid=eq.${encodeURIComponent(payload.id)}&select=id,payload&limit=1`,
+      );
+      if (!existingResp.ok) {
+        return serverError(res, 'look up share', await existingResp.text());
+      }
+      const existing = (await existingResp.json()) as { id: string; payload: SharePayload }[];
+      if (existing.length > 0) {
+        const row = existing[0];
+        if (stableStringify(row.payload) !== stableStringify(payload)) {
+          const patchResp = await supabase(`/shares?id=eq.${row.id}`, {
+            method: 'PATCH',
+            headers: { Prefer: 'return=minimal' },
+            body: JSON.stringify({ payload, created_at: new Date().toISOString() }),
+          });
+          if (!patchResp.ok) return serverError(res, 'update share', await patchResp.text());
+        }
+        return res.status(200).json({ id: row.id });
+      }
 
       // PostgREST returns 409 on ID collision
       for (let attempt = 0; attempt < 3; attempt++) {

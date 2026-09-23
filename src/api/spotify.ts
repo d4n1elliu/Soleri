@@ -58,14 +58,15 @@ export async function fetchBillboard(token: string): Promise<BillboardData | nul
   }
 }
 
-export async function fetchUserProfile(
-  token: string,
-): Promise<{ id: string; display_name: string } | null> {
+export interface SpotifyUserProfile {
+  id: string;
+  display_name: string;
+  images?: { url: string; width: number; height: number }[];
+}
+
+export async function fetchUserProfile(token: string): Promise<SpotifyUserProfile | null> {
   try {
-    return await apiFetch<{ id: string; display_name: string }>(
-      'https://api.spotify.com/v1/me',
-      token,
-    );
+    return await apiFetch<SpotifyUserProfile>('https://api.spotify.com/v1/me', token);
   } catch {
     return null;
   }

@@ -68,16 +68,18 @@ function InvalidShare() {
   return (
     <PageShell>
       <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/30 p-8 text-center backdrop-blur-xl">
-        <p className="text-2xl font-light text-white">This share link doesn&rsquo;t work</p>
+        <p className="text-2xl font-light text-white">
+          This share link has expired or doesn&rsquo;t exist
+        </p>
         <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-          It may be incomplete, expired, or from an older version of Soleri. Ask your friend to
-          share a fresh QR code from their dashboard.
+          Share links expire after 90 days. Ask your friend to share a fresh QR code from their
+          dashboard.
         </p>
         <a
           href="/"
           className="mt-8 inline-flex min-h-11 items-center justify-center rounded-full bg-green-500 px-8 text-xs font-semibold uppercase tracking-wider text-black transition-colors hover:bg-green-400"
         >
-          Go to Soleri
+          Try Soleri
         </a>
       </div>
     </PageShell>

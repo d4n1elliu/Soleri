@@ -33,6 +33,7 @@ interface SpotifyAuthState {
   billboardLoading: boolean;
   spotifyId: string | null;
   displayName: string | null;
+  avatarUrl: string | null;
   token: string | null;
   timeRange: TimeRange;
   setTimeRange: (range: TimeRange) => void;
@@ -51,6 +52,7 @@ export function useSpotifyAuth(): SpotifyAuthState {
   const [billboardLoading, setBillboardLoading] = useState(false);
   const [spotifyId, setSpotifyId] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE);
   const [topsLoading, setTopsLoading] = useState(false);
@@ -86,6 +88,7 @@ export function useSpotifyAuth(): SpotifyAuthState {
           if (profile) {
             setSpotifyId(profile.id);
             setDisplayName(profile.display_name);
+            setAvatarUrl(profile.images?.[0]?.url ?? null);
           }
         });
 
@@ -148,6 +151,7 @@ export function useSpotifyAuth(): SpotifyAuthState {
     billboardLoading,
     spotifyId,
     displayName,
+    avatarUrl,
     token,
     timeRange,
     setTimeRange,
