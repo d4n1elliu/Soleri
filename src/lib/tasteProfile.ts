@@ -1,12 +1,19 @@
 import type { SpotifyTopArtist, SpotifyTrack } from '../types';
 
-// Compact taste payload encoded into the QR
+// Compact taste payload encoded into the QR / share URL
 export interface TastePayload {
   id: string;   // Spotify user ID
   n: string;    // display name (max 20 chars)
-  a: string[];  // top 10 artist IDs
+  a: string[];  // top 8 artist IDs
   g: string[];  // top 5 genre strings
-  t: string[];  // top 5 track IDs
+  t: string[];  // top 4 track IDs
+  an?: string[]; // artist names, parallel to `a` (missing in legacy payloads)
+  tn?: string[]; // track names, parallel to `t` (missing in legacy payloads)
+}
+
+export interface TasteEntry {
+  id: string;
+  name: string;
 }
 
 export interface TasteMatchResult {
@@ -41,14 +48,42 @@ export function encodeTasteProfile(
   topTracks: SpotifyTrack[],
   genreCounts: { genre: string; count: number }[],
 ): string {
+  const artists = topArtists.slice(0, 8);
+  const tracks = topTracks.slice(0, 4);
   const payload: TastePayload = {
     id: spotifyId,
     n: displayName.slice(0, 20),
-    a: topArtists.slice(0, 10).map((a) => a.id),
+    a: artists.map((a) => a.id),
     g: genreCounts.slice(0, 5).map((g) => g.genre),
-    t: topTracks.slice(0, 5).map((t) => t.id),
+    t: tracks.map((t) => t.id),
+    an: artists.map((a) => a.name.slice(0, 30)),
+    tn: tracks.map((t) => t.name.slice(0, 30)),
   };
   return toBase64Url(JSON.stringify(payload));
+}
+
+// Share URLs look like https://www.soleri.fyi/u/<base64url payload>
+export function buildShareUrl(origin: string, encoded: string): string {
+  return `${origin}/u/${encoded}`;
+}
+
+export function extractSharePayload(url: string): string | null {
+  const match = url.match(/\/u\/([A-Za-z0-9_-]+)/);
+  return match ? match[1] : null;
+}
+
+function zipEntries(ids: string[], names?: string[]): TasteEntry[] {
+  return (names ?? [])
+    .map((name, i) => ({ id: ids[i], name }))
+    .filter((e) => e.id && e.name);
+}
+
+export function payloadArtists(payload: TastePayload): TasteEntry[] {
+  return zipEntries(payload.a, payload.an);
+}
+
+export function payloadTracks(payload: TastePayload): TasteEntry[] {
+  return zipEntries(payload.t, payload.tn);
 }
 
 export function decodeTasteProfile(encoded: string): TastePayload | null {

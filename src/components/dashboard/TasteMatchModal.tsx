@@ -6,6 +6,7 @@ import {
   compatibilityLabel,
   type TasteMatchResult,
 } from '../../lib';
+import { InitialAvatar } from '../ui';
 
 interface TasteMatchModalProps {
   encodedPayload: string;
@@ -15,16 +16,6 @@ interface TasteMatchModalProps {
   myTopTracks: SpotifyTrack[];
   myGenreCounts: { genre: string; count: number }[];
   onClose: () => void;
-}
-
-function InitialAvatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' }) {
-  const initial = name.trim().charAt(0).toUpperCase() || '?';
-  const cls = size === 'sm' ? 'h-10 w-10 text-base' : 'h-12 w-12 text-lg';
-  return (
-    <div className={`${cls} flex items-center justify-center rounded-full bg-zinc-700 font-semibold text-zinc-200`}>
-      {initial}
-    </div>
-  );
 }
 
 function ScoreRing({ score }: { score: number }) {

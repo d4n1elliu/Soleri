@@ -4,6 +4,7 @@ export * from './format';
 export * from './heatmap';
 export * from './marathons';
 export * from './obsession';
+export * from './spotifyUrls';
 export * from './stats';
 export * from './tasteProfile';
 export * from './theme';

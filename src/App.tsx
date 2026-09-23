@@ -3,6 +3,7 @@ import { useSpotifyAuth } from './hooks';
 import { buildSpotifyAuthUrl } from './api';
 import { LandingPage } from './components/landing';
 import { TermsPage, PrivacyPage } from './components/legal';
+import { SharedProfilePage } from './components/share';
 import { Dashboard, ShareModal, QRScannerModal, TasteMatchModal } from './components/dashboard';
 import { encodeTasteProfile } from './lib';
 
@@ -49,15 +50,21 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
   const [tasteMatch, setTasteMatch] = useState<TasteMatchState | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
-  function handleTasteMatch(theirSpotifyId: string) {
-    const encodedPayload = encodeTasteProfile(
-      theirSpotifyId,
-      displayName ?? theirSpotifyId,
-      topArtists,
-      topTracks,
-      genreCounts,
-    );
+  function handleTasteMatch(theirSpotifyId: string, theirPayload?: string) {
+    const encodedPayload =
+      theirPayload ??
+      encodeTasteProfile(
+        theirSpotifyId,
+        displayName ?? theirSpotifyId,
+        topArtists,
+        topTracks,
+        genreCounts,
+      );
     setTasteMatch({ encodedPayload, theirSpotifyId });
+  }
+
+  if (path.startsWith('/u/')) {
+    return <SharedProfilePage encoded={path.slice(3)} />;
   }
 
   if (path === '/terms') {
