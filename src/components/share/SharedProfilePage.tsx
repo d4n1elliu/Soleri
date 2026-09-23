@@ -10,10 +10,17 @@ import {
   type TasteEntry,
   type TastePayload,
 } from '../../lib';
-import { fetchShare } from '../../api';
-import { InitialAvatar } from '../ui';
+import { fetchShare, fetchProfile } from '../../api';
+import type { ProfileData } from '../../types';
+import { ProfileHeader, DEFAULT_ACCENT } from './ProfileHeader';
 
-function PageShell({ children }: { children: React.ReactNode }) {
+function PageShell({
+  children,
+  wide = false,
+}: {
+  children: React.ReactNode;
+  wide?: boolean;
+}) {
   return (
     <div className="min-h-screen overflow-x-clip bg-zinc-950 text-zinc-100 selection:bg-green-500 selection:text-black font-sans antialiased">
       <nav className="sticky top-0 z-50 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-xl">
@@ -30,7 +37,9 @@ function PageShell({ children }: { children: React.ReactNode }) {
           </a>
         </div>
       </nav>
-      <main className="mx-auto w-full max-w-xl px-4 py-12 sm:py-16">{children}</main>
+      <main className={`mx-auto w-full px-4 py-12 sm:py-16 ${wide ? 'max-w-5xl' : 'max-w-xl'}`}>
+        {children}
+      </main>
     </div>
   );
 }
@@ -46,7 +55,7 @@ function EntryList({
 }) {
   if (entries.length === 0) return null;
   return (
-    <section className="mt-10">
+    <section className="mt-8 first:mt-0">
       <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-500">{title}</h2>
       <div className="mt-3 flex flex-col gap-1.5">
         {entries.map((entry, index) => (
@@ -93,27 +102,29 @@ function isValidPayload(payload: TastePayload | null): payload is TastePayload {
 export function SharedProfilePage({ encoded }: { encoded: string }) {
   // Legacy tokens decode locally; short IDs need the API
   const [payload, setPayload] = useState<TastePayload | null>(null);
+  const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const decoded = decodeTasteProfile(encoded);
-    if (isValidPayload(decoded)) {
-      setPayload(decoded);
-      setLoading(false);
-      return;
-    }
-    if (!isShareId(encoded)) {
-      setPayload(null);
-      setLoading(false);
-      return;
-    }
     let cancelled = false;
-    setLoading(true);
-    fetchShare(encoded).then((fetched) => {
+
+    async function load() {
+      const decoded = decodeTasteProfile(encoded);
+      let resolved: TastePayload | null = isValidPayload(decoded) ? decoded : null;
+      if (!resolved && isShareId(encoded)) {
+        resolved = await fetchShare(encoded);
+      }
       if (cancelled) return;
-      setPayload(fetched);
+      // Customisation loads live by user ID so edits show on old links
+      const liveProfile = isValidPayload(resolved) ? await fetchProfile(resolved.id) : null;
+      if (cancelled) return;
+      setPayload(resolved);
+      setProfile(liveProfile);
       setLoading(false);
-    });
+    }
+
+    setLoading(true);
+    load();
     return () => {
       cancelled = true;
     };
@@ -135,26 +146,15 @@ export function SharedProfilePage({ encoded }: { encoded: string }) {
     return <InvalidShare />;
   }
 
-  return (
-    <PageShell>
-      <div className="flex flex-col items-center text-center">
-        <InitialAvatar name={payload.n} size="lg" />
-        <h1 className="mt-4 text-3xl font-light tracking-tight text-white sm:text-4xl">{payload.n}</h1>
-        <p className="mt-1 font-mono text-xs uppercase tracking-widest text-zinc-500">
-          Soleri taste profile
-        </p>
+  const accent = profile?.accentColor ?? DEFAULT_ACCENT;
+  const showGenres = (profile?.showGenres ?? true) && payload.g.length > 0;
+  const showArtists = profile?.showArtists ?? true;
+  const showTracks = profile?.showTracks ?? true;
 
-        {/* Same-tab: a universal link in a new tab leaves iOS Safari on about:blank */}
-        <a
-          href={spotifyUserUrl(payload.id)}
-          className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-green-500 px-8 text-xs font-semibold uppercase tracking-wider text-black transition-colors hover:bg-green-400"
-        >
-          Open in Spotify
-        </a>
-      </div>
-
-      {payload.g.length > 0 && (
-        <section className="mt-10">
+  const stats = (
+    <>
+      {showGenres && (
+        <section className="mt-8 first:mt-0">
           <h2 className="font-mono text-xs uppercase tracking-widest text-zinc-500">Top genres</h2>
           <div className="mt-3 flex flex-wrap gap-2">
             {payload.g.map((genre) => (
@@ -168,20 +168,61 @@ export function SharedProfilePage({ encoded }: { encoded: string }) {
           </div>
         </section>
       )}
+      {showArtists && (
+        <EntryList title="Top artists" entries={payloadArtists(payload)} toUrl={spotifyArtistUrl} />
+      )}
+      {showTracks && (
+        <EntryList title="Top tracks" entries={payloadTracks(payload)} toUrl={spotifyTrackUrl} />
+      )}
+    </>
+  );
 
-      <EntryList title="Top artists" entries={payloadArtists(payload)} toUrl={spotifyArtistUrl} />
-      <EntryList title="Top tracks" entries={payloadTracks(payload)} toUrl={spotifyTrackUrl} />
+  return (
+    <PageShell wide>
+      <div className="md:grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:items-start md:gap-8">
+        {/* Profile card */}
+        <div>
+          <ProfileHeader
+            profile={{
+              displayName: profile?.displayName || payload.n,
+              pronouns: profile?.pronouns ?? null,
+              location: profile?.location ?? null,
+              bio: profile?.bio ?? null,
+              links: profile?.links ?? [],
+              pinnedTrack: profile?.pinnedTrack ?? null,
+              accentColor: profile?.accentColor ?? null,
+              avatarUrl: profile?.avatarUrl ?? null,
+              bannerUrl: profile?.bannerUrl ?? null,
+            }}
+          />
 
-      <div className="mt-12 rounded-3xl border border-zinc-800/80 bg-zinc-900/30 p-6 text-center backdrop-blur-xl">
-        <p className="text-sm text-zinc-400">
-          Connect your Spotify to see your own stats and compare tastes with {payload.n}.
-        </p>
-        <a
-          href="/"
-          className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full border border-zinc-700 px-8 text-xs font-semibold uppercase tracking-wider text-zinc-200 transition-colors hover:border-zinc-500 hover:text-white"
-        >
-          Try Soleri
-        </a>
+          {/* Same-tab: a universal link in a new tab leaves iOS Safari on about:blank */}
+          <a
+            href={spotifyUserUrl(payload.id)}
+            className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-8 text-xs font-semibold uppercase tracking-wider text-black transition-opacity hover:opacity-90"
+            style={{ backgroundColor: accent }}
+          >
+            Open in Spotify
+          </a>
+        </div>
+
+        {/* Stats */}
+        <div className="mt-10 md:mt-0">
+          {stats}
+
+          <div className="mt-10 rounded-3xl border border-zinc-800/80 bg-zinc-900/30 p-6 text-center backdrop-blur-xl">
+            <p className="text-sm text-zinc-400">
+              Connect your Spotify to see your own stats and compare tastes with{' '}
+              {profile?.displayName || payload.n}.
+            </p>
+            <a
+              href="/"
+              className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full border border-zinc-700 px-8 text-xs font-semibold uppercase tracking-wider text-zinc-200 transition-colors hover:border-zinc-500 hover:text-white"
+            >
+              Try Soleri
+            </a>
+          </div>
+        </div>
       </div>
     </PageShell>
   );
