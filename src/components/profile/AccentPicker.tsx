@@ -9,7 +9,7 @@ interface AccentPickerProps {
 export function AccentPicker({ value, onChange }: AccentPickerProps) {
   return (
     <div>
-      <span className={labelCls}>Accent colour</span>
+      <span className={labelCls}>Accent</span>
       <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Accent colour">
         {ACCENT_COLORS.map((color) => (
           <button

@@ -52,30 +52,55 @@ export function trackToPinned(track: SpotifyTrack): PinnedTrack {
   };
 }
 
+export type SaveState = 'idle' | 'saving' | 'saved' | 'error';
+
 export function useProfileForm(token: string, spotifyId: string, spotifyDisplayName: string) {
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadNonce, setLoadNonce] = useState(0);
   const [form, setForm] = useState<ProfileFormState>(() => toForm(null, spotifyDisplayName));
   const [savedForm, setSavedForm] = useState<ProfileFormState | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [saveMessage, setSaveMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const [saveState, setSaveState] = useState<SaveState>('idle');
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [uploading, setUploading] = useState<{ kind: ImageKind; progress: number } | null>(null);
   const [uploadError, setUploadError] = useState('');
   const [deleting, setDeleting] = useState(false);
   const clearedImages = useRef<Record<ImageKind, boolean>>({ avatar: false, banner: false });
 
+  const saving = saveState === 'saving';
+
   useEffect(() => {
     let cancelled = false;
-    fetchProfile(spotifyId).then((profile) => {
+    fetchProfile(spotifyId).then(({ profile, error }) => {
       if (cancelled) return;
+      if (error) {
+        // Leave the form unpopulated so a save can't wipe the real profile
+        setLoadError(error);
+        setLoading(false);
+        return;
+      }
       const initial = toForm(profile, spotifyDisplayName);
       setForm(initial);
       setSavedForm(initial);
+      setLoadError(null);
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, [spotifyId, spotifyDisplayName]);
+  }, [spotifyId, spotifyDisplayName, loadNonce]);
+
+  function reload() {
+    setLoading(true);
+    setLoadError(null);
+    setLoadNonce((n) => n + 1);
+  }
+
+  useEffect(() => {
+    if (saveState !== 'saved') return;
+    const timer = setTimeout(() => setSaveState('idle'), 3000);
+    return () => clearTimeout(timer);
+  }, [saveState]);
 
   const dirty = useMemo(
     () => savedForm !== null && JSON.stringify(form) !== JSON.stringify(savedForm),
@@ -83,17 +108,18 @@ export function useProfileForm(token: string, spotifyId: string, spotifyDisplayN
   );
 
   useEffect(() => {
-    if (!dirty) return;
+    if (!dirty && !saving) return;
     const warn = (e: BeforeUnloadEvent) => {
       e.preventDefault();
     };
     window.addEventListener('beforeunload', warn);
     return () => window.removeEventListener('beforeunload', warn);
-  }, [dirty]);
+  }, [dirty, saving]);
 
   function set<K extends keyof ProfileFormState>(key: K, value: ProfileFormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
-    setSaveMessage(null);
+    setSaveState('idle');
+    setSaveError(null);
   }
 
   async function handleImage(kind: ImageKind, file: File | undefined) {
@@ -131,8 +157,8 @@ export function useProfileForm(token: string, spotifyId: string, spotifyDisplayN
   }
 
   async function handleSave() {
-    setSaving(true);
-    setSaveMessage(null);
+    setSaveState('saving');
+    setSaveError(null);
     const links: ProfileLink[] = form.links
       .filter((l) => l.url.trim())
       .map((l) => ({ label: l.label.trim(), url: l.url.trim() }));
@@ -150,16 +176,16 @@ export function useProfileForm(token: string, spotifyId: string, spotifyDisplayN
       ...(clearedImages.current.avatar ? { avatarUrl: null } : {}),
       ...(clearedImages.current.banner ? { bannerUrl: null } : {}),
     });
-    setSaving(false);
     if (error || !profile) {
-      setSaveMessage({ ok: false, text: error ?? 'Could not save profile' });
+      setSaveState('error');
+      setSaveError(error ?? 'Could not save profile');
       return;
     }
     clearedImages.current = { avatar: false, banner: false };
     const next = toForm(profile, spotifyDisplayName);
     setForm(next);
     setSavedForm(next);
-    setSaveMessage({ ok: true, text: 'Profile saved' });
+    setSaveState('saved');
   }
 
   async function handleDelete(): Promise<boolean> {
@@ -167,23 +193,28 @@ export function useProfileForm(token: string, spotifyId: string, spotifyDisplayN
     const ok = await deleteProfile(token);
     setDeleting(false);
     if (!ok) {
-      setSaveMessage({ ok: false, text: 'Could not delete profile data' });
+      setSaveState('error');
+      setSaveError('Could not delete profile data');
       return false;
     }
     const cleared = toForm(null, spotifyDisplayName);
     setForm(cleared);
     setSavedForm(cleared);
-    setSaveMessage({ ok: true, text: 'Profile data deleted' });
+    setSaveState('idle');
+    setSaveError(null);
     return true;
   }
 
   return {
     loading,
+    loadError,
+    reload,
     form,
     set,
     dirty,
     saving,
-    saveMessage,
+    saveState,
+    saveError,
     uploading,
     uploadError,
     deleting,

@@ -65,7 +65,7 @@ export function ProfileHeader({ profile }: { profile: ProfileHeaderData }) {
         )}
 
         {profile.bio && (
-          <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-zinc-300">
+          <p className="mt-3 whitespace-pre-line break-words text-sm leading-relaxed text-zinc-300">
             {profile.bio}
           </p>
         )}

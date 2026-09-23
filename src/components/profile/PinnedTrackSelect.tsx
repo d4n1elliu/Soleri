@@ -11,7 +11,7 @@ interface PinnedTrackSelectProps {
 export function PinnedTrackSelect({ value, topTracks, onChange }: PinnedTrackSelectProps) {
   return (
     <div>
-      <label htmlFor="pinnedTrack" className={labelCls}>Currently obsessed with</label>
+      <label htmlFor="pinnedTrack" className={labelCls}>Pinned track</label>
       <select
         id="pinnedTrack"
         className={inputCls}

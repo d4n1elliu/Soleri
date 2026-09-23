@@ -117,8 +117,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
       if (!resp.ok) return serverError(res, 'fetch profile', await resp.text());
       const rows = (await resp.json()) as ProfileRow[];
+      // no-store: a cached GET made saves look like they never happened
+      res.setHeader('Cache-Control', 'no-store');
       if (rows.length === 0) return res.status(404).json({ error: 'Profile not found' });
-      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60');
       return res.status(200).json({ profile: toPublic(rows[0]) });
     }
 
@@ -129,7 +130,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (req.method === 'PUT') {
       if (rateLimited(userId)) {
-        return res.status(429).json({ error: 'Too many updates, slow down' });
+        return res.status(429).json({ error: "You're saving too quickly, try again in a minute" });
       }
       const body = (req.body ?? {}) as Record<string, unknown>;
       let row: Omit<ProfileRow, 'updated_at'> & { updated_at: string };
@@ -162,7 +163,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const existing = (await existingResp.json()) as ProfileRow[];
       if (existing.length > 0) {
         const age = Date.now() - new Date(existing[0].updated_at).getTime();
-        if (age < 3000) return res.status(429).json({ error: 'Too many updates, slow down' });
+        if (age < 3000) {
+          return res
+            .status(429)
+            .json({ error: "You're saving too quickly, wait a moment and try again" });
+        }
         row.avatar_url = body.avatarUrl === null ? null : existing[0].avatar_url;
         row.banner_url = body.bannerUrl === null ? null : existing[0].banner_url;
         if (body.avatarUrl === null && existing[0].avatar_url) {

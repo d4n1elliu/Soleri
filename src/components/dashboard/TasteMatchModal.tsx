@@ -44,7 +44,6 @@ function ScoreRing({ score }: { score: number }) {
 
 export function TasteMatchModal({
   encodedPayload,
-  theirSpotifyId: _theirSpotifyId,
   myDisplayName,
   myTopArtists,
   myTopTracks,
