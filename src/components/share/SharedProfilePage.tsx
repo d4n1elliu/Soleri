@@ -116,7 +116,9 @@ export function SharedProfilePage({ encoded }: { encoded: string }) {
       }
       if (cancelled) return;
       // Customisation loads live by user ID so edits show on old links
-      const liveProfile = isValidPayload(resolved) ? await fetchProfile(resolved.id) : null;
+      const liveProfile = isValidPayload(resolved)
+        ? (await fetchProfile(resolved.id)).profile
+        : null;
       if (cancelled) return;
       setPayload(resolved);
       setProfile(liveProfile);

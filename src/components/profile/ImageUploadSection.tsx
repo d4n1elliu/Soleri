@@ -17,43 +17,38 @@ export function ImageUploadSection({
   onClear,
 }: ImageUploadSectionProps) {
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-5">
-      <h2 className="mb-4 text-sm font-semibold text-white">Images</h2>
-      <div className="space-y-4">
-        {(['avatar', 'banner'] as const).map((kind) => {
-          const current = kind === 'avatar' ? form.avatarUrl : form.bannerUrl;
-          return (
-            <div key={kind} className="flex flex-wrap items-center gap-3">
-              <span className="w-24 text-xs uppercase tracking-wider text-zinc-500">
-                {kind === 'avatar' ? 'Avatar' : 'Banner'}
+    <div className="space-y-3">
+      {(['avatar', 'banner'] as const).map((kind) => {
+        const current = kind === 'avatar' ? form.avatarUrl : form.bannerUrl;
+        return (
+          <div key={kind} className="flex flex-wrap items-center gap-3">
+            <label className={`${smallButtonCls} flex min-h-11 cursor-pointer items-center focus-within:ring-2 focus-within:ring-green-400/60 sm:min-h-9`}>
+              Upload {kind}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="sr-only"
+                aria-label={`Upload ${kind}`}
+                onChange={(e) => onUpload(kind, e.target.files?.[0])}
+              />
+            </label>
+            {current && (
+              <button
+                onClick={() => onClear(kind)}
+                className={`${smallButtonCls} flex min-h-11 items-center sm:min-h-9`}
+              >
+                {kind === 'avatar' ? 'Reset to Spotify avatar' : 'Remove banner'}
+              </button>
+            )}
+            {uploading?.kind === kind && (
+              <span className="text-xs text-zinc-400">
+                Uploading… {Math.round(uploading.progress * 100)}%
               </span>
-              <label className={`${smallButtonCls} cursor-pointer focus-within:ring-2 focus-within:ring-green-400/60`}>
-                Upload
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  className="sr-only"
-                  onChange={(e) => onUpload(kind, e.target.files?.[0])}
-                />
-              </label>
-              {current && (
-                <button onClick={() => onClear(kind)} className={smallButtonCls}>
-                  {kind === 'avatar' ? 'Reset to Spotify avatar' : 'Remove banner'}
-                </button>
-              )}
-              {uploading?.kind === kind && (
-                <span className="text-xs text-zinc-400">
-                  Uploading… {Math.round(uploading.progress * 100)}%
-                </span>
-              )}
-            </div>
-          );
-        })}
-        {uploadError && <p className="text-xs text-red-400">{uploadError}</p>}
-        <p className="text-xs text-zinc-600">
-          JPEG, PNG or WebP. Avatars are cropped square; banners to 3:1.
-        </p>
-      </div>
-    </section>
+            )}
+          </div>
+        );
+      })}
+      {uploadError && <p className="text-xs text-red-400">{uploadError}</p>}
+    </div>
   );
 }

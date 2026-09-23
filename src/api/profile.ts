@@ -6,21 +6,43 @@ export type ProfileSave = Omit<ProfileData, 'spotifyUserId' | 'avatarUrl' | 'ban
   bannerUrl?: null;
 };
 
-export async function fetchProfile(spotifyId: string): Promise<ProfileData | null> {
+export interface ProfileFetchResult {
+  profile: ProfileData | null;
+  error: string | null;
+}
+
+// 404 means "no profile yet"; other failures must be distinct or a save could wipe the profile
+export async function fetchProfile(spotifyId: string): Promise<ProfileFetchResult> {
   try {
-    const res = await fetch(`/api/profile?spotifyId=${encodeURIComponent(spotifyId)}`);
-    if (!res.ok) return null;
+    const res = await fetch(`/api/profile?spotifyId=${encodeURIComponent(spotifyId)}`, {
+      cache: 'no-store',
+    });
+    if (res.status === 404) return { profile: null, error: null };
+    if (!res.ok) return { profile: null, error: 'Could not load your profile' };
     const data = (await res.json()) as { profile?: ProfileData };
-    return data.profile ?? null;
+    return { profile: data.profile ?? null, error: null };
   } catch {
-    return null;
+    return { profile: null, error: 'Could not load your profile' };
+  }
+}
+
+function saveErrorMessage(status: number, apiError: string | undefined): string {
+  switch (status) {
+    case 401:
+      return 'Session expired, please log in again';
+    case 429:
+      return apiError ?? "You're saving too quickly, try again in a minute";
+    case 400:
+      return apiError ?? 'Could not save profile';
+    default:
+      return 'Could not save profile — check your connection and try again';
   }
 }
 
 export async function saveProfile(
   token: string,
   profile: ProfileSave,
-): Promise<{ profile: ProfileData | null; error: string | null }> {
+): Promise<{ profile: ProfileData | null; error: string | null; status: number | null }> {
   try {
     const res = await fetch('/api/profile', {
       method: 'PUT',
@@ -31,10 +53,16 @@ export async function saveProfile(
       profile?: ProfileData;
       error?: string;
     };
-    if (!res.ok) return { profile: null, error: data.error ?? 'Could not save profile' };
-    return { profile: data.profile ?? null, error: null };
+    if (!res.ok) {
+      return { profile: null, error: saveErrorMessage(res.status, data.error), status: res.status };
+    }
+    return { profile: data.profile ?? null, error: null, status: res.status };
   } catch {
-    return { profile: null, error: 'Could not save profile' };
+    return {
+      profile: null,
+      error: 'Could not save profile — check your connection and try again',
+      status: null,
+    };
   }
 }
 

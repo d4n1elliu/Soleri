@@ -110,20 +110,20 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
-      <header className="sticky top-0 z-20 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur">
-        <div className="flex items-center justify-between py-2 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:px-6 sm:py-3.5">
+    <div className="min-h-screen overflow-x-clip bg-zinc-950 text-white">
+      <header className="sticky top-0 z-20 overflow-x-clip border-b border-zinc-800 bg-zinc-950/95 backdrop-blur">
+        <div className="flex min-w-0 items-center justify-between gap-3 py-2 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:px-6 sm:py-3.5">
           <a href="/" className="flex min-h-11 items-center gap-2.5">
             <img src="/Soleri.svg" alt="Soleri" className="h-7 w-7 rounded-md" />
             <span className="hidden font-bold tracking-tight min-[380px]:inline">Soleri</span>
           </a>
           {displayName && (
-            <p className="hidden text-sm text-zinc-500 sm:block lg:block">
+            <p className="hidden min-w-0 shrink truncate text-sm text-zinc-500 sm:block lg:block">
               Welcome back{' '}
               <span className="ml-2 font-medium uppercase tracking-wide text-zinc-300">{displayName}</span>
             </p>
           )}
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <button
               onClick={() => setScanOpen(true)}
               className="flex h-11 w-11 items-center justify-center gap-1.5 rounded-lg border border-zinc-700 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400/60 sm:h-auto sm:w-auto sm:px-3 sm:py-1.5"

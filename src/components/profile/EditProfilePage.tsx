@@ -8,7 +8,8 @@ import { ImageUploadSection } from './ImageUploadSection';
 import { LinksEditor } from './LinksEditor';
 import { AccentPicker } from './AccentPicker';
 import { PinnedTrackSelect } from './PinnedTrackSelect';
-import { inputCls, labelCls, smallButtonCls } from './formStyles';
+import { VisibilityToggles } from './VisibilityToggles';
+import { inputCls, labelCls, sectionTitleCls, smallButtonCls } from './formStyles';
 
 interface EditProfilePageProps {
   token: string;
@@ -29,11 +30,14 @@ export function EditProfilePage({
 }: EditProfilePageProps) {
   const {
     loading,
+    loadError,
+    reload,
     form,
     set,
     dirty,
     saving,
-    saveMessage,
+    saveState,
+    saveError,
     uploading,
     uploadError,
     deleting,
@@ -45,7 +49,10 @@ export function EditProfilePage({
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   function handleBack() {
-    if (dirty && !window.confirm('You have unsaved changes. Leave without saving?')) return;
+    if (saving && !window.confirm('Your profile is still saving. Leave anyway?')) return;
+    if (!saving && dirty && !window.confirm('You have unsaved changes. Leave without saving?')) {
+      return;
+    }
     onBack();
   }
 
@@ -55,35 +62,50 @@ export function EditProfilePage({
     );
   }
 
+  if (loadError) {
+    return (
+      <div className="px-4 pb-16 pt-8 sm:px-8">
+        <div className="mx-auto w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6 text-center">
+          <p className="text-sm text-zinc-300">{loadError}</p>
+          <div className="mt-5 flex justify-center gap-3">
+            <button
+              onClick={reload}
+              className="rounded-full bg-green-500 px-8 py-2.5 text-xs font-semibold uppercase tracking-wider text-black transition-colors hover:bg-green-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              Retry
+            </button>
+            <button onClick={onBack} className={`${smallButtonCls} px-4 py-2 text-sm`}>
+              Back
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="px-4 pb-16 pt-8 sm:px-8">
-      <div className="mx-auto w-full max-w-5xl">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-light tracking-tight text-white">Edit profile</h1>
-            <p className="mt-1 text-xs text-zinc-500">
-              Everything here is public on your share links.
-            </p>
-          </div>
-          <button onClick={handleBack} className={`${smallButtonCls} px-4 py-2 text-sm`}>
+      <div className="mx-auto w-full max-w-5xl min-w-0">
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <h1 className="text-3xl font-light tracking-tight text-white">Edit profile</h1>
+          <button onClick={handleBack} className={`${smallButtonCls} shrink-0 px-4 py-2 text-sm`}>
             Back
           </button>
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
           {/* Form */}
-          <div className="space-y-6">
-            <ImageUploadSection
-              form={form}
-              uploading={uploading}
-              uploadError={uploadError}
-              onUpload={handleImage}
-              onClear={clearImage}
-            />
-
-            <section className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-5">
-              <h2 className="mb-4 text-sm font-semibold text-white">About you</h2>
+          <div className="min-w-0 divide-y divide-zinc-800/60">
+            <section className="pb-5">
+              <h2 className={sectionTitleCls}>Profile</h2>
               <div className="space-y-4">
+                <ImageUploadSection
+                  form={form}
+                  uploading={uploading}
+                  uploadError={uploadError}
+                  onUpload={handleImage}
+                  onClear={clearImage}
+                />
                 <div>
                   <label htmlFor="displayName" className={labelCls}>Display name</label>
                   <input
@@ -103,7 +125,7 @@ export function EditProfilePage({
                   </div>
                   <textarea
                     id="bio"
-                    className={`${inputCls} min-h-20 resize-y`}
+                    className={`${inputCls} min-h-20 max-w-full resize-y`}
                     maxLength={PROFILE_LIMITS.bio}
                     value={form.bio}
                     onChange={(e) => set('bio', e.target.value)}
@@ -136,10 +158,12 @@ export function EditProfilePage({
               </div>
             </section>
 
-            <LinksEditor links={form.links} onChange={(links) => set('links', links)} />
+            <section className="py-5">
+              <h2 className={sectionTitleCls}>Links</h2>
+              <LinksEditor links={form.links} onChange={(links) => set('links', links)} />
+            </section>
 
-            <section className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-5">
-              <h2 className="mb-4 text-sm font-semibold text-white">Flair</h2>
+            <section className="pt-5">
               <div className="space-y-4">
                 <PinnedTrackSelect
                   value={form.pinnedTrack}
@@ -150,62 +174,13 @@ export function EditProfilePage({
                   value={form.accentColor}
                   onChange={(color) => set('accentColor', color)}
                 />
+                <VisibilityToggles form={form} onChange={(key, value) => set(key, value)} />
               </div>
             </section>
-
-            <section className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-5">
-              <h2 className="mb-4 text-sm font-semibold text-white">Public stats</h2>
-              <div className="space-y-2">
-                {(
-                  [
-                    ['showGenres', 'Show top genres'],
-                    ['showArtists', 'Show top artists'],
-                    ['showTracks', 'Show top tracks'],
-                  ] as const
-                ).map(([key, label]) => (
-                  <label key={key} className="flex min-h-11 items-center gap-3 text-sm text-zinc-300">
-                    <input
-                      type="checkbox"
-                      checked={form[key]}
-                      onChange={(e) => set(key, e.target.checked)}
-                      className="h-4 w-4 rounded border-zinc-600 bg-zinc-900 accent-green-500 focus-visible:ring-2 focus-visible:ring-green-400/60"
-                    />
-                    {label}
-                  </label>
-                ))}
-              </div>
-            </section>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                onClick={handleSave}
-                disabled={saving || !dirty}
-                className="rounded-full bg-green-500 px-8 py-2.5 text-xs font-semibold uppercase tracking-wider text-black transition-colors hover:bg-green-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:opacity-40"
-              >
-                {saving ? 'Saving…' : 'Save profile'}
-              </button>
-              {saveMessage && (
-                <span
-                  role="status"
-                  className={`text-sm ${saveMessage.ok ? 'text-green-400' : 'text-red-400'}`}
-                >
-                  {saveMessage.text}
-                </span>
-              )}
-              <button
-                onClick={() => setConfirmDelete(true)}
-                className="ml-auto text-xs text-zinc-500 underline-offset-2 transition-colors hover:text-red-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/60"
-              >
-                Delete my profile data
-              </button>
-            </div>
           </div>
 
           {/* Live preview */}
-          <div>
-            <h2 className="mb-3 font-mono text-xs uppercase tracking-widest text-zinc-500">
-              Live preview
-            </h2>
+          <div className="min-w-0">
             <ProfileHeader
               profile={{
                 displayName: form.displayName.trim() || spotifyDisplayName,
@@ -222,6 +197,35 @@ export function EditProfilePage({
               }}
             />
           </div>
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <button
+            onClick={handleSave}
+            disabled={saving || !dirty}
+            className={`min-h-11 rounded-full px-8 text-xs font-semibold uppercase tracking-wider transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:opacity-40 ${
+              saveState === 'saved'
+                ? 'bg-green-600 text-white'
+                : 'bg-green-500 text-black hover:bg-green-400'
+            }`}
+            role={saveState === 'saved' ? 'status' : undefined}
+          >
+            {saving ? 'Saving…' : saveState === 'saved' ? 'Saved' : 'Save'}
+          </button>
+          {saveError && (
+            <span role="alert" className="text-sm text-red-400">
+              {saveError}
+            </span>
+          )}
+        </div>
+
+        <div className="mt-10 border-t border-zinc-800/60 pt-4">
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="text-xs text-zinc-600 underline-offset-2 transition-colors hover:text-red-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400/60"
+          >
+            Delete my profile data
+          </button>
         </div>
       </div>
 
