@@ -99,13 +99,17 @@ export function ShareModal({
           <span className="max-w-full truncate text-sm font-medium text-white">{displayName}</span>
         </div>
 
-        {/* QR on a white card */}
+        {/* Desktop: card matches the content column; the QR's own margin is the only quiet zone */}
         <div className="mb-4 flex justify-center">
-          <div className="rounded-2xl bg-white p-3 shadow-lg">
+          <div className="rounded-2xl bg-white p-3 shadow-lg md:w-full md:overflow-hidden md:p-0">
             {shareUrl ? (
-              <StyledQr data={shareUrl} size={560} className="h-60 w-60 sm:h-70 sm:w-70" />
+              <StyledQr
+                data={shareUrl}
+                size={560}
+                className="h-60 w-60 sm:h-70 sm:w-70 md:aspect-square md:h-auto md:w-full"
+              />
             ) : (
-              <div className="h-60 w-60 animate-pulse rounded-xl bg-zinc-200 sm:h-70 sm:w-70" />
+              <div className="h-60 w-60 animate-pulse rounded-xl bg-zinc-200 sm:h-70 sm:w-70 md:aspect-square md:h-auto md:w-full" />
             )}
           </div>
         </div>
