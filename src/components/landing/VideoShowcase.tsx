@@ -22,7 +22,7 @@ export function VideoShowcase() {
         style={{ scale }}
         onViewportEnter={() => videoRef.current?.play().catch(() => {})}
         onViewportLeave={() => videoRef.current?.pause()}
-        className="relative mx-auto max-w-6xl"
+        className="relative mx-auto max-w-4xl"
       >
         <motion.div
           style={{ opacity: glowOpacity }}
@@ -49,7 +49,7 @@ export function VideoShowcase() {
             playsInline
             preload="none"
             poster={VIDEO_POSTER}
-            className="aspect-video w-full bg-zinc-950 object-cover"
+            className="aspect-[1700/1582] w-full bg-zinc-950"
           >
             <source src={VIDEO_WEBM} type="video/webm" />
             <source src={VIDEO_MP4} type="video/mp4" />

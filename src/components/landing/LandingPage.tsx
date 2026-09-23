@@ -20,7 +20,7 @@ const itemVariants: Variants = {
 
 export function LandingPage({ loginUrl }: { loginUrl: string }) {
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-green-500 selection:text-black font-sans antialiased">
+    <div className="min-h-screen overflow-x-clip bg-zinc-950 text-zinc-100 selection:bg-green-500 selection:text-black font-sans antialiased">
       <LandingNav loginUrl={loginUrl} />
       <main>
       <LandingHero loginUrl={loginUrl} />
@@ -78,15 +78,15 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-900 px-8 py-8 text-xs text-zinc-500">
+      <footer className="border-t border-zinc-900 px-8 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))] text-xs text-zinc-500">
         <div className="flex w-full flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-6">
-            <a href="https://developer.spotify.com" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">Spotify API</a>
-            <a href="https://github.com/d4n1elliu/Soleri" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">Source Code</a>
-            <a href="/terms" className="hover:text-zinc-300 transition-colors">Terms of Service</a>
-            <a href="/privacy" className="hover:text-zinc-300 transition-colors">Privacy Policy</a>
+          <div className="grid w-full grid-cols-2 gap-4 text-center sm:flex sm:w-auto sm:items-center sm:gap-6 sm:text-left">
+            <a href="https://developer.spotify.com" target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center justify-center whitespace-nowrap hover:text-zinc-300 transition-colors sm:min-h-0 sm:justify-start">Spotify API</a>
+            <a href="https://github.com/d4n1elliu/Soleri" target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center justify-center whitespace-nowrap hover:text-zinc-300 transition-colors sm:min-h-0 sm:justify-start">Source Code</a>
+            <a href="/terms" className="flex min-h-11 items-center justify-center whitespace-nowrap hover:text-zinc-300 transition-colors sm:min-h-0 sm:justify-start">Terms of Service</a>
+            <a href="/privacy" className="flex min-h-11 items-center justify-center whitespace-nowrap hover:text-zinc-300 transition-colors sm:min-h-0 sm:justify-start">Privacy Policy</a>
           </div>
-          <div>© 2026 Soleri. All Rights Reserved. </div>
+          <div className="text-center">© 2026 Soleri. All Rights Reserved. </div>
         </div>
       </footer>
     </div>
