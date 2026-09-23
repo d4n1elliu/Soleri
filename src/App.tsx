@@ -39,6 +39,7 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
     billboardLoading,
     spotifyId,
     displayName,
+    avatarUrl,
     token: _token,
     timeRange,
     setTimeRange,
@@ -204,6 +205,7 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
         <ShareModal
           spotifyId={spotifyId}
           displayName={displayName ?? spotifyId}
+          avatarUrl={avatarUrl}
           topArtists={topArtists}
           topTracks={topTracks}
           genreCounts={genreCounts}
