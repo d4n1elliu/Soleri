@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Scanner } from '@yudiel/react-qr-scanner';
 import {
   decodeTasteProfile,
+  encodePayload,
   extractSharePayload,
+  isShareId,
   parseSpotifyUserId,
   spotifyUserUrl,
+  type TastePayload,
 } from '../../lib';
+import { fetchShare } from '../../api';
 
 interface QRScannerModalProps {
   onClose: () => void;
@@ -15,13 +19,27 @@ interface QRScannerModalProps {
 export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
   const [scannedValue, setScannedValue] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
+  const [fetchedProfile, setFetchedProfile] = useState<TastePayload | null>(null);
 
-  // Soleri share QR (/u/<payload>) or a legacy open.spotify.com/user QR
+  // Soleri share QR (/u/<token>) or a legacy open.spotify.com/user QR
   const sharePayload = scannedValue ? extractSharePayload(scannedValue) : null;
-  const shareProfile = sharePayload ? decodeTasteProfile(sharePayload) : null;
+  const shareProfile =
+    (sharePayload ? decodeTasteProfile(sharePayload) : null) ?? fetchedProfile;
   const spotifyUserId =
     shareProfile?.id ?? (scannedValue ? parseSpotifyUserId(scannedValue) : null);
   const isSpotifyUser = !!spotifyUserId;
+
+  // Short IDs resolve through the share API
+  useEffect(() => {
+    if (!sharePayload || !isShareId(sharePayload) || fetchedProfile) return;
+    let cancelled = false;
+    fetchShare(sharePayload).then((payload) => {
+      if (!cancelled) setFetchedProfile(payload);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [sharePayload, fetchedProfile]);
 
   function handleScan(results: { rawValue: string }[]) {
     if (results.length > 0 && !scannedValue) {
@@ -31,7 +49,7 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
 
   function handleTasteMatch() {
     if (spotifyUserId && onTasteMatch) {
-      onTasteMatch(spotifyUserId, shareProfile && sharePayload ? sharePayload : undefined);
+      onTasteMatch(spotifyUserId, shareProfile ? encodePayload(shareProfile) : undefined);
       onClose();
     }
   }
@@ -125,7 +143,7 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
               </button>
             )}
 
-            {/* Same-tab on purpose: a universal link in a new tab strands iOS Safari on about:blank */}
+            {/* Same-tab: a universal link in a new tab leaves iOS Safari on about:blank */}
             <a
               href={spotifyUserUrl(spotifyUserId)}
               onClick={onClose}
@@ -139,7 +157,7 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
             </a>
 
             <button
-              onClick={() => { setScannedValue(null); setErrorMsg(''); }}
+              onClick={() => { setScannedValue(null); setErrorMsg(''); setFetchedProfile(null); }}
               className="w-full rounded-lg border border-zinc-600 py-2 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-white"
             >
               Scan again
@@ -163,7 +181,7 @@ export function QRScannerModal({ onClose, onTasteMatch }: QRScannerModalProps) {
               Open link
             </a>
             <button
-              onClick={() => { setScannedValue(null); setErrorMsg(''); }}
+              onClick={() => { setScannedValue(null); setErrorMsg(''); setFetchedProfile(null); }}
               className="w-full rounded-lg border border-zinc-600 py-2 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-white"
             >
               Scan again

@@ -7,8 +7,8 @@ export interface TastePayload {
   a: string[];  // top 8 artist IDs
   g: string[];  // top 5 genre strings
   t: string[];  // top 4 track IDs
-  an?: string[]; // artist names, parallel to `a` (missing in legacy payloads)
-  tn?: string[]; // track names, parallel to `t` (missing in legacy payloads)
+  an?: string[]; // artist names, parallel to `a` (absent in legacy)
+  tn?: string[]; // track names, parallel to `t` (absent in legacy)
 }
 
 export interface TasteEntry {
@@ -41,16 +41,25 @@ function fromBase64Url(str: string): string {
   return decodeURIComponent(escape(atob(padded2)));
 }
 
-export function encodeTasteProfile(
+export function encodePayload(payload: TastePayload): string {
+  return toBase64Url(JSON.stringify(payload));
+}
+
+// Distinguishes api/share IDs from long base64url legacy tokens
+export function isShareId(token: string): boolean {
+  return /^[A-Za-z0-9]{6,12}$/.test(token);
+}
+
+export function buildTastePayload(
   spotifyId: string,
   displayName: string,
   topArtists: SpotifyTopArtist[],
   topTracks: SpotifyTrack[],
   genreCounts: { genre: string; count: number }[],
-): string {
+): TastePayload {
   const artists = topArtists.slice(0, 8);
   const tracks = topTracks.slice(0, 4);
-  const payload: TastePayload = {
+  return {
     id: spotifyId,
     n: displayName.slice(0, 20),
     a: artists.map((a) => a.id),
@@ -59,10 +68,21 @@ export function encodeTasteProfile(
     an: artists.map((a) => a.name.slice(0, 30)),
     tn: tracks.map((t) => t.name.slice(0, 30)),
   };
-  return toBase64Url(JSON.stringify(payload));
 }
 
-// Share URLs look like https://www.soleri.fyi/u/<base64url payload>
+export function encodeTasteProfile(
+  spotifyId: string,
+  displayName: string,
+  topArtists: SpotifyTopArtist[],
+  topTracks: SpotifyTrack[],
+  genreCounts: { genre: string; count: number }[],
+): string {
+  return encodePayload(
+    buildTastePayload(spotifyId, displayName, topArtists, topTracks, genreCounts),
+  );
+}
+
+// Share URLs: <origin>/u/<token>
 export function buildShareUrl(origin: string, encoded: string): string {
   return `${origin}/u/${encoded}`;
 }
