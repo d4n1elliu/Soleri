@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSpotifyAuth } from './hooks';
 import { buildSpotifyAuthUrl } from './api';
 import { LandingPage } from './components/landing';
 import { TermsPage, PrivacyPage } from './components/legal';
 import { SharedProfilePage } from './components/share';
+import { EditProfilePage } from './components/profile';
 import { Dashboard, ShareModal, QRScannerModal, TasteMatchModal } from './components/dashboard';
+import { InitialAvatar } from './components/ui';
 import { encodeTasteProfile } from './lib';
 
 interface TasteMatchState {
@@ -40,7 +42,7 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
     spotifyId,
     displayName,
     avatarUrl,
-    token: _token,
+    token,
     timeRange,
     setTimeRange,
     topsLoading,
@@ -50,6 +52,25 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
   const [scanOpen, setScanOpen] = useState(false);
   const [tasteMatch, setTasteMatch] = useState<TasteMatchState | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [editingProfile, setEditingProfile] = useState(false);
+
+  // URL mirrors the editor view; a fresh load of /settings/profile lands on the landing page
+  useEffect(() => {
+    const onPopState = () => setEditingProfile(window.location.pathname === '/settings/profile');
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  function openEditProfile() {
+    setShareOpen(false);
+    window.history.pushState({}, '', '/settings/profile');
+    setEditingProfile(true);
+  }
+
+  function closeEditProfile() {
+    window.history.pushState({}, '', '/');
+    setEditingProfile(false);
+  }
 
   function handleTasteMatch(theirSpotifyId: string, theirPayload?: string) {
     const encodedPayload =
@@ -125,6 +146,13 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
                 Share
               </button>
             )}
+            <button
+              onClick={openEditProfile}
+              className="rounded-full transition-opacity hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400/60"
+              aria-label="Edit profile"
+            >
+              <InitialAvatar name={displayName ?? spotifyId ?? '?'} src={avatarUrl} size="sm" />
+            </button>
             {/* Mobile sections dropdown trigger — hidden on desktop */}
             <button
               onClick={() => setMobileNavOpen((o) => !o)}
@@ -159,6 +187,16 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
         )}
       </header>
 
+      {editingProfile && token && spotifyId ? (
+        <EditProfilePage
+          token={token}
+          spotifyId={spotifyId}
+          spotifyDisplayName={displayName ?? spotifyId}
+          spotifyAvatarUrl={avatarUrl}
+          topTracks={topTracks}
+          onBack={closeEditProfile}
+        />
+      ) : (
       <div className="flex">
         {/* Left sidebar nav — desktop only */}
         <aside className="sticky top-[57px] hidden h-[calc(100vh-57px)] w-52 shrink-0 overflow-y-auto border-r border-zinc-800 py-6 lg:block">
@@ -194,6 +232,7 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
           />
         </main>
       </div>
+      )}
 
       {scanOpen && (
         <QRScannerModal
@@ -206,6 +245,7 @@ export default function App({ ssrPath }: { ssrPath?: string }) {
           spotifyId={spotifyId}
           displayName={displayName ?? spotifyId}
           avatarUrl={avatarUrl}
+          onEditProfile={openEditProfile}
           topArtists={topArtists}
           topTracks={topTracks}
           genreCounts={genreCounts}
