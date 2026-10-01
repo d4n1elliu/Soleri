@@ -86,7 +86,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
             <a href="/terms" className="flex min-h-11 items-center justify-center whitespace-nowrap hover:text-zinc-300 transition-colors sm:min-h-0 sm:justify-start">Terms of Service</a>
             <a href="/privacy" className="flex min-h-11 items-center justify-center whitespace-nowrap hover:text-zinc-300 transition-colors sm:min-h-0 sm:justify-start">Privacy Policy</a>
           </div>
-          <div className="text-center">© 2026 Soleri. All Rights Reserved. </div>
+          <div className="text-center">© 2026 Daniel Liu. All Rights Reserved.</div>
         </div>
       </footer>
     </div>
