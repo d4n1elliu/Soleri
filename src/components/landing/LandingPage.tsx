@@ -7,6 +7,7 @@ import { LandingCta } from './LandingCta';
 import { ShowcaseSection } from './ShowcaseSection';
 import { HeroCollage } from './HeroCollage';
 import { VideoShowcase } from './VideoShowcase';
+import { FooterCredit } from '../ui/FooterCredit';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -86,7 +87,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
             <a href="/terms" className="flex min-h-11 items-center justify-center whitespace-nowrap hover:text-zinc-300 transition-colors sm:min-h-0 sm:justify-start">Terms of Service</a>
             <a href="/privacy" className="flex min-h-11 items-center justify-center whitespace-nowrap hover:text-zinc-300 transition-colors sm:min-h-0 sm:justify-start">Privacy Policy</a>
           </div>
-          <div className="text-center">© 2026 Daniel Liu. All Rights Reserved.</div>
+          <FooterCredit />
         </div>
       </footer>
     </div>
