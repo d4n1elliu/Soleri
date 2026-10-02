@@ -1,3 +1,5 @@
+import { FooterCredit } from '../ui/FooterCredit';
+
 export interface LegalSection {
   heading: string;
   paragraphs: string[];
@@ -67,7 +69,7 @@ export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
             <a href="/terms" className="hover:text-zinc-300 transition-colors">Terms of Service</a>
             <a href="/privacy" className="hover:text-zinc-300 transition-colors">Privacy Policy</a>
           </div>
-          <div>© 2026 Daniel Liu. All Rights Reserved.</div>
+          <FooterCredit />
         </div>
       </footer>
     </div>
