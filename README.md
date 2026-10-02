@@ -26,8 +26,12 @@ A personal dashboard that turns your Spotify listening history into clear visual
 
 **Backend**
 - Vercel Serverless Functions (region `syd1`)
-- Spotify Web API
+
+**Database**
 - Supabase (Postgres + Storage, accessed via REST from the serverless functions only)
+
+**Third Party APIs**
+- Spotify Web API
 
 ## Getting Started
 ### Prerequisites
