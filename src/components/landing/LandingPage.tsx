@@ -81,13 +81,13 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
       {/* Footer */}
       <footer className="border-t border-zinc-900 px-8 py-10 pb-[calc(2.5rem+env(safe-area-inset-bottom))] text-xs text-zinc-500">
         <div className="flex w-full flex-col items-center gap-6 sm:items-start lg:flex-row lg:items-center lg:gap-8">
+          <FooterCredit />
           <div className="grid w-full grid-cols-2 gap-x-4 text-center sm:flex sm:w-auto sm:items-center sm:gap-8 sm:text-left">
             <a href="https://developer.spotify.com" target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center justify-center whitespace-nowrap hover:text-zinc-300 transition-colors sm:min-h-0 sm:justify-start">Spotify API</a>
             <a href="https://github.com/d4n1elliu/Soleri" target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center justify-center whitespace-nowrap hover:text-zinc-300 transition-colors sm:min-h-0 sm:justify-start">Source Code</a>
             <a href="/terms" className="flex min-h-11 items-center justify-center whitespace-nowrap hover:text-zinc-300 transition-colors sm:min-h-0 sm:justify-start">Terms of Service</a>
             <a href="/privacy" className="flex min-h-11 items-center justify-center whitespace-nowrap hover:text-zinc-300 transition-colors sm:min-h-0 sm:justify-start">Privacy Policy</a>
           </div>
-          <FooterCredit />
         </div>
       </footer>
     </div>
