@@ -63,9 +63,9 @@ export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-900 px-8 py-8 text-xs text-zinc-500">
-        <div className="flex w-full flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-6">
+      <footer className="border-t border-zinc-900 px-8 py-10 text-xs text-zinc-500">
+        <div className="flex w-full flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-8">
             <a href="/terms" className="hover:text-zinc-300 transition-colors">Terms of Service</a>
             <a href="/privacy" className="hover:text-zinc-300 transition-colors">Privacy Policy</a>
           </div>
